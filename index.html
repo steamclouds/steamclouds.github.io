@@ -134,7 +134,6 @@
     const answer = this.nextElementSibling;
     const isOpen = this.getAttribute('aria-expanded') === 'true';
     
-    // Tutup semua FAQ lainnya
     document.querySelectorAll('.faq-answer[aria-hidden="false"]').forEach(otherAnswer => {
       if (otherAnswer !== answer) {
         otherAnswer.style.maxHeight = '0';
@@ -146,12 +145,12 @@
       }
     });
     
-    // Toggle state untuk FAQ yang diklik
     this.setAttribute('aria-expanded', !isOpen);
     answer.setAttribute('aria-hidden', isOpen);
     
     if (!isOpen) {
-      answer.style.maxHeight = answer.scrollHeight + "px";
+      const contentHeight = answer.scrollHeight;
+      answer.style.maxHeight = contentHeight + 'px';
     } else {
       answer.style.maxHeight = '0';
     }
