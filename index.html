@@ -63,19 +63,25 @@
   </div>
 </section>
 
-<!-- Tutorial Section (wrapped in a main card) -->
 <section class="tutorial section-box" aria-labelledby="tutorial-title">
   <h2 id="tutorial-title">📖 How to Use Steam Clouds</h2>
 
-  <ol class="tutorial-list" aria-label="Steam Clouds tutorial steps">
-    <li class="tutorial-step">Visit <a href="https://steamclouds.github.io/" target="_blank" rel="noopener">steamclouds.github.io</a></li>
-    <li class="tutorial-step">Download the latest Steam Clouds version</li>
-    <li class="tutorial-step">Run <code>SteamClouds.exe</code></li>
-    <li class="tutorial-step">Go to <strong>Install Steam Clouds</strong></li>
-    <li class="tutorial-step">Follow the installation steps until finished</li>
-    <li class="tutorial-step">Restart your Steam client</li>
-    <li class="tutorial-step">Have fun — enjoy your populated library 🎮</li>
-  </ol>
+  <button class="tutorial-toggle" aria-expanded="false" aria-controls="tutorial-content">
+    <span class="toggle-label">Lihat langkah</span>
+    <span class="toggle-chevron">▾</span>
+  </button>
+
+  <div id="tutorial-content" class="tutorial-answer" aria-hidden="true">
+    <ol class="tutorial-list" aria-label="Steam Clouds tutorial steps">
+      <li class="tutorial-step">Visit <a href="https://steamclouds.github.io/" target="_blank" rel="noopener">steamclouds.github.io</a></li>
+      <li class="tutorial-step">Download the latest Steam Clouds version</li>
+      <li class="tutorial-step">Run <code>SteamClouds.exe</code></li>
+      <li class="tutorial-step">Go to <strong>Install Steam Clouds</strong></li>
+      <li class="tutorial-step">Follow the installation steps until finished</li>
+      <li class="tutorial-step">Restart your Steam client</li>
+      <li class="tutorial-step">Have fun — enjoy your populated library 🎮</li>
+    </ol>
+  </div>
 </section>
 
 <!-- Safety Statement (wrapped in a main card) -->
