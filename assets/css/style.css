@@ -265,24 +265,24 @@ body.dark{
   pointer-events: none;
 }
 
-/* slightly increase inner spacing so card content breathes */
+
 .feature-card, .release-card, .safety-card, .tutorial-step {
   padding: 16px;
 }
 
-/* make sure description area can expand and keep consistent heights */
+
 .feature-card .feature-body,
 .release-card .meta {
   color: var(--muted);
   flex: 1 1 auto;
 }
 
-/* optional: stronger separation between cards & container */
+
 .section-box { 
   border: 1px solid rgba(0,0,0,0.04);
 }
 
-/* tweak for very light mode: give cards a hint of white */
+
 @media (prefers-color-scheme: light) {
   .feature-card,
   .release-card,
@@ -292,7 +292,7 @@ body.dark{
   }
 }
 
-/* ensure dark-mode card background stays slightly different than container */
+
 body.dark .feature-card,
 body.dark .release-card,
 body.dark .tutorial-step,
@@ -315,10 +315,10 @@ body.dark .safety-card {
   text-align:center;
 }
 
-/* small variant to fit inside card */
+
 .btn.small { padding: 6px 10px; font-size: .95rem; }
 
-/* hover effect */
+
 .btn:hover { transform: translateY(-3px); filter:brightness(1.03); }
 
 .release-card {
@@ -369,13 +369,13 @@ body.dark .safety-card {
 }
 
 body.dark{
-  --feature-card-bg: #294044;  
-  --release-card-bg: #1a2023;   
+  --feature-card-bg: #213036;  
+  --release-card-bg: #151a1d;      
 }
 
 
 .feature-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.006)), var(--feature-card-bg) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004)), var(--feature-card-bg) !important;
   background-color: var(--feature-card-bg) !important;
   border-color: rgba(255,255,255,0.06) !important;
 }
@@ -386,3 +386,4 @@ body.dark{
   background-color: var(--release-card-bg) !important;
   border-color: rgba(255,255,255,0.04) !important;
 }
+
