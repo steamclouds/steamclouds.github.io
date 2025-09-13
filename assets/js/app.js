@@ -13,6 +13,16 @@ function escapeHtml(s) {
   })[c] || '');
 }
 
+// Helper untuk dekode HTML entities
+function decodeHTMLEntities(str) {
+  if (!str) return '';
+  return str.replace(/&amp;/g, '&')
+            .replace(/</g, '<')
+            .replace(/>/g, '>')
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"');
+}
+
 // Helper untuk mengamankan URL
 function safeHref(s) {
   try {
@@ -27,10 +37,21 @@ function renderReleaseCard(release) {
   const card = document.createElement("div");
   card.className = "release-card";
   
+  // Decode HTML entities untuk notes
+  const decodedNotes = decodeHTMLEntities(release.notes);
+  
+  // Format notes sebagai daftar poin
+  const notesList = decodedNotes.split('\n')
+    .filter(note => note.trim() !== '')
+    .map(note => `<li>${escapeHtml(note.trim())}</li>`)
+    .join('');
+  
   card.innerHTML = `
     <div class="card-main">
       <h2>Version ${escapeHtml(release.version)}</h2>
-      <p>${escapeHtml(release.notes)}</p>
+      <ul class="release-notes-list">
+        ${notesList}
+      </ul>
       <div class="meta">Released: ${escapeHtml(release.date)}</div>
     </div>
     <div class="card-actions">
@@ -59,7 +80,10 @@ async function fetchGitHubReleases() {
       .filter(rel => !rel.draft && !rel.prerelease)
       .map(rel => {
         // Cari asset .exe
-        const exeAsset = rel.assets.find(asset => asset.name.endsWith('.exe'));
+        const exeAsset = rel.assets.find(asset => 
+          asset.name.toLowerCase().endsWith('.exe') || 
+          asset.name.toLowerCase().includes('steamclouds')
+        );
         
         return {
           version: rel.tag_name,
@@ -89,7 +113,7 @@ if (searchInput) {
     
     cards.forEach(card => {
       const version = card.querySelector('h2').textContent.toLowerCase();
-      const notes = card.querySelector('p').textContent.toLowerCase();
+      const notes = card.querySelector('.release-notes-list').textContent.toLowerCase();
       
       if (version.includes(term) || notes.includes(term)) {
         card.style.display = 'block';
