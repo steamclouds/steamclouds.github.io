@@ -362,6 +362,27 @@ body.dark .safety-card {
   top: 0.1em;
 }
 
+root{
+ 
+  --feature-card-bg: #213036;   
+  --release-card-bg: #151a1d;   
+}
+
+body.dark{
+  --feature-card-bg: #294044;  
+  --release-card-bg: #1a2023;   
+}
+
+.feature-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.006)), var(--feature-card-bg);
+  background-color: var(--feature-card-bg) !important;
+}
+
+.release-card,
+.download-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004)), var(--release-card-bg);
+  background-color: var(--release-card-bg) !important;
+}
 
 
 
