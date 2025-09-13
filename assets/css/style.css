@@ -2,31 +2,32 @@
 /* Reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Theme colors (tweak these if you want other palette) */
+/* Theme colors */
 :root{
   --bg: #0b0f12;
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #374144;            
-  --section-bg: rgba(255,255,255,0.03);
+  --card-bg: #13181b;            
+  --section-bg: rgba(255,255,255,0.01);
   --accent: #2563eb; 
-  --card-border: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.04);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
-  --glass: rgba(255,255,255,0.045);
+  --glass: rgba(255,255,255,0.03);
 }
+
 
 body.dark{
   --bg: #0b0f12;
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #3f494d;
-  --section-bg: rgba(255,255,255,0.028);
+  --card-bg: #182022;          
+  --section-bg: rgba(255,255,255,0.008); 
   --accent: #60a5fa;
-  --card-border: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.04);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
-  --glass: rgba(255,255,255,0.045);
+  --glass: rgba(255,255,255,0.03);
 }
 
 /* Base page */
@@ -360,6 +361,7 @@ body.dark .safety-card {
   left: 0;
   top: 0.1em;
 }
+
 
 
 
