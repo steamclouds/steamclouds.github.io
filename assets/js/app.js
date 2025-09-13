@@ -71,9 +71,7 @@ function renderReleaseCard(release) {
 // Fungsi untuk mengambil semua release dari GitHub
 async function fetchGitHubReleases() {
   try {
-    const response = await fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases', {
-      headers: { 'User-Agent': 'SteamCloudsApp' }
-    });
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec');
     
     if (!response.ok) {
       throw new Error(`Error fetching releases: ${response.statusText}`);
@@ -133,6 +131,7 @@ if (searchInput) {
 document.addEventListener("DOMContentLoaded", () => {
   fetchGitHubReleases();
 });
+
 
 
 
