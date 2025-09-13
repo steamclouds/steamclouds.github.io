@@ -187,4 +187,20 @@ footer {
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
+/* Section Container Box */
+.section-box {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-top: 2rem;
+}
+
+/* Judul di dalam kotak */
+.section-box h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
 
