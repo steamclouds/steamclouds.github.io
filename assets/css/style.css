@@ -8,8 +8,8 @@
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #13181b; 
-  --section-bg: rgba(255,255,255,0.02);
+  --card-bg: #13181b;           
+  --section-bg: rgba(255,255,255,0.01);
   --accent: #2563eb; 
   --card-border: rgba(255,255,255,0.04);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
@@ -21,8 +21,8 @@ body.dark{
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #182022;
-  --section-bg: rgba(255,255,255,0.02);
+  --card-bg: #182022;           
+  --section-bg: rgba(255,255,255,0.008);
   --accent: #60a5fa;
   --card-border: rgba(255,255,255,0.04);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
@@ -360,6 +360,7 @@ body.dark .safety-card {
   left: 0;
   top: 0.1em;
 }
+
 
 
 
