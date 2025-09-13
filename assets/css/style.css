@@ -360,6 +360,11 @@ body.dark{
   border-bottom-right-radius: 8px;
   color: var(--muted);
   padding-left: 24px;
+  will-change: height; 
+}
+
+.faq-answer[aria-hidden="false"] {
+  max-height: 500px;
 }
 .faq-question[aria-expanded="true"] {
   border-bottom: none;
@@ -369,3 +374,4 @@ body.dark{
 .faq-answer[aria-hidden="false"] {
   max-height: 500px;
 }
+
