@@ -14,6 +14,10 @@
   --card-border: rgba(255,255,255,0.04);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
   --glass: rgba(255,255,255,0.03);
+  --border-color: #333;
+  --text-color: #ffffff;
+  --card-hover-bg: #2a2a2a;
+  
 }
 
 
@@ -462,6 +466,7 @@ body.dark{
   overflow: hidden;
   transition: max-height 0.3s ease;
 }
+
 
 
 
