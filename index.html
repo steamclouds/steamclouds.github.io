@@ -9,7 +9,7 @@
 <body>
   <!-- Header -->
   <header class="header">
-    <div class="logo">☁️ Steam Clouds</div>
+    <div class="logo">Steam Clouds</div>
     <nav>
       <input type="text" id="search" placeholder="Search releases..." />
       <button id="themeToggle">🌙</button>
@@ -30,58 +30,73 @@
     </div>
   </main>
 
-  <!-- Features Section -->
-  <section class="features">
-    <h2>✨ Core Features</h2>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <h3>Automatic Download & Install Manifest</h3>
-        <p>Quickly fetch and install manifests for Steam (Steam Unlocked). Unlock games and DLCs with ease.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Simple & Minimalist Design</h3>
-        <p>A clean launcher with a modern UI that focuses only on what you need — nothing more.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Easy Game Adding</h3>
-        <p>Just click “Add Games” once and restart Steam. Your library will be filled automatically.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Safe & Free</h3>
-        <p>No payment required. Fully free and secure with zero private data collection.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Always Up-to-Date</h3>
-        <p>Stay updated with the latest tools and support for new Steam features.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Import Lua & Manifest</h3>
-        <p>Drag and drop your Lua or manifest files directly into Steam Clouds to add games instantly.</p>
-      </div>
-    </div>
-  </section>
+  <!-- Features Section (wrapped in a main card) -->
+<section class="features section-box" aria-labelledby="features-title">
+  <h2 id="features-title">✨ Core Features</h2>
 
-  <!-- Tutorial Section -->
-  <section class="tutorial">
-    <h2>📖 How to Use Steam Clouds</h2>
-    <ol>
-      <li>Visit <a href="https://steamclouds.github.io/">steamclouds.github.io</a></li>
-      <li>Download the latest Steam Clouds version</li>
-      <li>Run <code>SteamClouds.exe</code></li>
-      <li>Go to Install Steam Clouds</li>
-      <li>Follow the steps to complete installation</li>
-      <li>Restart your Steam</li>
-      <li>Enjoy and have fun 🎮</li>
-    </ol>
-  </section>
+  <div class="feature-grid" role="list">
+    <article class="feature-card" role="listitem">
+      <h3>🎯 Automatic Download & Install Manifest</h3>
+      <p>Automatically download and install Steam manifests (Steam Unlocked). One-click install for games & DLC so your library fills instantly.</p>
+    </article>
 
-  <!-- Safety Statement -->
-  <section class="safety">
-    <h2>🛡️ Safety Statement</h2>
-    <p>This software is a pure local green tool that can run without administrator permission. We do not collect your private information since we don’t use servers (except for the Steam Clouds Bot on Discord, used only to manage manifests 24/7 on a dedicated server).</p>
-    <p>There is no login required. Some anti-virus may show false positives (Unknown Publisher), but the software is safe to use.</p>
-    <p>We suggest using this on a secondary Steam account for safety, and please support genuine versions of games if you can afford them.</p>
-  </section>
+    <article class="feature-card" role="listitem">
+      <h3>🧩 Simple & Minimalist Design</h3>
+      <p>A lightweight, focused launcher with a clean UI — no clutter, just the tools you need.</p>
+    </article>
+
+    <article class="feature-card" role="listitem">
+      <h3>➕ Super Easy to Add Games</h3>
+      <p>Click <strong>Add Games</strong> once, restart Steam, and your library will be populated automatically.</p>
+    </article>
+
+    <article class="feature-card" role="listitem">
+      <h3>🛡️ Super Safe & Free</h3>
+      <p>Local-only tool with no hidden fees and no automatic data collection — free to use for everyone.</p>
+    </article>
+
+    <article class="feature-card" role="listitem">
+      <h3>🔄 Up-to-Date Tools</h3>
+      <p>Regular updates to keep compatibility with new Steam changes and improve stability.</p>
+    </article>
+
+    <article class="feature-card" role="listitem">
+      <h3>📂 Import Lua & Manifest</h3>
+      <p>Drag & drop Lua or manifest files (your own or shared by others) directly into the app to add games instantly.</p>
+    </article>
+  </div>
+</section>
+
+<!-- Tutorial Section (wrapped in a main card) -->
+<section class="tutorial section-box" aria-labelledby="tutorial-title">
+  <h2 id="tutorial-title">📖 How to Use Steam Clouds</h2>
+
+  <ol class="tutorial-list" aria-label="Steam Clouds tutorial steps">
+    <li class="tutorial-step">Visit <a href="https://steamclouds.github.io/" target="_blank" rel="noopener">steamclouds.github.io</a></li>
+    <li class="tutorial-step">Download the latest Steam Clouds version</li>
+    <li class="tutorial-step">Run <code>SteamClouds.exe</code></li>
+    <li class="tutorial-step">Go to <strong>Install Steam Clouds</strong></li>
+    <li class="tutorial-step">Follow the installation steps until finished</li>
+    <li class="tutorial-step">Restart your Steam client</li>
+    <li class="tutorial-step">Have fun — enjoy your populated library 🎮</li>
+  </ol>
+</section>
+
+<!-- Safety Statement (wrapped in a main card) -->
+<section class="safety section-box" aria-labelledby="safety-title">
+  <h2 id="safety-title">🛡️ Safety Statement</h2>
+
+  <div class="safety-cards">
+    <p class="safety-card">
+      This software is a pure local green tool — it runs without administrator permission and works locally on your machine.
+      We do not collect personal information because we do not operate servers (except for an optional Steam Clouds Discord bot that helps manage manifests on a dedicated server).
+    </p>
+    <p class="safety-card">
+      There is no user login. Some antivirus software may show false positives (Unknown Publisher). This is a common false positive for unsigned local apps — rest assured the tool itself is local and safe to use.
+    </p>
+  </div>
+</section>
+
 
   <!-- Footer -->
   <footer>
