@@ -383,6 +383,20 @@ body.dark{
 }
 
 
+.faq-answer {
+  white-space: pre-line;   /* respect line breaks */
+  padding: 12px 16px 16px 24px; /* beri vertical padding */
+  line-height: 1.6;
+  color: var(--muted);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.faq-answer br { display: block; height: 6px; }
+
+
 
 
 
