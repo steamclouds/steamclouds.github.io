@@ -1,233 +1,218 @@
+/* =========================
+   Steam Clouds — Cleaned CSS
+   Improved card separation for light + dark modes
+   ========================= */
+
 /* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Theme colors (tweak these if you want other palette) */
+:root{
+  --bg: #f3f6fb;
+  --page-bg: #f8f9fa;
+  --text: #111827;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --section-bg: #ffffff;
+  --accent: #2563eb;
+  --card-border: rgba(16,24,40,0.06);
+  --card-shadow: 0 10px 30px rgba(16,24,40,0.06);
+  --glass: rgba(255,255,255,0.6);
 }
 
-/* Theme colors */
-:root {
-  --bg: #f8f9fa;
-  --text: #222;
-  --card-bg: #fff;
-  --accent: #3b82f6;
-}
-body.dark {
-  --bg: #121212;
-  --text: #eee;
-  --card-bg: #1e1e1e;
+body.dark{
+  --bg: #0b0f12;
+  --page-bg: #0b0f12;
+  --text: #e6eef6;
+  --muted: #94a3b8;
+  --card-bg: #0f1316;
+  --section-bg: rgba(255,255,255,0.02);
   --accent: #60a5fa;
+  --card-border: rgba(255,255,255,0.04);
+  --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
+  --glass: rgba(255,255,255,0.03);
 }
 
-/* Base */
-body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--bg);
+/* Base page */
+html,body{height:100%}
+body{
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,var(--bg),var(--page-bg) 60%);
   color: var(--text);
-  line-height: 1.6;
-  transition: background 0.25s, color 0.25s;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+  transition: background .25s ease, color .25s ease;
+}
+
+/* Container helpers */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 /* Header */
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 14px 20px;
   background: var(--card-bg);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
+  border-radius: 10px;
 }
-.header .logo {
-  font-size: 1.15rem;
-  font-weight: 700;
+.header .logo { font-weight:700; font-size:1.05rem; }
+.header nav { display:flex; gap:8px; align-items:center; }
+.header input{
+  min-width:220px;
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.06);
+  background: transparent; color: var(--text);
 }
-.header nav {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.header input {
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: transparent;
-  color: var(--text);
-}
-.header button {
-  padding: 0.4rem 0.6rem;
-  border: none;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
+.header button{
+  padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.12);
 }
 
-/* Main layout & grids */
-main {
-  padding: 2rem;
+/* Ads box */
+.ads { display:flex; justify-content:center; margin:18px 0; }
+.ads-box {
+  width:100%; max-width:1120px; padding:12px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+  border:1px solid var(--card-border);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+  color:var(--muted);
+  text-align:center;
 }
 
-/* Generic grid for releases & features */
-.release-grid,
-.feature-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  margin-top: 1rem;
-  grid-auto-rows: 1fr; /* make rows uniform */
-  align-items: start;
-}
+/* Main layout */
+main { padding: 12px 0 28px; }
 
-/* Card base (release / feature) */
-.release-card,
-.feature-card {
+/* Release cards grid */
+.release-grid {
+  display:grid;
+  gap:18px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 26px;
+}
+.release-card {
   background: var(--card-bg);
   border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 16px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 26px rgba(2,6,23,0.04);
   transition: transform .18s ease, box-shadow .18s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  display:flex; flex-direction:column; justify-content:space-between; min-height:130px;
 }
-.release-card:hover,
-.feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
+.release-card:hover{ transform:translateY(-6px); box-shadow: 0 18px 46px rgba(2,6,23,0.08); }
+.release-card h2{ font-size:1.02rem; margin-bottom:8px; color:var(--text); }
+.release-card p{ color:var(--muted); margin-bottom:8px; font-size:.95rem; }
+.release-card .meta{ color:var(--muted); font-size:.85rem; margin-bottom:10px; }
 
-/* Titles & text inside cards */
-.release-card h2,
-.feature-card h3 {
-  margin: 0 0 .5rem 0;
-  color: var(--text);
-  font-size: 1.05rem;
-  line-height: 1.18;
+/* Section container */
+.section-box {
+  background: var(--section-bg);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 18px auto;
+  max-width: 1120px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 12px 36px rgba(2,6,23,0.04);
+  transition: background .18s ease, box-shadow .18s ease;
 }
-.release-card p,
-.feature-card p {
-  margin: 0;
-  color: #666;
-  font-size: .95rem;
-}
-.feature-card .feature-body {
-  margin-top: .5rem;
-  color: #7a7f86;
-  flex: 1 1 auto; /* allow description to grow so cards align */
-}
+.section-box h2 { font-size:1.35rem; margin-bottom:14px; color:var(--accent); }
 
-/* Release card specific */
-.release-card button {
-  margin-top: .8rem;
-  padding: .4rem .8rem;
-  border: none;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-}
-
-/* Features section wrapper */
-.features {
-  padding: 2rem 1rem;
-}
-
-/* Tutorial styling (supports both plain ol and .tutorial-list/.tutorial-step) */
-.tutorial {
-  padding: 2rem 1rem;
-}
-.tutorial h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-.tutorial ol,
-.tutorial .tutorial-list {
-  margin-top: 1rem;
-  padding-left: 1.25rem;
+/* Feature grid — uniform rows + equal-height cards */
+.feature-grid {
   display: grid;
-  gap: .75rem;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-auto-rows: 1fr; /* ensure rows are equal height */
+  align-items: start;
 }
-.tutorial ol li,
-.tutorial .tutorial-step {
+.feature-card {
+  display:flex;
+  flex-direction:column;
+  justify-content: flex-start;
+  height:100%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.03);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 48px rgba(2,6,23,0.09);
+}
+.feature-head { display:flex; gap:10px; align-items:center; margin-bottom:6px; }
+.feature-head .icon { font-size:18px; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background: rgba(255,255,255,0.02); }
+.feature-card h3 { margin:0; font-size:1.02rem; color:var(--text); }
+.feature-card .feature-body { margin-top:10px; color:var(--muted); flex:1 1 auto; }
+
+/* Tutorial list as cards */
+.tutorial .tutorial-list,
+.tutorial ol {
+  display:grid;
+  gap:12px;
+  margin-top:10px;
+  padding-left:1.2rem;
+}
+.tutorial-step,
+.tutorial ol li {
   background: var(--card-bg);
-  padding: .9rem 1rem;
+  padding: 12px 14px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.03);
+  color: var(--text);
   list-style: decimal inside;
 }
 
-/* Safety section */
-.safety {
-  padding: 2rem 1rem;
+/* Safety cards */
+.safety .safety-cards,
+.safety p {
+  margin-top:10px;
 }
-.safety h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-.safety p,
-.safety .safety-card {
-  margin-bottom: 1rem;
+.safety-card,
+.safety p {
   background: var(--card-bg);
-  padding: 1rem;
+  padding: 12px 14px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.03);
   color: var(--text);
-  line-height: 1.5;
-}
-
-/* Section container box (wraps Features / Tutorial / Safety) */
-.section-box {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 6px 22px rgba(0,0,0,0.06);
-  margin: 2rem auto;
-  max-width: 1100px;
-}
-.section-box h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.6rem;
-  color: var(--accent);
-}
-
-/* Ads box simple styling */
-.ads {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
-.ads-box {
-  width: 100%;
-  max-width: 1100px;
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
-  text-align: center;
-  color: #666;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  line-height:1.5;
 }
 
 /* Footer */
 footer {
-  text-align: center;
-  padding: 1rem;
-  background: var(--card-bg);
-  margin-top: 2rem;
-  font-size: .875rem;
+  margin-top: 28px;
+  padding: 18px 0;
+  text-align:center;
+  color:var(--muted);
 }
 
+/* Spacing helpers for sections */
+.spacer { height: 18px; }
+
 /* Responsive tweaks */
-@media (max-width: 700px) {
-  .section-box { padding: 1rem; margin: 1rem; }
-  .release-card, .feature-card, .tutorial ol li, .tutorial .tutorial-step, .safety .safety-card { padding: .8rem; }
-  .header { padding: .75rem 1rem; }
-  .ads-box { padding: .6rem; }
+@media (max-width: 980px) {
+  .header { padding: 12px; border-radius: 8px; }
+  .release-grid, .feature-grid { gap: 14px; }
+  .section-box { padding: 16px; margin: 14px; }
+}
+@media (max-width: 520px) {
+  .header input { min-width: 120px; }
+  .feature-card, .release-card { padding: 12px; }
+  .feature-head .icon { width:28px; height:28px; }
 }
