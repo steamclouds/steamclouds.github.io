@@ -353,7 +353,6 @@ body.dark{
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
-  padding: 0 16px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--card-border);
   border-bottom-left-radius: 8px;
@@ -361,7 +360,10 @@ body.dark{
   color: var(--muted);
   padding-left: 24px;
   will-change: height; 
+  margin-top: 4px;
+  line-height: 1.6;
   margin-bottom: 0;
+  padding: 0 16px;
 }
 
 .faq-answer[aria-hidden="false"] {
@@ -375,5 +377,6 @@ body.dark{
 .faq-answer[aria-hidden="false"] {
   max-height: 500px;
 }
+
 
 
