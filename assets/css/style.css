@@ -218,8 +218,8 @@ body.dark{
 .safety-card::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  width: 90%; 
+  left: 5%; 
   top: 0;
   height: 1px;
   background: var(--item-top-highlight);
@@ -391,6 +391,7 @@ body.dark{
 .faq-answer.open {
   padding: 12px 0 16px 0; 
 }
+
 
 
 
