@@ -37,15 +37,21 @@ function renderReleaseCard(release) {
   const card = document.createElement("div");
   card.className = "release-card";
   
-  // Decode HTML entities untuk notes
-  const decodedNotes = decodeHTMLEntities(release.notes);
-  
-  // Format notes sebagai daftar poin
-  const notesList = decodedNotes.split('\n')
-    .filter(note => note.trim() !== '')
-    .map(note => `<li>${escapeHtml(note.trim())}</li>`)
-    .join('');
-  
+  // Hapus karakter tidak penting dan garis kosong
+  const cleanedNotes = release.notes
+    .replace(/```\n?/g, '')          // Hapus ``` jika ada
+    .replace(/• /g, '-')             // Ganti • dengan -
+    .replace(/^- /, "")              // Hapus bullet point pertama (jika ada)
+    .split('\n')
+    .filter(line => line.trim() !== '')
+    .map(line => line.replace(/^[-•] /, '')) // Hapus bullet point dari setiap baris
+    .join('\n');
+
+  // Format sebagai daftar poin
+  const notesList = cleanedNotes.split('\n').map(note => 
+    `<li>${escapeHtml(note.trim())}</li>`
+  ).join('');
+
   card.innerHTML = `
     <div class="card-main">
       <h2>Version ${escapeHtml(release.version)}</h2>
@@ -128,3 +134,4 @@ if (searchInput) {
 document.addEventListener("DOMContentLoaded", () => {
   fetchGitHubReleases();
 });
+
