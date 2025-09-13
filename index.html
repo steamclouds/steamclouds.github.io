@@ -96,35 +96,16 @@
     </nav>
   </header>
 
-  <section class="ad-block" aria-label="Advertisement" role="region">
-    <div class="ad-container" aria-hidden="false">
-      <button class="ad-close" aria-label="Close advertisement">&times;</button>
-      <span class="ad-label">Sponsored</span>
-
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-7384811657237430"
-           data-ad-slot="REPLACE_WITH_YOUR_SLOT"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-
-      <a class="ad-fallback" href="/sponsor" aria-hidden="true" tabindex="-1">
-        <img src="assets/img/ad-placeholder.png" alt="Sponsor / Advertisement placeholder" />
-      </a>
-    </div>
-
-    <div class="adblock-overlay" role="dialog" aria-modal="true" aria-hidden="true">
-      <div class="adblock-panel" role="document" tabindex="-1">
-        <h3>We rely on ads — please whitelist our site</h3>
-        <p>It looks like you’re using an ad blocker. This project is free thanks to sponsors and ads. Please consider whitelisting this site or view our sponsor banner.</p>
-        <div class="adblock-actions">
-          <button class="adblock-why" type="button">Why this matters</button>
-          <button class="adblock-show-fallback" type="button">I whitelisted — Recheck</button>
-          <button class="adblock-ignore" type="button">Open sponsor</button>
-        </div>
-        <button class="adblock-close" aria-label="Close">&times;</button>
+  <div class="adblock-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="adblock-panel" role="document" tabindex="-1">
+      <h3>AdBlock Detected 🚫</h3>
+      <p>Please disable your AdBlock to access this website.</p>
+      <p>Disabling AdBlock allows this site to function properly and keeps content free for you.</p>
+      <div class="adblock-actions">
+        <button class="adblock-show-fallback" type="button">I whitelisted — Recheck</button>
       </div>
     </div>
+  </div>
   </section>
 
   <main>
@@ -352,6 +333,59 @@
     });
   })();
   </script>
+  <script>
+(function(){
+  function setLocked(state){
+    var o = document.querySelector('.adblock-overlay');
+    if(!o) return;
+    if(state){
+      document.documentElement.classList.add('adgate-active');
+      o.setAttribute('aria-hidden','false');
+      o.style.display = 'flex';
+      try{ o.querySelector('.adblock-panel').focus(); } catch(e){}
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.documentElement.classList.remove('adgate-active');
+      o.setAttribute('aria-hidden','true');
+      o.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function createBait(){
+    var d = document.createElement('div');
+    d.className = 'adsbox bait';
+    d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';
+    document.body.appendChild(d);
+    var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none');
+    document.body.removeChild(d);
+    return blocked;
+  }
+
+  async function checkAdBlock(){
+    try{ return createBait(); } catch(e){ return true; }
+  }
+
+  function attachOverlayHandlers(){
+    var o = document.querySelector('.adblock-overlay');
+    if(!o) return;
+    var re = o.querySelector('.adblock-show-fallback');
+    if(re){
+      re.addEventListener('click', function(){
+        setLocked(false);
+        location.reload();
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async function(){
+    if(await checkAdBlock()){
+      setLocked(true);
+      attachOverlayHandlers();
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
