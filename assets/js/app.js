@@ -59,12 +59,15 @@ async function fetchGitHubReleases() {
       .filter(rel => !rel.draft && !rel.prerelease)
       .map(rel => {
         // Cari asset .exe
-        const exeAsset = rel.assets.find(asset => asset.name.endsWith('.exe'));
+        const exeAsset = rel.assets.find(asset => 
+          asset.name.toLowerCase().endsWith('.exe') || 
+          asset.name.toLowerCase().includes('steamclouds')
+        );
         
         return {
           version: rel.tag_name,
           date: new Date(rel.published_at).toLocaleDateString('en-US'),
-          notes: rel.body || 'No release notes available',
+          notes: rel.body ? escapeHtml(rel.body).substring(0, 150) + '...' : 'No release notes available',
           url: exeAsset ? exeAsset.browser_download_url : '#'
         };
       })
