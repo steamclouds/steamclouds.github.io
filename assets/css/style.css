@@ -325,26 +325,75 @@ body.dark{
   background: var(--item-top-highlight) !important;
   opacity: 0.9;
 }
-/* FAQ: consolidated styling (paste this at the end of your style.css) */
+
+/* FAQ Section */
 .faq {
   margin-top: 24px;
 }
 
 .faq-item {
-  margin-bottom: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.05);
   margin-bottom: 12px;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(2,6,23,0.1);
 }
 
 .faq-question {
-@@ -342,17 +343,54 @@ body.dark{
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
   color: var(--text);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  background: none;
+  border: none;
+  outline: none;
+  text-align: left;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  transition: background 0.2s ease;
 }
+
+.faq-question:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  padding: 0 16px;
+  color: var(--muted);
+}
+
+.faq-answer.open {
+  padding: 12px 16px 16px;
+}
+
+.faq-list {
+  list-style: decimal inside;
+  padding-left: 1rem;
+}
+
+.faq-list li {
+  margin: 6px 0;
+  background: var(--card-bg);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 12px rgba(2,6,23,0.05);
+}
+
+
 
 
 
