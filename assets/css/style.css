@@ -328,9 +328,11 @@ body.dark{
 .faq {
   margin-top: 24px;
 }
+
 .faq-item {
   margin-bottom: 8px;
 }
+
 .faq-question {
   width: 100%;
   padding: 12px 16px;
@@ -345,38 +347,42 @@ body.dark{
   align-items: center;
   gap: 8px;
 }
+
 .faq-question:hover {
-  background: rgba(255,255,255,0.01);
+  background: rgba(255,255,255,0.02);
   border-color: var(--accent);
 }
+
+/* State terbuka */
+.faq-question[aria-expanded="true"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
 .faq-answer {
-  max-height: 0;
+  display: block;
   overflow: hidden;
-  transition: max-height 0.3s ease-out;
+  max-height: 0;
+  padding: 0 16px;               
+  margin: 0;
   background: var(--card-bg);
-  border-bottom: 1px solid var(--card-border);
+  border: 1px solid var(--card-border);
+  border-top: none;              
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   color: var(--muted);
-  padding-left: 24px;
-  will-change: height; 
-  margin-top: 4px;
   line-height: 1.6;
-  margin-bottom: 0;
-  padding: 0 16px;
+  transition: max-height 0.35s ease, padding 0.25s ease;
 }
 
+/* Saat terbuka */
 .faq-answer[aria-hidden="false"] {
-  max-height: 500px;
+  max-height: 1000px;            
+  padding: 12px 16px 16px 24px;  
 }
-.faq-question[aria-expanded="true"] {
-  border-bottom: none;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.faq-answer[aria-hidden="false"] {
-  max-height: 500px;
-}
+
+
 
 
 
