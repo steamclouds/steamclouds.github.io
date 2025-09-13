@@ -6,6 +6,8 @@
   <title>Steam Clouds</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <script src="https://fpyf8.com/88/tag.min.js" data-zone="170766" async data-cfasync="false"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7384811657237430"
+     crossorigin="anonymous"></script>
 
   <style>
     section[id] { scroll-margin-top: 84px; }
@@ -56,11 +58,13 @@
 <body>
   <header class="header">
     <div class="logo">Steam Clouds</div>
+
     <nav>
       <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="main-menu">
         <span class="menu-icon" aria-hidden="true">☰</span>
         <span class="menu-text">Menu</span>
       </button>
+
       <ul id="main-menu" class="main-menu" role="menu" hidden>
         <li role="none"><a role="menuitem" href="#releases">Releases</a></li>
         <li role="none"><a role="menuitem" href="#features">Features</a></li>
@@ -74,16 +78,19 @@
     <div class="ad-container" aria-hidden="false">
       <button class="ad-close" aria-label="Close advertisement">&times;</button>
       <span class="ad-label">Sponsored</span>
+
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-7384811657237430"
            data-ad-slot="REPLACE_WITH_YOUR_SLOT"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
+
       <a class="ad-fallback" href="/sponsor" aria-hidden="true" tabindex="-1">
         <img src="assets/img/ad-placeholder.png" alt="Sponsor / Advertisement placeholder" />
       </a>
     </div>
+
     <div class="adblock-overlay" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="adblock-panel" role="document" tabindex="-1">
         <h3>We rely on ads — please whitelist our site</h3>
@@ -107,27 +114,33 @@
 
   <section id="features" class="features section-box" aria-labelledby="features-title">
     <h2 id="features-title">✨ Core Features</h2>
+
     <div class="feature-grid" role="list">
       <article class="feature-card" role="listitem">
         <h3>🎯 Automatic Download & Install Manifest</h3>
         <p>Automatically download and install Steam manifests (Steam Unlocked). One-click install for games & DLC so your library fills instantly.</p>
       </article>
+
       <article class="feature-card" role="listitem">
         <h3>🧩 Simple & Minimalist Design</h3>
         <p>A lightweight, focused launcher with a clean UI — no clutter, just the tools you need.</p>
       </article>
+
       <article class="feature-card" role="listitem">
         <h3>➕ Super Easy to Add Games</h3>
         <p>Click <strong>Add Games</strong> once, restart Steam, and your library will be populated automatically.</p>
       </article>
+
       <article class="feature-card" role="listitem">
         <h3>🛡️ Super Safe & Free</h3>
         <p>Local-only tool with no hidden fees and no automatic data collection — free to use for everyone.</p>
       </article>
+
       <article class="feature-card" role="listitem">
         <h3>🔄 Up-to-Date Tools</h3>
         <p>Regular updates to keep compatibility with new Steam changes and improve stability.</p>
       </article>
+
       <article class="feature-card" role="listitem">
         <h3>📂 Import Lua & Manifest</h3>
         <p>Drag & drop Lua or manifest files (your own or shared by others) directly into the app to add games instantly.</p>
@@ -137,6 +150,7 @@
 
   <section id="faq" class="faq section-box" aria-labelledby="faq-title">
     <h2 id="faq-title">❓ Frequently Asked Questions</h2>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">📥 How do I download Steam Clouds?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -146,6 +160,7 @@
         </ol>
       </div>
     </div>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">⚙️ How to install Steam Clouds?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -157,6 +172,7 @@
         </ol>
       </div>
     </div>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">📥 How to add games directly in the Steam app?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -171,6 +187,7 @@
         </ol>
       </div>
     </div>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">❓ Why the Add Games button doesn't appear after installing SteamClouds and the status is installed?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -185,6 +202,7 @@
         </ol>
       </div>
     </div>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">❓ Why is the Add Games button missing after updating the SteamClouds.exe application?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -198,6 +216,7 @@
         </ol>
       </div>
     </div>
+
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">🛡️ Is Steam Clouds safe?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -210,6 +229,7 @@
 
   <section id="safety" class="safety section-box" aria-labelledby="safety-title">
     <h2 id="safety-title">🛡️ Safety Statement</h2>
+
     <div class="safety-cards">
       <p class="safety-card">
         This software is a pure local green tool — it runs without administrator permission and works locally on your machine.
@@ -225,45 +245,49 @@
     <p>© 2025 Steam Clouds. All rights reserved.</p>
   </footer>
 
+  <script src="assets/js/app.js"></script>
+
   <script>
-  document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('DOMContentLoaded', () => {
     const questions = document.querySelectorAll('.faq-question');
-    document.querySelectorAll('.faq-answer').forEach(function(a){
+    document.querySelectorAll('.faq-answer').forEach(a => {
       a.style.maxHeight = '0';
       a.classList.remove('open');
       a.setAttribute('aria-hidden', 'true');
       if (a.previousElementSibling) a.previousElementSibling.setAttribute('aria-expanded', 'false');
     });
-    questions.forEach(function(q){
-      q.addEventListener('click', function(){
+    questions.forEach(q => {
+      q.addEventListener('click', function() {
         const answer = this.nextElementSibling;
         if (!answer) return;
-        document.querySelectorAll('.faq-answer').forEach(function(a){
+        document.querySelectorAll('.faq-answer').forEach(a => {
           if (a !== answer && a.classList.contains('open')) closeAnswer(a);
         });
         if (answer.classList.contains('open')) closeAnswer(answer); else openAnswer(answer);
       });
     });
-    function closeAnswer(answer){
+
+    function closeAnswer(answer) {
       answer.classList.remove('open');
       answer.setAttribute('aria-hidden', 'true');
       answer.style.maxHeight = answer.scrollHeight + 'px';
       void answer.offsetHeight;
       answer.style.maxHeight = '0';
-      answer.addEventListener('transitionend', function handler(){
+      answer.addEventListener('transitionend', function handler() {
         this.style.maxHeight = '0';
         this.removeEventListener('transitionend', handler);
       }, { once: true });
       const q = answer.previousElementSibling;
       if (q) q.setAttribute('aria-expanded', 'false');
     }
-    function openAnswer(answer){
+
+    function openAnswer(answer) {
       answer.classList.add('open');
       answer.setAttribute('aria-hidden', 'false');
       answer.style.maxHeight = '0';
       void answer.offsetHeight;
       answer.style.maxHeight = answer.scrollHeight + 'px';
-      answer.addEventListener('transitionend', function handler(){
+      answer.addEventListener('transitionend', function handler() {
         this.style.maxHeight = 'none';
         this.removeEventListener('transitionend', handler);
       }, { once: true });
@@ -273,26 +297,28 @@
 
     const toggle = document.getElementById('menuToggle');
     const menu = document.getElementById('main-menu');
-    if (toggle && menu){
-      function openMenu(){
+    if (toggle && menu) {
+      function openMenu() {
         menu.hidden = false;
         toggle.setAttribute('aria-expanded', 'true');
         const first = menu.querySelector('[role="menuitem"]');
         if (first) first.focus();
       }
-      function closeMenu(){
+      function closeMenu() {
         menu.hidden = true;
         toggle.setAttribute('aria-expanded', 'false');
         toggle.focus();
       }
-      toggle.addEventListener('click', function(){ if (menu.hidden) openMenu(); else closeMenu(); });
-      document.addEventListener('click', function(e){
+      toggle.addEventListener('click', (e) => { if (menu.hidden) openMenu(); else closeMenu(); });
+
+      document.addEventListener('click', (e) => {
         if (!menu.contains(e.target) && !toggle.contains(e.target)) {
           if (!menu.hidden) closeMenu();
         }
       });
-      document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
-      menu.addEventListener('click', function(e){
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
+
+      menu.addEventListener('click', (e) => {
         const link = e.target.closest('a[role="menuitem"]');
         if (!link) return;
         const href = link.getAttribute('href') || '';
@@ -302,151 +328,121 @@
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
           targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(function(){ try { targetEl.focus({ preventScroll: true }); } catch(e){} }, 400);
-          setTimeout(function(){ closeMenu(); }, 220);
+          setTimeout(() => { try { targetEl.focus({ preventScroll: true }); } catch(e){} }, 400);
+          setTimeout(() => closeMenu(), 220);
         } else { closeMenu(); location.hash = href; }
       });
     }
 
-    // Complete anti-adblock implementation
-document.addEventListener('DOMContentLoaded', function() {
-  // Create adblock detection elements
-  const adBlockDetector = document.createElement('div');
-  adBlockDetector.id = 'adblock-detector';
-  adBlockDetector.style.position = 'absolute';
-  adBlockDetector.style.width = '1px';
-  adBlockDetector.style.height = '1px';
-  adBlockDetector.style.visibility = 'hidden';
-  document.body.appendChild(adBlockDetector);
-  
-  // Check if adblock is active
-  function isAdblockActive() {
-    return (window.getComputedStyle(adBlockDetector).display === 'none' || 
-            window.getComputedStyle(adBlockDetector).visibility === 'hidden' ||
-            adBlockDetector.offsetHeight === 0 ||
-            adBlockDetector.offsetWidth === 0);
-  }
-  
-  // Create adblock overlay
-  const adblockOverlay = document.createElement('div');
-  adblockOverlay.id = 'adblock-overlay';
-  adblockOverlay.style.position = 'fixed';
-  adblockOverlay.style.top = '0';
-  adblockOverlay.style.left = '0';
-  adblockOverlay.style.right = '0';
-  adblockOverlay.style.bottom = '0';
-  adblockOverlay.style.background = 'rgba(0,0,0,0.9)';
-  adblockOverlay.style.color = 'white';
-  adblockOverlay.style.display = 'flex';
-  adblockOverlay.style.justifyContent = 'center';
-  adblockOverlay.style.alignItems = 'center';
-  adblockOverlay.style.zIndex = '99999';
-  adblockOverlay.style.fontFamily = 'Arial, sans-serif';
-  adblockOverlay.style.textAlign = 'center';
-  adblockOverlay.style.padding = '20px';
-  
-  const adblockContent = document.createElement('div');
-  adblockContent.style.maxWidth = '600px';
-  adblockContent.style.margin = '0 auto';
-  adblockContent.style.padding = '30px';
-  adblockContent.style.background = '#1a1a1a';
-  adblockContent.style.borderRadius = '10px';
-  adblockContent.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
-  
-  const title = document.createElement('h2');
-  title.textContent = 'Adblock Detected';
-  title.style.color = '#ff4d4d';
-  title.style.marginTop = '0';
-  
-  const message = document.createElement('p');
-  message.textContent = 'This website relies on advertising to remain free. Please disable your adblocker to access the content.';
-  message.style.marginBottom = '20px';
-  
-  const instructions = document.createElement('p');
-  instructions.innerHTML = '<strong>How to disable adblock:</strong><br>1. Click the adblock icon in your browser<br>2. Select "Disable on this site" or similar option<br>3. Refresh this page';
-  instructions.style.marginBottom = '20px';
-  
-  const reloadButton = document.createElement('button');
-  reloadButton.textContent = 'Refresh Page';
-  reloadButton.style.padding = '10px 20px';
-  reloadButton.style.background = '#4CAF50';
-  reloadButton.style.color = 'white';
-  reloadButton.style.border = 'none';
-  reloadButton.style.borderRadius = '5px';
-  reloadButton.style.cursor = 'pointer';
-  reloadButton.style.marginTop = '10px';
-  reloadButton.style.fontSize = '16px';
-  
-  reloadButton.addEventListener('click', function() {
-    location.reload();
-  });
-  
-  adblockContent.appendChild(title);
-  adblockContent.appendChild(message);
-  adblockContent.appendChild(instructions);
-  adblockContent.appendChild(reloadButton);
-  adblockOverlay.appendChild(adblockContent);
-  document.body.appendChild(adblockOverlay);
-  
-  // Hide main content immediately
-  const mainContent = document.querySelector('main, section, header, footer');
-  if (mainContent) {
-    mainContent.style.display = 'none';
-  }
-  
-  // Check for adblock and show overlay
-  function checkAdblock() {
-    if (isAdblockActive()) {
-      adblockOverlay.style.display = 'flex';
-      // Prevent scrolling
-      document.body.style.overflow = 'hidden';
+    const adSection = document.querySelector('.ad-block');
+    if (!adSection) return;
+
+    const adContainer = adSection.querySelector('.ad-container');
+    const closeBtn = adSection.querySelector('.ad-close');
+    const ins = adSection.querySelector('ins.adsbygoogle');
+    const fallback = adSection.querySelector('.ad-fallback');
+
+    const overlay = adSection.querySelector('.adblock-overlay');
+    const overlayPanel = adSection.querySelector('.adblock-panel');
+    const overlayClose = adSection.querySelector('.adblock-close');
+    const btnFallback = adSection.querySelector('.adblock-show-fallback');
+    const btnIgnore = adSection.querySelector('.adblock-ignore');
+    const btnWhy = adSection.querySelector('.adblock-why');
+
+    if (localStorage.getItem('hideAdBlock_v1')) { adSection.style.display = 'none'; return; }
+    if (localStorage.getItem('adblockDismiss_v1') === '1' && overlay) overlay.setAttribute('aria-hidden', 'true');
+
+    closeBtn && closeBtn.addEventListener('click', () => {
+      adSection.style.display = 'none';
+      try { localStorage.setItem('hideAdBlock_v1','1'); } catch(e){}
+    });
+
+    function showFallback() {
+      adContainer.classList.add('show-fallback');
+      if (fallback) fallback.style.display = 'block';
+      if (ins) ins.style.display = 'none';
+      hideOverlay();
+      try { localStorage.setItem('adblockFallback_v1','1'); } catch(e){}
+    }
+    function showOverlay() {
+      if (!overlay) return;
+      overlay.setAttribute('aria-hidden','false');
+      overlay.style.display = 'flex';
+      try { overlayPanel.focus(); } catch(e){}
+    }
+    function hideOverlay() {
+      if (!overlay) return;
+      overlay.setAttribute('aria-hidden','true');
+      overlay.style.display = 'none';
+    }
+
+    overlayClose && overlayClose.addEventListener('click', () => {
+      hideOverlay();
+      try { localStorage.setItem('adblockDismiss_v1','1'); } catch(e){}
+    });
+    btnFallback && btnFallback.addEventListener('click', showFallback);
+    btnIgnore && btnIgnore.addEventListener('click', () => {
+      hideOverlay();
+      try { localStorage.removeItem('adblockDismiss_v1'); } catch(e){}
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+    });
+    btnWhy && btnWhy.addEventListener('click', () => {
+      alert('Ads help keep the project free. Please whitelist this site to support development. Thank you!');
+    });
+
+    if (ins && typeof IntersectionObserver !== 'undefined') {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            try { if (!ins.dataset.loaded) { (adsbygoogle = window.adsbygoogle || []).push({}); ins.dataset.loaded = '1'; } } catch(e){}
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0.25 });
+      io.observe(adSection);
     } else {
-      adblockOverlay.style.display = 'none';
-      document.body.style.overflow = '';
-      if (mainContent) {
-        mainContent.style.display = '';
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+    }
+
+    function detectAdblock() {
+      if (localStorage.getItem('adblockFallback_v1') === '1') return false;
+      const noAdsByGoogle = typeof window.adsbygoogle === 'undefined';
+      let insHidden = false;
+      if (ins) {
+        const style = window.getComputedStyle(ins);
+        const rect = ins.getBoundingClientRect();
+        if (style.display === 'none' || style.visibility === 'hidden' || rect.height < 8 || rect.width < 8) insHidden = true;
       }
+      const bait = document.createElement('div');
+      bait.className = 'adsbox ad-banner adunit';
+      bait.style.width = '1px';
+      bait.style.height = '1px';
+      bait.style.position = 'absolute';
+      bait.style.left = '-9999px';
+      document.body.appendChild(bait);
+      const baitBlocked = (bait.offsetHeight === 0);
+      document.body.removeChild(bait);
+      return (noAdsByGoogle || insHidden || baitBlocked);
     }
-  }
-  
-  // Initial check
-  checkAdblock();
-  
-  // Check periodically
-  setInterval(checkAdblock, 1000);
-  
-  // Check when page becomes visible again
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible') {
-      checkAdblock();
-    }
+
+    setTimeout(() => {
+      try {
+        const blocked = detectAdblock();
+        if (blocked) {
+          if (localStorage.getItem('adblockDismiss_v1') === '1') {
+            showFallback();
+          } else {
+            showOverlay();
+          }
+        } else {
+          adContainer.classList.remove('show-fallback');
+        }
+      } catch(e) {
+        showFallback();
+      }
+    }, 1200);
+
   });
-  
-  // Check when window is focused
-  window.addEventListener('focus', function() {
-    checkAdblock();
-  });
-  
-  // Check when scrolling
-  window.addEventListener('scroll', function() {
-    checkAdblock();
-  });
-  
-  // Prevent any attempt to bypass
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'F5' || e.key === 'r' && e.ctrlKey) {
-      e.preventDefault();
-      location.reload();
-    }
-  });
-  
-  // Remove adblock detector element after use
-  setTimeout(function() {
-    try {
-      adBlockDetector.parentNode.removeChild(adBlockDetector);
-    } catch(e) {}
-  }, 5000);
-});
   </script>
 </body>
 </html>
