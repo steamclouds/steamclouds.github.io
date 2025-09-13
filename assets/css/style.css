@@ -472,6 +472,43 @@ body.dark{
 }
 
 
+button.tutorial-toggle,
+.tutorial .tutorial-toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--card-bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06) !important;
+  font-weight: 700 !important;
+}
+
+/* hover / focus */
+button.tutorial-toggle:hover,
+.tutorial .tutorial-toggle:hover,
+button.tutorial-toggle:focus,
+.tutorial .tutorial-toggle:focus {
+  background-color: rgba(255,255,255,0.01) !important;
+  outline: none !important;
+  box-shadow: 0 8px 22px rgba(2,6,23,0.08) !important;
+}
+
+/* chevron warna */
+button.tutorial-toggle .toggle-chevron {
+  color: var(--text) !important;
+}
+
+/* jika ada elemen kecil di dalam yang tetap putih/gelap, pastikan teks child ikut juga */
+button.tutorial-toggle * {
+  color: inherit !important;
+}
 
 
 
