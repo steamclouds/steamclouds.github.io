@@ -364,26 +364,33 @@ body.dark .safety-card {
 
 
 :root{
-  --feature-card-bg: #213036;  
-  --release-card-bg: #151a1d;   
+  --feature-card-bg: #213036;
+  --release-card-bg: #151a1d;
 }
 
 body.dark{
-  --feature-card-bg: #213036;  
-  --release-card-bg: #151a1d;      
+  --feature-card-bg: #294044;
+  --release-card-bg: #1a2023;
 }
 
-
 .feature-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004)), var(--feature-card-bg) !important;
+  background-image: none !important;
   background-color: var(--feature-card-bg) !important;
   border-color: rgba(255,255,255,0.06) !important;
 }
 
 .release-card,
 .download-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.004)), var(--release-card-bg) !important;
+  background-image: none !important;
   background-color: var(--release-card-bg) !important;
   border-color: rgba(255,255,255,0.04) !important;
 }
+
+.feature-card::before,
+.release-card::before {
+  background: var(--item-top-highlight) !important;
+  opacity: 0.9;
+}
+
+
 
