@@ -8,7 +8,7 @@
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #13181b;           
+  --card-bg: #2b3538;          
   --section-bg: rgba(255,255,255,0.01);
   --accent: #2563eb; 
   --card-border: rgba(255,255,255,0.04);
@@ -21,7 +21,7 @@ body.dark{
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #182022;           
+  --card-bg: #30393c;       
   --section-bg: rgba(255,255,255,0.008);
   --accent: #60a5fa;
   --card-border: rgba(255,255,255,0.04);
@@ -360,6 +360,7 @@ body.dark .safety-card {
   left: 0;
   top: 0.1em;
 }
+
 
 
 
