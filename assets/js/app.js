@@ -130,8 +130,43 @@ if (searchInput) {
   });
 }
 
-// Muat data saat halaman selesai dimuat
 document.addEventListener("DOMContentLoaded", () => {
   fetchGitHubReleases();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('main-menu');
+  if (!toggle || !menu) return;
+
+  function openMenu() {
+    menu.hidden = false;
+    toggle.setAttribute('aria-expanded', 'true');
+    const first = menu.querySelector('[role="menuitem"]');
+    if (first) first.focus();
+  }
+  function closeMenu() {
+    menu.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.focus();
+  }
+  toggle.addEventListener('click', () => {
+    if (menu.hidden) openMenu(); else closeMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+      if (!menu.hidden) closeMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) closeMenu();
+  });
+
+ menu.addEventListener('click', (e) => {
+    const link = e.target.closest('a[role="menuitem"]');
+    if (link) closeMenu();
+  });
 });
 
