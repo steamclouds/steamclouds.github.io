@@ -524,10 +524,10 @@ button.tutorial-toggle * {
 
 .tutorial-answer[aria-hidden="true"] {
   max-height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  border-top: none !important;
-  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
 }
 
 .tutorial-answer[aria-hidden="false"] {
@@ -539,5 +539,6 @@ button.tutorial-toggle * {
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
 }
+
 
 
