@@ -490,7 +490,7 @@ button.tutorial-toggle,
   font-weight: 700 !important;
 }
 
-/* hover / focus */
+
 button.tutorial-toggle:hover,
 .tutorial .tutorial-toggle:hover,
 button.tutorial-toggle:focus,
@@ -500,15 +500,44 @@ button.tutorial-toggle:focus,
   box-shadow: 0 8px 22px rgba(2,6,23,0.08) !important;
 }
 
-/* chevron warna */
+
 button.tutorial-toggle .toggle-chevron {
   color: var(--text) !important;
 }
 
-/* jika ada elemen kecil di dalam yang tetap putih/gelap, pastikan teks child ikut juga */
+
 button.tutorial-toggle * {
   color: inherit !important;
 }
 
+
+.tutorial-toggle {
+  border-radius: 10px;
+  transition: border-color .18s ease, background .18s ease;
+}
+
+.tutorial-toggle.active {
+  border-bottom-color: transparent !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.tutorial-answer[aria-hidden="true"] {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top: none !important;
+  box-shadow: none !important;
+}
+
+.tutorial-answer[aria-hidden="false"] {
+  max-height: 1000px;
+  padding: 12px 14px !important;
+  border-top: 1px solid var(--border-color) !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
 
 
