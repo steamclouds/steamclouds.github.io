@@ -51,7 +51,10 @@
     .adblock-actions button { padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; cursor:pointer; }
     .adblock-close { position:absolute; right:10px; top:10px; border:none; background:rgba(0,0,0,0.25); color:#fff; width:34px; height:34px; border-radius:8px; }
 
-    @media (max-width:640px){ .main-menu { left:8px; right:8px; top:56px; width:auto; } .adblock-panel { padding:14px; border-radius:8px; } }
+    @media (max-width:640px){ 
+      .main-menu { left:8px; right:8px; top:56px; width:auto; } 
+      .adblock-panel { padding:14px; border-radius:8px; }
+    }
 
     .adgate-active header,
     .adgate-active main,
@@ -75,25 +78,132 @@
       justify-content: center;
     }
     .adblock-overlay[aria-hidden="false"] { display:flex; }
+    
+    /* New header styles */
+    .header {
+      background: rgba(10, 15, 18, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+    
+    .slogan {
+      font-size: 0.9rem;
+      color: var(--muted, #94a3b8);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .social-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .social-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text, #e6eef6);
+      padding: 8px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .social-btn.discord {
+      color: #7289da;
+      border-color: #7289da;
+    }
+    
+    .social-btn.youtube {
+      color: #ff0000;
+      border-color: #ff0000;
+    }
+    
+    .social-btn.telegram {
+      color: #0088cc;
+      border-color: #0088cc;
+    }
+    
+    .social-btn i {
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
   <header class="header">
-    <div class="logo">Steam Clouds</div>
-
-    <nav>
-      <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="main-menu">
-        <span class="menu-icon" aria-hidden="true">☰</span>
-        <span class="menu-text">Menu</span>
-      </button>
-
-      <ul id="main-menu" class="main-menu" role="menu" hidden>
-        <li role="none"><a role="menuitem" href="#releases">Releases</a></li>
-        <li role="none"><a role="menuitem" href="#features">Features</a></li>
-        <li role="none"><a role="menuitem" href="#safety">Safety</a></li>
-        <li role="none"><a role="menuitem" href="#faq">FAQ</a></li>
-      </ul>
-    </nav>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo">Steam Clouds</div>
+        <div class="slogan">Lightweight Steam Manifest Manager - Free & Safe Game Management</div>
+      </div>
+      <div class="header-right">
+        <div class="social-buttons">
+          <a href="https://discord.com" target="_blank" class="social-btn discord">
+            <i>Discord</i>
+          </a>
+          <a href="https://youtube.com" target="_blank" class="social-btn youtube">
+            <i>YouTube</i>
+          </a>
+          <a href="https://t.me" target="_blank" class="social-btn telegram">
+            <i>Telegram</i>
+          </a>
+        </div>
+        <nav>
+          <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="main-menu">
+            <span class="menu-icon" aria-hidden="true">☰</span>
+            <span class="menu-text">Menu</span>
+          </button>
+          <ul id="main-menu" class="main-menu" role="menu" hidden>
+            <li role="none"><a role="menuitem" href="#releases">Releases</a></li>
+            <li role="none"><a role="menuitem" href="#features">Features</a></li>
+            <li role="none"><a role="menuitem" href="#safety">Safety</a></li>
+            <li role="none"><a role="menuitem" href="#faq">FAQ</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   </header>
 
   <div class="adblock-overlay" role="dialog" aria-modal="true" aria-hidden="true">
@@ -105,7 +215,6 @@
       </div>
     </div>
   </div>
-  </section>
 
   <main>
     <section id="releases" class="section-box" aria-labelledby="releases-title">
@@ -116,23 +225,19 @@
 
   <section id="features" class="features section-box" aria-labelledby="features-title">
     <h2 id="features-title">✨ Core Features</h2>
-
     <div class="feature-grid" role="list">
       <article class="feature-card" role="listitem">
         <h3>🧩 Simple & Minimalist Design</h3>
         <p>A lightweight, focused launcher with a clean UI — no clutter, just the tools you need.</p>
       </article>
-
       <article class="feature-card" role="listitem">
         <h3>➕ Super Easy to Add Games</h3>
         <p>Click <strong>Add Games</strong> once, restart Steam, and your library will be populated automatically.</p>
       </article>
-
       <article class="feature-card" role="listitem">
         <h3>🔄 Up-to-Date Tools</h3>
         <p>Regular updates to keep compatibility with new Steam changes and improve stability.</p>
       </article>
-
       <article class="feature-card" role="listitem">
         <h3>📂 Import Lua & Manifest</h3>
         <p>Got Lua or manifest files? Just drag them into the app and your games are ready to go, no setup needed.</p>
@@ -142,7 +247,6 @@
 
   <section id="safety" class="safety section-box" aria-labelledby="safety-title">
     <h2 id="safety-title">🛡️ Safety Statement</h2>
-
     <div class="safety-cards">
       <p class="safety-card">
         This software is a pure local green tool — it runs without administrator permission and works locally on your machine.
@@ -156,7 +260,6 @@
 
   <section id="faq" class="faq section-box" aria-labelledby="faq-title">
     <h2 id="faq-title">❓ Frequently Asked Questions</h2>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">📥 How do I download Steam Clouds?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -166,7 +269,6 @@
         </ol>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">⚙️ How to install Steam Clouds?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -178,7 +280,6 @@
         </ol>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">📥 How to add games directly in the Steam app?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -193,7 +294,6 @@
         </ol>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">❓ Why the Add Games button doesn't appear after installing SteamClouds and the status is installed?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -208,7 +308,6 @@
         </ol>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">❓ Why is the Add Games button missing after updating the SteamClouds.exe application?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -222,7 +321,6 @@
         </ol>
       </div>
     </div>
-
     <div class="faq-item">
       <button class="faq-question" aria-expanded="false">🛡️ Is Steam Clouds safe?</button>
       <div class="faq-answer" aria-hidden="true">
@@ -238,7 +336,6 @@
   </footer>
 
   <script src="assets/js/app.js"></script>
-
   <script>
   (function(){
     var AD_FREQ_MS = 5 * 60 * 1000;
@@ -375,6 +472,5 @@
   });
 })();
 </script>
-
 </body>
 </html>
