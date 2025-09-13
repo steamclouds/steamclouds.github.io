@@ -375,6 +375,39 @@
   });
 })();
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const faqQuestions = document.querySelectorAll('.faq-question');
+
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const answer = question.nextElementSibling;
+      const isOpen = answer.classList.contains('open');
+
+      // Tutup semua FAQ lain (optional)
+      document.querySelectorAll('.faq-answer.open').forEach(a => {
+        a.classList.remove('open');
+        a.style.maxHeight = null;
+        a.setAttribute('aria-hidden', 'true');
+      });
+
+      // Toggle current
+      if(!isOpen){
+        answer.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        answer.setAttribute('aria-hidden', 'false');
+        question.setAttribute('aria-expanded', 'true');
+      } else {
+        answer.classList.remove('open');
+        answer.style.maxHeight = null;
+        answer.setAttribute('aria-hidden', 'true');
+        question.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+});
+</script>
+
 
 </body>
 </html>
