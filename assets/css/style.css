@@ -353,48 +353,6 @@ body.dark{
   border-color: var(--accent);
 }
 
-/* State terbuka */
-.faq-question[aria-expanded="true"] {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom: none;
-}
-
-.faq-answer {
-  display: block;
-  overflow: hidden;
-  max-height: 0;
-  padding: 0 16px;               
-  margin: 0;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-top: none;              
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  color: var(--muted);
-  line-height: 1.6;
-  transition: max-height 0.35s ease, padding 0.25s ease;
-}
-
-/* Saat terbuka */
-.faq-answer[aria-hidden="false"] {
-  max-height: 1000px;            
-  padding: 12px 16px 16px 24px;  
-}
-
-
-.faq-answer {
-  white-space: pre-line;   /* respect line breaks */
-  padding: 12px 16px 16px 24px; /* beri vertical padding */
-  line-height: 1.6;
-  color: var(--muted);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-top: none;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-.faq-answer br { display: block; height: 6px; }
 
 
 
