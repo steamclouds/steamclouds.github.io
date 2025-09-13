@@ -8,7 +8,6 @@ const releases = [
 // DOM references
 const releaseList = document.getElementById("release-list");
 const searchInput = document.getElementById("search");
-const themeToggle = document.getElementById("themeToggle");
 
 // Helper to escape text for HTML (basic)
 function escapeHtml(s){
@@ -91,3 +90,4 @@ if (localStorage.getItem("theme") === "dark") {
 document.addEventListener("DOMContentLoaded", () => {
   renderReleases();
 });
+
