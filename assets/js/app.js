@@ -71,14 +71,6 @@ if (searchInput) {
   });
 }
 
-// Theme toggle
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    themeToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-  });
-}
 
 // Load saved theme
 if (localStorage.getItem("theme") === "dark") {
@@ -90,4 +82,5 @@ if (localStorage.getItem("theme") === "dark") {
 document.addEventListener("DOMContentLoaded", () => {
   renderReleases();
 });
+
 
