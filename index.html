@@ -129,19 +129,31 @@
 
   <script src="assets/js/app.js"></script>
   <script>
-document.querySelectorAll('.faq-question').forEach(question => {
+  document.querySelectorAll('.faq-question').forEach(question => {
   question.addEventListener('click', function() {
     const answer = this.nextElementSibling;
     const isOpen = this.getAttribute('aria-expanded') === 'true';
     
-    // Toggle state
+    // Tutup semua FAQ lainnya
+    document.querySelectorAll('.faq-answer[aria-hidden="false"]').forEach(otherAnswer => {
+      if (otherAnswer !== answer) {
+        otherAnswer.style.maxHeight = '0';
+        otherAnswer.setAttribute('aria-hidden', 'true');
+        const otherQuestion = otherAnswer.previousElementSibling;
+        if (otherQuestion) {
+          otherQuestion.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+    
+    // Toggle state untuk FAQ yang diklik
     this.setAttribute('aria-expanded', !isOpen);
     answer.setAttribute('aria-hidden', isOpen);
     
     if (!isOpen) {
       answer.style.maxHeight = answer.scrollHeight + "px";
     } else {
-      answer.style.maxHeight = null;
+      answer.style.maxHeight = '0';
     }
   });
 });
