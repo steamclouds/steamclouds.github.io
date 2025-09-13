@@ -106,5 +106,28 @@
   </footer>
 
   <script src="assets/js/app.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  var btn = document.querySelector(".tutorial-toggle");
+  if (!btn) return;
+  var content = document.getElementById("tutorial-content");
+  btn.addEventListener("click", function () {
+    var isOpen = btn.classList.toggle("active");
+    btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    if (content) {
+      content.setAttribute("aria-hidden", isOpen ? "false" : "true");
+      if (isOpen) {
+        content.style.maxHeight = content.scrollHeight + "px";
+        var label = btn.querySelector(".toggle-label");
+        if (label) label.textContent = "Sembunyikan langkah";
+      } else {
+        content.style.maxHeight = null;
+        var label2 = btn.querySelector(".toggle-label");
+        if (label2) label2.textContent = "Lihat langkah";
+      }
+    }
+  });
+});
+</script>
 </body>
 </html>
