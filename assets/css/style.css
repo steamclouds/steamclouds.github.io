@@ -450,3 +450,27 @@ body.dark{
     width: auto;
   }
 }
+
+.adgate-active header,
+.adgate-active main,
+.adgate-active footer,
+.adgate-active .release-grid,
+.adgate-active .features,
+.adgate-active .faq,
+.adgate-active .safety {
+  pointer-events: none !important;
+  user-select: none !important;
+  filter: blur(2px);
+  opacity: 0.9;
+}
+
+.adblock-overlay { 
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.adblock-overlay[aria-hidden="false"] { display:flex; }
+
