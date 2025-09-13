@@ -183,67 +183,74 @@
 
   <script src="assets/js/app.js"></script>
   <script>
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   const questions = document.querySelectorAll('.faq-question');
-
   
+  // Inisialisasi: Pastikan semua jawaban tertutup
   document.querySelectorAll('.faq-answer').forEach(a => {
-    if (!a.hasAttribute('aria-hidden')) a.setAttribute('aria-hidden', 'true');
     a.style.maxHeight = '0';
     a.classList.remove('open');
+    a.setAttribute('aria-hidden', 'true');
+    if (a.previousElementSibling) {
+      a.previousElementSibling.setAttribute('aria-expanded', 'false');
+    }
   });
 
-  function closeAnswer(a, q) {
-  if (!a) return;
-  a.style.maxHeight = a.scrollHeight + 'px'; 
-  void a.offsetHeight; 
-  a.style.maxHeight = '0';
-  a.classList.remove('open');
-  a.setAttribute('aria-hidden', 'true');
-  if (q) q.setAttribute('aria-expanded', 'false');
-}
-
-function openAnswer(a, q) {
-  if (!a) return;
-  a.classList.add('open');
-  a.setAttribute('aria-hidden', 'false');
-  q.setAttribute('aria-expanded', 'true');
-
-  a.style.maxHeight = '0';
-  void a.offsetHeight; 
-  a.style.maxHeight = a.scrollHeight + 'px';
-
-  const onEnd = function(e) {
-    if (e.propertyName === 'max-height') {
-      a.style.maxHeight = 'none';
-      a.removeEventListener('transitionend', onEnd);
-    }
-  };
-  a.addEventListener('transitionend', onEnd);
-}
-
-
   questions.forEach(q => {
-    q.addEventListener('click', function () {
+    q.addEventListener('click', function() {
       const answer = this.nextElementSibling;
       if (!answer) return;
-      const isOpen = this.getAttribute('aria-expanded') === 'true';
-
+      
+      // Tutup semua jawaban lain
       document.querySelectorAll('.faq-answer').forEach(a => {
-        const otherQ = a.previousElementSibling;
-        if (a !== answer && otherQ && otherQ.getAttribute('aria-expanded') === 'true') {
-          closeAnswer(a, otherQ);
+        if (a !== answer && a.classList.contains('open')) {
+          closeAnswer(a);
         }
       });
-
-      if (isOpen) {
-        closeAnswer(answer, this);
+      
+      // Toggle jawaban saat ini
+      if (answer.classList.contains('open')) {
+        closeAnswer(answer);
       } else {
-        openAnswer(answer, this);
+        openAnswer(answer);
       }
     });
   });
 });
+
+function closeAnswer(answer) {
+  answer.classList.remove('open');
+  answer.setAttribute('aria-hidden', 'true');
+  answer.style.maxHeight = answer.scrollHeight + 'px'; // Set ke height saat ini
+  void answer.offsetHeight; // Trigger reflow
+  answer.style.maxHeight = '0';
+  
+  // Setelah transisi selesai, reset maxHeight
+  answer.addEventListener('transitionend', function() {
+    this.style.maxHeight = '0';
+    this.removeEventListener('transitionend', arguments.callee);
+  }, { once: true });
+}
+
+function openAnswer(answer) {
+  answer.classList.add('open');
+  answer.setAttribute('aria-hidden', 'false');
+  answer.style.maxHeight = '0';
+  void answer.offsetHeight; // Trigger reflow
+  answer.style.maxHeight = answer.scrollHeight + 'px';
+  
+  // Setelah transisi selesai, set maxHeight ke 'none' agar bisa menyesuaikan konten dinamis
+  answer.addEventListener('transitionend', function() {
+    this.style.maxHeight = 'none';
+    this.removeEventListener('transitionend', arguments.callee);
+  }, { once: true });
+  
+  // Update aria-expanded pada pertanyaan
+  const question = answer.previousElementSibling;
+  if (question) {
+    question.setAttribute('aria-expanded', 'true');
+  }
+}
 </script>
 </body>
 </html>
