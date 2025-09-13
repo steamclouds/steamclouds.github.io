@@ -269,6 +269,8 @@
 
   <script src="assets/js/app.js"></script>
 
+  <script>(function(){var AD_FREQ_MS=5*60*1000;function canShowAd(){try{var t=Number(localStorage.getItem('lastAdShown_v2')||0);return Date.now()-t>AD_FREQ_MS;}catch(e){return true;}}function markShown(){try{localStorage.setItem('lastAdShown_v2',String(Date.now()));}catch(e){} }function pushAdOrFallback(ins,fallback,adContainer){if(canShowAd()){try{(adsbygoogle=window.adsbygoogle||[]).push({});markShown();if(ins)ins.dataset.loaded='1';}catch(e){if(fallback){if(adContainer)adContainer.classList.add('show-fallback');fallback.style.display='block';if(ins)ins.style.display='none';}}}else{if(fallback){if(adContainer)adContainer.classList.add('show-fallback');fallback.style.display='block';if(ins)ins.style.display='none';}}}document.addEventListener('DOMContentLoaded',function(){var ins=document.querySelector('ins.adsbygoogle');var fallback=document.querySelector('.ad-fallback');var adContainer=document.querySelector('.ad-container');if(ins&&typeof IntersectionObserver!=='undefined'){var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){if(!ins.dataset.loaded)pushAdOrFallback(ins,fallback,adContainer);io.disconnect();}});},{threshold:0.25});var adSection=document.querySelector('.ad-block');if(adSection)io.observe(adSection);}else{pushAdOrFallback(ins,fallback,adContainer);}});}());</script>
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     const questions = document.querySelectorAll('.faq-question');
