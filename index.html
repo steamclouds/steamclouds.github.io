@@ -189,47 +189,33 @@
 document.addEventListener('DOMContentLoaded', () => {
   const questions = document.querySelectorAll('.faq-question');
 
-  // init: make sure answers have aria-hidden and start closed
+  
   document.querySelectorAll('.faq-answer').forEach(a => {
     if (!a.hasAttribute('aria-hidden')) a.setAttribute('aria-hidden', 'true');
     a.style.maxHeight = '0';
     a.classList.remove('open');
   });
 
-  // helper: close answer with smooth animation
   function closeAnswer(a, q) {
-    if (!a) return;
-    // if maxHeight is 'none', set it to current scrollHeight so transition can run
-    if (getComputedStyle(a).maxHeight === 'none') {
-      a.style.maxHeight = a.scrollHeight + 'px';
-      // force reflow
-      void a.offsetHeight;
-    }
-    a.style.maxHeight = '0';
-    a.classList.remove('open');
-    a.setAttribute('aria-hidden', 'true');
-    if (q) q.setAttribute('aria-expanded', 'false');
-  }
-
-  function openAnswer(a, q) {
   if (!a) return;
-  // selalu pastikan padding vertikal diterapkan dulu
-  a.style.paddingTop = '12px';
-  a.style.paddingBottom = '16px';
-  a.classList.add('open');   // optional, jika digunakan di CSS
+  a.style.maxHeight = a.scrollHeight + 'px'; 
+  void a.offsetHeight; 
+  a.style.maxHeight = '0';
+  a.classList.remove('open');
+  a.setAttribute('aria-hidden', 'true');
+  if (q) q.setAttribute('aria-expanded', 'false');
+}
+
+function openAnswer(a, q) {
+  if (!a) return;
+  a.classList.add('open');
   a.setAttribute('aria-hidden', 'false');
   q.setAttribute('aria-expanded', 'true');
 
-  // mulai dari maxHeight 0
   a.style.maxHeight = '0';
-  void a.offsetHeight;  // paksa reflow
+  void a.offsetHeight; 
+  a.style.maxHeight = a.scrollHeight + 'px';
 
-  const measured = a.scrollHeight;
-  const buffer = 30;   // tingkatkan buffer ke 30px untuk jaga-jaga
-
-  a.style.maxHeight = (measured + buffer) + 'px';
-
-  // setelah transisi selesai
   const onEnd = function(e) {
     if (e.propertyName === 'max-height') {
       a.style.maxHeight = 'none';
@@ -238,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   a.addEventListener('transitionend', onEnd);
 }
+
 
 
   questions.forEach(q => {
