@@ -6,8 +6,7 @@
   <title>Steam Clouds</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <script src="https://fpyf8.com/88/tag.min.js" data-zone="170766" async data-cfasync="false"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7384811657237430"
-     crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7384811657237430" crossorigin="anonymous"></script>
 
   <style>
     section[id] { scroll-margin-top: 84px; }
@@ -53,6 +52,29 @@
     .adblock-close { position:absolute; right:10px; top:10px; border:none; background:rgba(0,0,0,0.25); color:#fff; width:34px; height:34px; border-radius:8px; }
 
     @media (max-width:640px){ .main-menu { left:8px; right:8px; top:56px; width:auto; } .adblock-panel { padding:14px; border-radius:8px; } }
+
+    .adgate-active header,
+    .adgate-active main,
+    .adgate-active footer,
+    .adgate-active .release-grid,
+    .adgate-active .features,
+    .adgate-active .faq,
+    .adgate-active .safety {
+      pointer-events: none !important;
+      user-select: none !important;
+      filter: blur(2px);
+      opacity: 0.9;
+    }
+
+    .adblock-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .adblock-overlay[aria-hidden="false"] { display:flex; }
   </style>
 </head>
 <body>
@@ -248,19 +270,19 @@
   <script src="assets/js/app.js"></script>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', function() {
     const questions = document.querySelectorAll('.faq-question');
-    document.querySelectorAll('.faq-answer').forEach(a => {
+    document.querySelectorAll('.faq-answer').forEach(function(a) {
       a.style.maxHeight = '0';
       a.classList.remove('open');
       a.setAttribute('aria-hidden', 'true');
       if (a.previousElementSibling) a.previousElementSibling.setAttribute('aria-expanded', 'false');
     });
-    questions.forEach(q => {
+    questions.forEach(function(q) {
       q.addEventListener('click', function() {
         const answer = this.nextElementSibling;
         if (!answer) return;
-        document.querySelectorAll('.faq-answer').forEach(a => {
+        document.querySelectorAll('.faq-answer').forEach(function(a) {
           if (a !== answer && a.classList.contains('open')) closeAnswer(a);
         });
         if (answer.classList.contains('open')) closeAnswer(answer); else openAnswer(answer);
@@ -309,16 +331,16 @@
         toggle.setAttribute('aria-expanded', 'false');
         toggle.focus();
       }
-      toggle.addEventListener('click', (e) => { if (menu.hidden) openMenu(); else closeMenu(); });
+      toggle.addEventListener('click', function(e) { if (menu.hidden) openMenu(); else closeMenu(); });
 
-      document.addEventListener('click', (e) => {
+      document.addEventListener('click', function(e) {
         if (!menu.contains(e.target) && !toggle.contains(e.target)) {
           if (!menu.hidden) closeMenu();
         }
       });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
 
-      menu.addEventListener('click', (e) => {
+      menu.addEventListener('click', function(e) {
         const link = e.target.closest('a[role="menuitem"]');
         if (!link) return;
         const href = link.getAttribute('href') || '';
@@ -328,8 +350,8 @@
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
           targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(() => { try { targetEl.focus({ preventScroll: true }); } catch(e){} }, 400);
-          setTimeout(() => closeMenu(), 220);
+          setTimeout(function(){ try { targetEl.focus({ preventScroll: true }); } catch(e){} }, 400);
+          setTimeout(function(){ closeMenu(); }, 220);
         } else { closeMenu(); location.hash = href; }
       });
     }
@@ -352,7 +374,7 @@
     if (localStorage.getItem('hideAdBlock_v1')) { adSection.style.display = 'none'; return; }
     if (localStorage.getItem('adblockDismiss_v1') === '1' && overlay) overlay.setAttribute('aria-hidden', 'true');
 
-    closeBtn && closeBtn.addEventListener('click', () => {
+    closeBtn && closeBtn.addEventListener('click', function() {
       adSection.style.display = 'none';
       try { localStorage.setItem('hideAdBlock_v1','1'); } catch(e){}
     });
@@ -376,23 +398,23 @@
       overlay.style.display = 'none';
     }
 
-    overlayClose && overlayClose.addEventListener('click', () => {
+    overlayClose && overlayClose.addEventListener('click', function() {
       hideOverlay();
       try { localStorage.setItem('adblockDismiss_v1','1'); } catch(e){}
     });
     btnFallback && btnFallback.addEventListener('click', showFallback);
-    btnIgnore && btnIgnore.addEventListener('click', () => {
+    btnIgnore && btnIgnore.addEventListener('click', function() {
       hideOverlay();
       try { localStorage.removeItem('adblockDismiss_v1'); } catch(e){}
       try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
     });
-    btnWhy && btnWhy.addEventListener('click', () => {
+    btnWhy && btnWhy.addEventListener('click', function() {
       alert('Ads help keep the project free. Please whitelist this site to support development. Thank you!');
     });
 
     if (ins && typeof IntersectionObserver !== 'undefined') {
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
+      const io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             try { if (!ins.dataset.loaded) { (adsbygoogle = window.adsbygoogle || []).push({}); ins.dataset.loaded = '1'; } } catch(e){}
             io.disconnect();
@@ -413,19 +435,10 @@
         const rect = ins.getBoundingClientRect();
         if (style.display === 'none' || style.visibility === 'hidden' || rect.height < 8 || rect.width < 8) insHidden = true;
       }
-      const bait = document.createElement('div');
-      bait.className = 'adsbox ad-banner adunit';
-      bait.style.width = '1px';
-      bait.style.height = '1px';
-      bait.style.position = 'absolute';
-      bait.style.left = '-9999px';
-      document.body.appendChild(bait);
-      const baitBlocked = (bait.offsetHeight === 0);
-      document.body.removeChild(bait);
-      return (noAdsByGoogle || insHidden || baitBlocked);
+      return (noAdsByGoogle || insHidden);
     }
 
-    setTimeout(() => {
+    setTimeout(function() {
       try {
         const blocked = detectAdblock();
         if (blocked) {
@@ -444,5 +457,141 @@
 
   });
   </script>
+
+  <script>
+  (function() {
+    function lockPageWithOverlay(overlay, panel) {
+      document.documentElement.classList.add('adgate-active');
+      overlay.setAttribute('aria-hidden', 'false');
+      overlay.style.display = 'flex';
+      try { panel.focus(); } catch(e){}
+      document.body.style.overflow = 'hidden';
+
+      function trap(e) {
+        if (overlay.getAttribute('aria-hidden') === 'true') return;
+        const focusable = panel.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length-1];
+        if (e.key === 'Tab') {
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault(); last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault(); first.focus();
+          }
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+        }
+      }
+      document.addEventListener('keydown', trap, true);
+      overlay._trapHandler = trap;
+    }
+
+    function unlockPage(overlay) {
+      document.documentElement.classList.remove('adgate-active');
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+      if (overlay._trapHandler) {
+        document.removeEventListener('keydown', overlay._trapHandler, true);
+        delete overlay._trapHandler;
+      }
+    }
+
+    function detectAdblock(ins) {
+      try {
+        const noAdsByGoogle = typeof window.adsbygoogle === 'undefined';
+        let insHidden = false;
+        if (ins) {
+          const style = window.getComputedStyle(ins);
+          const rect = ins.getBoundingClientRect();
+          if (style.display === 'none' || style.visibility === 'hidden' || rect.height < 8 || rect.width < 8) insHidden = true;
+        }
+        return (noAdsByGoogle || insHidden);
+      } catch(e) {
+        return true;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const adSection = document.querySelector('.ad-block');
+      if (!adSection) return;
+      const overlay = document.querySelector('.adblock-overlay');
+      const panel = overlay ? overlay.querySelector('.adblock-panel') : null;
+      const btnRecheck = overlay ? overlay.querySelector('.adblock-show-fallback') : null;
+      const btnIgnore = overlay ? overlay.querySelector('.adblock-ignore') : null;
+
+      if (localStorage.getItem('adgate_permanent_allow') === '1') {
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+        return;
+      }
+
+      setTimeout(function() {
+        const ins = document.querySelector('ins.adsbygoogle');
+        const blocked = detectAdblock(ins);
+        if (!blocked) {
+          try { adSection.classList.remove('show-fallback'); } catch(e){}
+          return;
+        }
+
+        if (overlay && panel) {
+          const whyBtn = overlay.querySelector('.adblock-why');
+          if (whyBtn) whyBtn.textContent = 'How to whitelist';
+          const showSponsorBtn = overlay.querySelector('.adblock-show-fallback');
+          if (showSponsorBtn) showSponsorBtn.textContent = 'I whitelisted — Recheck';
+          const ignoreBtn = overlay.querySelector('.adblock-ignore');
+          if (ignoreBtn) ignoreBtn.textContent = 'Contact sponsor';
+
+          lockPageWithOverlay(overlay, panel);
+
+          if (btnRecheck) {
+            btnRecheck.addEventListener('click', function() {
+              try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
+              setTimeout(function() {
+                const nowBlocked = detectAdblock(document.querySelector('ins.adsbygoogle'));
+                if (!nowBlocked) {
+                  unlockPage(overlay);
+                  try { localStorage.setItem('adgate_permanent_allow','1'); } catch(e){}
+                } else {
+                  const fallback = document.querySelector('.ad-container .ad-fallback');
+                  if (fallback) {
+                    showSponsorFallback(fallback);
+                  } else {
+                    alert('Still blocked. Please follow the whitelist steps in your adblocker to allow this domain and retry.');
+                  }
+                }
+              }, 800);
+            }, { once: true });
+          }
+
+          if (btnIgnore) {
+            btnIgnore.addEventListener('click', function() {
+              window.open('/sponsor', '_blank');
+            });
+          }
+
+          const whyBtn = overlay.querySelector('.adblock-why');
+          if (whyBtn) {
+            whyBtn.addEventListener('click', function() {
+              alert('To whitelist: open your adblock extension (uBlock/AdBlock/AdGuard) and add this site to the whitelist/allow list. Then click "I whitelisted — Recheck".');
+            });
+          }
+
+        } else {
+          document.body.innerHTML = '<div style="padding:40px;text-align:center">Please disable your ad blocker for this site to continue. After whitelisting, reload the page.</div>';
+        }
+      }, 900);
+    });
+
+    function showSponsorFallback(fallback) {
+      if (!fallback) return;
+      const win = window.open('/sponsor', '_blank');
+      if (!win) {
+        alert('Could not open sponsor tab — please visit /sponsor');
+      }
+    }
+  })();
+  </script>
+
 </body>
 </html>
