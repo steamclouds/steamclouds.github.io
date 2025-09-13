@@ -299,3 +299,43 @@ body.dark .safety-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.006));
 }
 
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  text-align:center;
+}
+
+/* small variant to fit inside card */
+.btn.small { padding: 6px 10px; font-size: .95rem; }
+
+/* hover effect */
+.btn:hover { transform: translateY(-3px); filter:brightness(1.03); }
+
+.release-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.release-card .card-actions {
+  margin-top: 12px;
+  display:flex;
+  justify-content:flex-start; 
+  gap:8px;
+}
+
+#releases-title { margin-bottom: 12px; color: var(--accent); font-size: 1.35rem; }
+
+.section-box {
+  padding: 20px;
+}
+
