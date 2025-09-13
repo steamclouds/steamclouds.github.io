@@ -119,8 +119,8 @@
         <p>It looks like you’re using an ad blocker. This project is free thanks to sponsors and ads. Please consider whitelisting this site or view our sponsor banner.</p>
         <div class="adblock-actions">
           <button class="adblock-why" type="button">Why this matters</button>
-          <button class="adblock-show-fallback" type="button">Show sponsor</button>
-          <button class="adblock-ignore" type="button">I already whitelisted</button>
+          <button class="adblock-show-fallback" type="button">I whitelisted — Recheck</button>
+          <button class="adblock-ignore" type="button">Open sponsor</button>
         </div>
         <button class="adblock-close" aria-label="Close">&times;</button>
       </div>
@@ -269,332 +269,89 @@
 
   <script src="assets/js/app.js"></script>
 
-  <script>(function(){var AD_FREQ_MS=5*60*1000;function canShowAd(){try{var t=Number(localStorage.getItem('lastAdShown_v2')||0);return Date.now()-t>AD_FREQ_MS;}catch(e){return true;}}function markShown(){try{localStorage.setItem('lastAdShown_v2',String(Date.now()));}catch(e){} }function pushAdOrFallback(ins,fallback,adContainer){if(canShowAd()){try{(adsbygoogle=window.adsbygoogle||[]).push({});markShown();if(ins)ins.dataset.loaded='1';}catch(e){if(fallback){if(adContainer)adContainer.classList.add('show-fallback');fallback.style.display='block';if(ins)ins.style.display='none';}}}else{if(fallback){if(adContainer)adContainer.classList.add('show-fallback');fallback.style.display='block';if(ins)ins.style.display='none';}}}document.addEventListener('DOMContentLoaded',function(){var ins=document.querySelector('ins.adsbygoogle');var fallback=document.querySelector('.ad-fallback');var adContainer=document.querySelector('.ad-container');if(ins&&typeof IntersectionObserver!=='undefined'){var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){if(!ins.dataset.loaded)pushAdOrFallback(ins,fallback,adContainer);io.disconnect();}});},{threshold:0.25});var adSection=document.querySelector('.ad-block');if(adSection)io.observe(adSection);}else{pushAdOrFallback(ins,fallback,adContainer);}});}());</script>
-
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const questions = document.querySelectorAll('.faq-question');
-    document.querySelectorAll('.faq-answer').forEach(function(a) {
-      a.style.maxHeight = '0';
-      a.classList.remove('open');
-      a.setAttribute('aria-hidden', 'true');
-      if (a.previousElementSibling) a.previousElementSibling.setAttribute('aria-expanded', 'false');
-    });
-    questions.forEach(function(q) {
-      q.addEventListener('click', function() {
-        const answer = this.nextElementSibling;
-        if (!answer) return;
-        document.querySelectorAll('.faq-answer').forEach(function(a) {
-          if (a !== answer && a.classList.contains('open')) closeAnswer(a);
-        });
-        if (answer.classList.contains('open')) closeAnswer(answer); else openAnswer(answer);
-      });
-    });
-
-    function closeAnswer(answer) {
-      answer.classList.remove('open');
-      answer.setAttribute('aria-hidden', 'true');
-      answer.style.maxHeight = answer.scrollHeight + 'px';
-      void answer.offsetHeight;
-      answer.style.maxHeight = '0';
-      answer.addEventListener('transitionend', function handler() {
-        this.style.maxHeight = '0';
-        this.removeEventListener('transitionend', handler);
-      }, { once: true });
-      const q = answer.previousElementSibling;
-      if (q) q.setAttribute('aria-expanded', 'false');
+  (function(){
+    var AD_FREQ_MS = 5 * 60 * 1000;
+    function canShowAd(){ try{ var t = Number(localStorage.getItem('lastAdShown_v2')||0); return Date.now() - t > AD_FREQ_MS; } catch(e){ return true; } }
+    function markShown(){ try{ localStorage.setItem('lastAdShown_v2', String(Date.now())); } catch(e){} }
+    function setLocked(state){
+      var o = document.querySelector('.adblock-overlay');
+      if(!o) return;
+      if(state){ document.documentElement.classList.add('adgate-active'); o.setAttribute('aria-hidden','false'); o.style.display = 'flex'; try{ o.querySelector('.adblock-panel').focus(); } catch(e){} document.body.style.overflow = 'hidden'; }
+      else { document.documentElement.classList.remove('adgate-active'); o.setAttribute('aria-hidden','true'); o.style.display = 'none'; document.body.style.overflow = ''; }
     }
-
-    function openAnswer(answer) {
-      answer.classList.add('open');
-      answer.setAttribute('aria-hidden', 'false');
-      answer.style.maxHeight = '0';
-      void answer.offsetHeight;
-      answer.style.maxHeight = answer.scrollHeight + 'px';
-      answer.addEventListener('transitionend', function handler() {
-        this.style.maxHeight = 'none';
-        this.removeEventListener('transitionend', handler);
-      }, { once: true });
-      const q = answer.previousElementSibling;
-      if (q) q.setAttribute('aria-expanded', 'true');
+    function createBait(){
+      var d = document.createElement('div');
+      d.className = 'adsbox monetag bait';
+      d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';
+      document.body.appendChild(d);
+      var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none');
+      document.body.removeChild(d);
+      return blocked;
     }
-
-    const toggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('main-menu');
-    if (toggle && menu) {
-      function openMenu() {
-        menu.hidden = false;
-        toggle.setAttribute('aria-expanded', 'true');
-        const first = menu.querySelector('[role="menuitem"]');
-        if (first) first.focus();
-      }
-      function closeMenu() {
-        menu.hidden = true;
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.focus();
-      }
-      toggle.addEventListener('click', function(e) { if (menu.hidden) openMenu(); else closeMenu(); });
-
-      document.addEventListener('click', function(e) {
-        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-          if (!menu.hidden) closeMenu();
+    function probeFetch(url,ms){ return new Promise(function(res){ var c = new AbortController(); var id = setTimeout(function(){ c.abort(); res(false); }, ms); fetch(url, { mode: 'no-cors', signal: c.signal }).then(function(){ clearTimeout(id); res(true); }).catch(function(){ clearTimeout(id); res(false); }); }); }
+    function probeScript(url,ms){ return new Promise(function(res){ var s = document.createElement('script'); s.src = url; s.async = true; var done = false; var t = setTimeout(function(){ if(!done){ done = true; cleanup(); res(false); } }, ms); function cleanup(){ try{ s.parentNode.removeChild(s); }catch(e){} clearTimeout(t); } s.onerror = function(){ if(!done){ done = true; cleanup(); res(false); } }; s.onload = function(){ if(!done){ done = true; cleanup(); res(true); } }; document.body.appendChild(s); }); }
+    async function monetagBlocked(){
+      if(localStorage.getItem('adgate_permanent_allow') === '1') return false;
+      try{
+        var bait = createBait();
+        var f = await probeFetch('https://fpyf8.com/88/tag.min.js', 900);
+        var s = await probeScript('https://fpyf8.com/88/tag.min.js', 900);
+        return (bait || (!f && !s));
+      } catch(e){ return true; }
+    }
+    function pushAdOrFallback(ins, fallback, adContainer){
+      if(canShowAd()){
+        try{ (adsbygoogle = window.adsbygoogle || []).push({}); markShown(); if(ins) ins.dataset.loaded = '1'; } catch(e){
+          if(fallback){ if(adContainer) adContainer.classList.add('show-fallback'); fallback.style.display = 'block'; if(ins) ins.style.display = 'none'; }
         }
-      });
-      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
-
-      menu.addEventListener('click', function(e) {
-        const link = e.target.closest('a[role="menuitem"]');
-        if (!link) return;
-        const href = link.getAttribute('href') || '';
-        if (!href.startsWith('#')) { closeMenu(); return; }
-        e.preventDefault();
-        const targetId = href.slice(1);
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(function(){ try { targetEl.focus({ preventScroll: true }); } catch(e){} }, 400);
-          setTimeout(function(){ closeMenu(); }, 220);
-        } else { closeMenu(); location.hash = href; }
-      });
-    }
-
-    const adSection = document.querySelector('.ad-block');
-    if (!adSection) return;
-
-    const adContainer = adSection.querySelector('.ad-container');
-    const closeBtn = adSection.querySelector('.ad-close');
-    const ins = adSection.querySelector('ins.adsbygoogle');
-    const fallback = adSection.querySelector('.ad-fallback');
-
-    const overlay = adSection.querySelector('.adblock-overlay');
-    const overlayPanel = adSection.querySelector('.adblock-panel');
-    const overlayClose = adSection.querySelector('.adblock-close');
-    const btnFallback = adSection.querySelector('.adblock-show-fallback');
-    const btnIgnore = adSection.querySelector('.adblock-ignore');
-    const btnWhy = adSection.querySelector('.adblock-why');
-
-    if (localStorage.getItem('hideAdBlock_v1')) { adSection.style.display = 'none'; return; }
-    if (localStorage.getItem('adblockDismiss_v1') === '1' && overlay) overlay.setAttribute('aria-hidden', 'true');
-
-    closeBtn && closeBtn.addEventListener('click', function() {
-      adSection.style.display = 'none';
-      try { localStorage.setItem('hideAdBlock_v1','1'); } catch(e){}
-    });
-
-    function showFallback() {
-      adContainer.classList.add('show-fallback');
-      if (fallback) fallback.style.display = 'block';
-      if (ins) ins.style.display = 'none';
-      hideOverlay();
-      try { localStorage.setItem('adblockFallback_v1','1'); } catch(e){}
-    }
-    function showOverlay() {
-      if (!overlay) return;
-      overlay.setAttribute('aria-hidden','false');
-      overlay.style.display = 'flex';
-      try { overlayPanel.focus(); } catch(e){}
-    }
-    function hideOverlay() {
-      if (!overlay) return;
-      overlay.setAttribute('aria-hidden','true');
-      overlay.style.display = 'none';
-    }
-
-    overlayClose && overlayClose.addEventListener('click', function() {
-      hideOverlay();
-      try { localStorage.setItem('adblockDismiss_v1','1'); } catch(e){}
-    });
-    btnFallback && btnFallback.addEventListener('click', showFallback);
-    btnIgnore && btnIgnore.addEventListener('click', function() {
-      hideOverlay();
-      try { localStorage.removeItem('adblockDismiss_v1'); } catch(e){}
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-    });
-    btnWhy && btnWhy.addEventListener('click', function() {
-      alert('Ads help keep the project free. Please whitelist this site to support development. Thank you!');
-    });
-
-    if (ins && typeof IntersectionObserver !== 'undefined') {
-      const io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            try { if (!ins.dataset.loaded) { (adsbygoogle = window.adsbygoogle || []).push({}); ins.dataset.loaded = '1'; } } catch(e){}
-            io.disconnect();
-          }
-        });
-      }, { threshold: 0.25 });
-      io.observe(adSection);
-    } else {
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-    }
-
-    function detectAdblock() {
-      if (localStorage.getItem('adblockFallback_v1') === '1') return false;
-      const noAdsByGoogle = typeof window.adsbygoogle === 'undefined';
-      let insHidden = false;
-      if (ins) {
-        const style = window.getComputedStyle(ins);
-        const rect = ins.getBoundingClientRect();
-        if (style.display === 'none' || style.visibility === 'hidden' || rect.height < 8 || rect.width < 8) insHidden = true;
-      }
-      return (noAdsByGoogle || insHidden);
-    }
-
-    setTimeout(function() {
-      try {
-        const blocked = detectAdblock();
-        if (blocked) {
-          if (localStorage.getItem('adblockDismiss_v1') === '1') {
-            showFallback();
-          } else {
-            showOverlay();
-          }
-        } else {
-          adContainer.classList.remove('show-fallback');
-        }
-      } catch(e) {
-        showFallback();
-      }
-    }, 1200);
-
-  });
-  </script>
-
-  <script>
-  (function() {
-    function lockPageWithOverlay(overlay, panel) {
-      document.documentElement.classList.add('adgate-active');
-      overlay.setAttribute('aria-hidden', 'false');
-      overlay.style.display = 'flex';
-      try { panel.focus(); } catch(e){}
-      document.body.style.overflow = 'hidden';
-
-      function trap(e) {
-        if (overlay.getAttribute('aria-hidden') === 'true') return;
-        const focusable = panel.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])');
-        if (!focusable.length) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length-1];
-        if (e.key === 'Tab') {
-          if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault(); last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault(); first.focus();
-          }
-        } else if (e.key === 'Escape') {
-          e.preventDefault();
-        }
-      }
-      document.addEventListener('keydown', trap, true);
-      overlay._trapHandler = trap;
-    }
-
-    function unlockPage(overlay) {
-      document.documentElement.classList.remove('adgate-active');
-      overlay.setAttribute('aria-hidden', 'true');
-      overlay.style.display = 'none';
-      document.body.style.overflow = '';
-      if (overlay._trapHandler) {
-        document.removeEventListener('keydown', overlay._trapHandler, true);
-        delete overlay._trapHandler;
+      } else {
+        if(fallback){ if(adContainer) adContainer.classList.add('show-fallback'); fallback.style.display = 'block'; if(ins) ins.style.display = 'none'; }
       }
     }
-
-    function detectAdblock(ins) {
-      try {
-        const noAdsByGoogle = typeof window.adsbygoogle === 'undefined';
-        let insHidden = false;
-        if (ins) {
-          const style = window.getComputedStyle(ins);
-          const rect = ins.getBoundingClientRect();
-          if (style.display === 'none' || style.visibility === 'hidden' || rect.height < 8 || rect.width < 8) insHidden = true;
-        }
-        return (noAdsByGoogle || insHidden);
-      } catch(e) {
-        return true;
-      }
+    function attachOverlayHandlers(){
+      var o = document.querySelector('.adblock-overlay');
+      if(!o) return;
+      var re = o.querySelector('.adblock-show-fallback');
+      var why = o.querySelector('.adblock-why');
+      var ign = o.querySelector('.adblock-ignore');
+      if(re){ re.addEventListener('click', async function(){ try{ (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){} setTimeout(async function(){ var ok = !(await monetagBlocked()); if(ok){ setLocked(false); try{ localStorage.setItem('adgate_permanent_allow','1'); } catch(e){} } else { var f = document.querySelector('.ad-container .ad-fallback'); if(f) window.open('/sponsor','_blank'); else alert('Still blocked. Whitelist domain then retry.'); } }, 800); }, { once:true }); }
+      if(ign) ign.addEventListener('click', function(){ window.open('/sponsor','_blank'); });
+      if(why) why.addEventListener('click', function(){ alert('Open your adblock extension and whitelist this site, then click Recheck.'); });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const adSection = document.querySelector('.ad-block');
-      if (!adSection) return;
-      const overlay = document.querySelector('.adblock-overlay');
-      const panel = overlay ? overlay.querySelector('.adblock-panel') : null;
-      const btnRecheck = overlay ? overlay.querySelector('.adblock-show-fallback') : null;
-      const btnIgnore = overlay ? overlay.querySelector('.adblock-ignore') : null;
-
-      if (localStorage.getItem('adgate_permanent_allow') === '1') {
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-        return;
-      }
-
-      setTimeout(function() {
-        const ins = document.querySelector('ins.adsbygoogle');
-        const blocked = detectAdblock(ins);
-        if (!blocked) {
-          try { adSection.classList.remove('show-fallback'); } catch(e){}
+    document.addEventListener('DOMContentLoaded', async function(){
+      var adSection = document.querySelector('.ad-block');
+      var ins = document.querySelector('ins.adsbygoogle');
+      var fallback = document.querySelector('.ad-fallback');
+      var adContainer = document.querySelector('.ad-container');
+      try{
+        var blocked = await monetagBlocked();
+        if(blocked){
+          setLocked(true);
+          attachOverlayHandlers();
           return;
         }
-
-        if (overlay && panel) {
-          const whyBtn = overlay.querySelector('.adblock-why');
-          if (whyBtn) whyBtn.textContent = 'How to whitelist';
-          const showSponsorBtn = overlay.querySelector('.adblock-show-fallback');
-          if (showSponsorBtn) showSponsorBtn.textContent = 'I whitelisted — Recheck';
-          const ignoreBtn = overlay.querySelector('.adblock-ignore');
-          if (ignoreBtn) ignoreBtn.textContent = 'Contact sponsor';
-
-          lockPageWithOverlay(overlay, panel);
-
-          if (btnRecheck) {
-            btnRecheck.addEventListener('click', function() {
-              try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
-              setTimeout(function() {
-                const nowBlocked = detectAdblock(document.querySelector('ins.adsbygoogle'));
-                if (!nowBlocked) {
-                  unlockPage(overlay);
-                  try { localStorage.setItem('adgate_permanent_allow','1'); } catch(e){}
-                } else {
-                  const fallback = document.querySelector('.ad-container .ad-fallback');
-                  if (fallback) {
-                    showSponsorFallback(fallback);
-                  } else {
-                    alert('Still blocked. Please follow the whitelist steps in your adblocker to allow this domain and retry.');
-                  }
-                }
-              }, 800);
-            }, { once: true });
-          }
-
-          if (btnIgnore) {
-            btnIgnore.addEventListener('click', function() {
-              window.open('/sponsor', '_blank');
-            });
-          }
-
-          const whyBtn = overlay.querySelector('.adblock-why');
-          if (whyBtn) {
-            whyBtn.addEventListener('click', function() {
-              alert('To whitelist: open your adblock extension (uBlock/AdBlock/AdGuard) and add this site to the whitelist/allow list. Then click "I whitelisted — Recheck".');
-            });
-          }
-
-        } else {
-          document.body.innerHTML = '<div style="padding:40px;text-align:center">Please disable your ad blocker for this site to continue. After whitelisting, reload the page.</div>';
-        }
-      }, 900);
-    });
-
-    function showSponsorFallback(fallback) {
-      if (!fallback) return;
-      const win = window.open('/sponsor', '_blank');
-      if (!win) {
-        alert('Could not open sponsor tab — please visit /sponsor');
+      } catch(e){
+        setLocked(true);
+        attachOverlayHandlers();
+        return;
       }
-    }
+      if(ins && typeof IntersectionObserver !== 'undefined'){
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){
+              if(!ins.dataset.loaded) pushAdOrFallback(ins, fallback, adContainer);
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.25 });
+        if(adSection) io.observe(adSection);
+      } else {
+        pushAdOrFallback(ins, fallback, adContainer);
+      }
+    });
   })();
   </script>
 
-<script>(function(){function setLocked(state){var overlay=document.querySelector('.adblock-overlay');if(!overlay)return;if(state){document.documentElement.classList.add('adgate-active');overlay.setAttribute('aria-hidden','false');overlay.style.display='flex';try{overlay.querySelector('.adblock-panel').focus();}catch(e){}document.body.style.overflow='hidden';}else{document.documentElement.classList.remove('adgate-active');overlay.setAttribute('aria-hidden','true');overlay.style.display='none';document.body.style.overflow='';}}function createBait(){var d=document.createElement('div');d.className='adsbox ad-banner adunit pub_300x250';d.style.cssText='width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';document.body.appendChild(d);var blocked=(d.offsetParent===null)||(d.offsetHeight===0)||(window.getComputedStyle(d).display==='none');document.body.removeChild(d);return blocked;}function probeFetch(url,ms){return new Promise(function(res){var controller=new AbortController();var id=setTimeout(function(){controller.abort();res(false);},ms);fetch(url,{mode:'no-cors',signal:controller.signal}).then(function(){clearTimeout(id);res(true);}).catch(function(){clearTimeout(id);res(false);});});}function probeScript(url,ms){return new Promise(function(res){var s=document.createElement('script');s.src=url;s.async=true;var done=false;var t=setTimeout(function(){if(!done){done=true;cleanup();res(false);}},ms);function cleanup(){try{s.parentNode.removeChild(s);}catch(e){}clearTimeout(t);}s.onerror=function(){if(!done){done=true;cleanup();res(false);}};s.onload=function(){if(!done){done=true;cleanup();res(true);}};document.body.appendChild(s);});}async function isBlocked(){if(localStorage.getItem('adgate_permanent_allow')==='1')return false;var bait=createBait();var fetchOk=await probeFetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',1200);var scriptOk=await probeScript('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',1200);return (bait||!fetchOk||!scriptOk);}function attachHandlers(){var overlay=document.querySelector('.adblock-overlay');if(!overlay)return;var panel=overlay.querySelector('.adblock-panel');var btnRecheck=overlay.querySelector('.adblock-show-fallback');var btnWhy=overlay.querySelector('.adblock-why');var btnIgnore=overlay.querySelector('.adblock-ignore');if(btnRecheck){btnRecheck.addEventListener('click',async function(){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}setTimeout(async function(){var now=await isBlocked();if(!now){setLocked(false);try{localStorage.setItem('adgate_permanent_allow','1');}catch(e){} }else{var fallback=document.querySelector('.ad-container .ad-fallback');if(fallback){window.open('/sponsor','_blank');}else{alert('Still blocked. Please whitelist and retry.');}}},800);},{once:true});}if(btnIgnore){btnIgnore.addEventListener('click',function(){window.open('/sponsor','_blank');});}if(btnWhy){btnWhy.addEventListener('click',function(){alert('Open your adblock extension and whitelist this site, then click Recheck.');});}}document.addEventListener('DOMContentLoaded',async function(){var blocked=false;try{blocked=await isBlocked();}catch(e){blocked=true;}if(blocked){setLocked(true);attachHandlers();}})})();</script>
 </body>
 </html>
