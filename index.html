@@ -6,8 +6,7 @@
   <title>Steam Clouds</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <script src="https://fpyf8.com/88/tag.min.js" data-zone="170766" async data-cfasync="false"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7384811657237430" crossorigin="anonymous"></script>
-
+  
   <style>
     section[id] { scroll-margin-top: 84px; }
     .menu-toggle {
@@ -240,107 +239,27 @@
   <script src="assets/js/app.js"></script>
 
   <script>
-  (function(){
-    var AD_FREQ_MS = 5 * 60 * 1000;
-    function canShowAd(){ try{ var t = Number(localStorage.getItem('lastAdShown_v2')||0); return Date.now() - t > AD_FREQ_MS; } catch(e){ return true; } }
-    function markShown(){ try{ localStorage.setItem('lastAdShown_v2', String(Date.now())); } catch(e){} }
-    function setLocked(state){
-      var o = document.querySelector('.adblock-overlay');
-      if(!o) return;
-      if(state){ document.documentElement.classList.add('adgate-active'); o.setAttribute('aria-hidden','false'); o.style.display = 'flex'; try{ o.querySelector('.adblock-panel').focus(); } catch(e){} document.body.style.overflow = 'hidden'; }
-      else { document.documentElement.classList.remove('adgate-active'); o.setAttribute('aria-hidden','true'); o.style.display = 'none'; document.body.style.overflow = ''; }
-    }
-    function createBait(){
-      var d = document.createElement('div');
-      d.className = 'adsbox monetag bait';
-      d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';
-      document.body.appendChild(d);
-      var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none');
-      document.body.removeChild(d);
-      return blocked;
-    }
-    function probeFetch(url,ms){ return new Promise(function(res){ var c = new AbortController(); var id = setTimeout(function(){ c.abort(); res(false); }, ms); fetch(url, { mode: 'no-cors', signal: c.signal }).then(function(){ clearTimeout(id); res(true); }).catch(function(){ clearTimeout(id); res(false); }); }); }
-    function probeScript(url,ms){ return new Promise(function(res){ var s = document.createElement('script'); s.src = url; s.async = true; var done = false; var t = setTimeout(function(){ if(!done){ done = true; cleanup(); res(false); } }, ms); function cleanup(){ try{ s.parentNode.removeChild(s); }catch(e){} clearTimeout(t); } s.onerror = function(){ if(!done){ done = true; cleanup(); res(false); } }; s.onload = function(){ if(!done){ done = true; cleanup(); res(true); } }; document.body.appendChild(s); }); }
-    async function monetagBlocked(){
-      if(localStorage.getItem('adgate_permanent_allow') === '1') return false;
-      try{
-        var bait = createBait();
-        var f = await probeFetch('https://fpyf8.com/88/tag.min.js', 900);
-        var s = await probeScript('https://fpyf8.com/88/tag.min.js', 900);
-        return (bait || (!f && !s));
-      } catch(e){ return true; }
-    }
-    function pushAdOrFallback(ins, fallback, adContainer){
-      if(canShowAd()){
-        try{ (adsbygoogle = window.adsbygoogle || []).push({}); markShown(); if(ins) ins.dataset.loaded = '1'; } catch(e){
-          if(fallback){ if(adContainer) adContainer.classList.add('show-fallback'); fallback.style.display = 'block'; if(ins) ins.style.display = 'none'; }
-        }
-      } else {
-        if(fallback){ if(adContainer) adContainer.classList.add('show-fallback'); fallback.style.display = 'block'; if(ins) ins.style.display = 'none'; }
-      }
-    }
-    function attachOverlayHandlers(){
-      var o = document.querySelector('.adblock-overlay');
-      if(!o) return;
-      var re = o.querySelector('.adblock-show-fallback');
-      var why = o.querySelector('.adblock-why');
-      var ign = o.querySelector('.adblock-ignore');
-      if(re){ re.addEventListener('click', async function(){ try{ (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){} setTimeout(async function(){ var ok = !(await monetagBlocked()); if(ok){ setLocked(false); try{ localStorage.setItem('adgate_permanent_allow','1'); } catch(e){} } else { var f = document.querySelector('.ad-container .ad-fallback'); if(f) window.open('/sponsor','_blank'); else alert('Still blocked. Whitelist domain then retry.'); } }, 800); }, { once:true }); }
-      if(ign) ign.addEventListener('click', function(){ window.open('/sponsor','_blank'); });
-      if(why) why.addEventListener('click', function(){ alert('Open your adblock extension and whitelist this site, then click Recheck.'); });
-    }
-    document.addEventListener('DOMContentLoaded', async function(){
-      var adSection = document.querySelector('.ad-block');
-      var ins = document.querySelector('ins.adsbygoogle');
-      var fallback = document.querySelector('.ad-fallback');
-      var adContainer = document.querySelector('.ad-container');
-      try{
-        var blocked = await monetagBlocked();
-        if(blocked){
-          setLocked(true);
-          attachOverlayHandlers();
-          return;
-        }
-      } catch(e){
-        setLocked(true);
-        attachOverlayHandlers();
-        return;
-      }
-      if(ins && typeof IntersectionObserver !== 'undefined'){
-        var io = new IntersectionObserver(function(entries){
-          entries.forEach(function(entry){
-            if(entry.isIntersecting){
-              if(!ins.dataset.loaded) pushAdOrFallback(ins, fallback, adContainer);
-              io.disconnect();
-            }
-          });
-        }, { threshold: 0.25 });
-        if(adSection) io.observe(adSection);
-      } else {
-        pushAdOrFallback(ins, fallback, adContainer);
-      }
-    });
-  })();
-  </script>
-  <script>
 (function(){
+  // Toggle overlay
   function setLocked(state){
-    var o = document.querySelector('.adblock-overlay');
-    if(!o) return;
+    var overlay = document.querySelector('.adblock-overlay');
+    if(!overlay) return;
     if(state){
       document.documentElement.classList.add('adgate-active');
-      o.setAttribute('aria-hidden','false');
-      o.style.display = 'flex';
-      try{ o.querySelector('.adblock-panel').focus(); } catch(e){}
+      overlay.setAttribute('aria-hidden','false');
+      overlay.style.display = 'flex';
+      try{ overlay.querySelector('.adblock-panel').focus(); } catch(e){}
       document.body.style.overflow = 'hidden';
     } else {
       document.documentElement.classList.remove('adgate-active');
-      o.setAttribute('aria-hidden','true');
-      o.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+      overlay.style.display = 'none';
       document.body.style.overflow = '';
+      try{ localStorage.setItem('adgate_permanent_allow','1'); } catch(e){}
     }
   }
 
+  // Bait div detection
   function createBait(){
     var d = document.createElement('div');
     d.className = 'adsbox bait';
@@ -351,30 +270,53 @@
     return blocked;
   }
 
-  async function checkAdBlock(){
-    try{ return createBait(); } catch(e){ return true; }
+  // Check if fpyf8 script is blocked
+  async function probeScript(url,timeout=1000){
+    return new Promise(res=>{
+      var s = document.createElement('script');
+      s.src = url;
+      s.async = true;
+      var done = false;
+      var t = setTimeout(()=>{ if(!done){ done=true; cleanup(); res(false); } }, timeout);
+      function cleanup(){ try{s.parentNode.removeChild(s);}catch(e){} clearTimeout(t); }
+      s.onload = ()=>{ if(!done){ done=true; cleanup(); res(true); } };
+      s.onerror = ()=>{ if(!done){ done=true; cleanup(); res(false); } };
+      document.body.appendChild(s);
+    });
+  }
+
+  async function isBlocked(){
+    if(localStorage.getItem('adgate_permanent_allow') === '1') return false;
+    var baitBlocked = createBait();
+    var scriptLoaded = await probeScript('https://fpyf8.com/88/tag.min.js',900);
+    return baitBlocked || !scriptLoaded;
   }
 
   function attachOverlayHandlers(){
-    var o = document.querySelector('.adblock-overlay');
-    if(!o) return;
-    var re = o.querySelector('.adblock-show-fallback');
-    if(re){
-      re.addEventListener('click', function(){
-        setLocked(false);
-        location.reload();
+    var overlay = document.querySelector('.adblock-overlay');
+    if(!overlay) return;
+    var btn = overlay.querySelector('.adblock-show-fallback');
+    if(btn){
+      btn.addEventListener('click', async ()=>{
+        if(!(await isBlocked())){
+          setLocked(false);
+        } else {
+          alert('AdBlock still detected. Please whitelist this site then retry.');
+        }
       });
     }
   }
 
-  document.addEventListener('DOMContentLoaded', async function(){
-    if(await checkAdBlock()){
+  document.addEventListener('DOMContentLoaded', async ()=>{
+    if(await isBlocked()){
       setLocked(true);
       attachOverlayHandlers();
     }
   });
+
 })();
 </script>
+
 
 </body>
 </html> 
