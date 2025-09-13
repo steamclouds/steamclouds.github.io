@@ -397,148 +397,53 @@ body.dark{
 }
 
 
-.tutorial-toggle {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  width:100%;
-  padding:10px 14px;
-  background: none;
-  border: 1px solid var(--card-border);
-  border-radius:10px;
-  color:var(--text);
-  cursor:pointer;
-  font-weight:700;
-  margin-top:8px;
+/* FAQ Section */
+.faq {
+  margin-top: 24px;
 }
 
-.tutorial-toggle .toggle-chevron {
-  display:inline-block;
-  width:18px;
-  height:18px;
-  transform:rotate(0deg);
-  transition:transform .25s ease;
-  line-height:18px;
-  text-align:center;
+.faq-item {
+  margin-bottom: 8px;
 }
-
-.tutorial-toggle.active .toggle-chevron {
-  transform:rotate(180deg);
-}
-
-.tutorial-answer {
-  max-height:0;
-  overflow:hidden;
-  transition:max-height .32s ease;
-  padding: 12px;
-  color: var(--muted-color, #94a3b8) !important;
-}
-
-.tutorial-toggle,
-.tutorial-answer {
-  background: var(--card-bg) !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-color) !important;
-  border-radius: 10px;
-}
-
 
 .faq-question {
-  background: var(--card-bg); 
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  padding: 10px;
-  border-radius: 8px;
   width: 100%;
-  text-align: left;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .faq-question:hover {
-  background: var(--card-hover-bg); 
+  background: rgba(255,255,255,0.01);
+  border-color: var(--accent);
 }
 
 .faq-answer {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-top: none;
-  color: var(--text-color);
-  padding: 10px;
-  border-radius: 0 0 8px 8px;
+  max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.3s ease-out;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-left: 4px solid var(--accent);
+  border-bottom: 1px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: var(--muted);
 }
 
-
-button.tutorial-toggle,
-.tutorial .tutorial-toggle {
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: var(--card-bg) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--card-border) !important;
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 12px !important;
-  cursor: pointer !important;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06) !important;
-  font-weight: 700 !important;
+.faq-question[aria-expanded="true"] {
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-
-button.tutorial-toggle:hover,
-.tutorial .tutorial-toggle:hover,
-button.tutorial-toggle:focus,
-.tutorial .tutorial-toggle:focus {
-  background-color: rgba(255,255,255,0.01) !important;
-  outline: none !important;
-  box-shadow: 0 8px 22px rgba(2,6,23,0.08) !important;
+.faq-answer[aria-hidden="false"] {
+  max-height: 500px;
 }
-
-
-button.tutorial-toggle .toggle-chevron {
-  color: var(--text) !important;
-}
-
-
-button.tutorial-toggle * {
-  color: inherit !important;
-}
-
-
-.tutorial-toggle {
-  border-radius: 10px;
-  transition: border-color .18s ease, background .18s ease;
-}
-
-.tutorial-toggle.active {
-  border-bottom-color: transparent !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-}
-
-.tutorial-answer[aria-hidden="true"] {
-  max-height: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  margin: 0 !important;
-  overflow: hidden !important;
-}
-
-.tutorial-answer[aria-hidden="false"] {
-  max-height: 1000px;
-  padding: 12px 14px !important;
-  border-top: 1px solid var(--border-color) !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-left-radius: 10px !important;
-  border-bottom-right-radius: 10px !important;
-}
-
-
 
