@@ -8,12 +8,12 @@
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #2b3538;          
-  --section-bg: rgba(255,255,255,0.01);
+  --card-bg: #374144;            
+  --section-bg: rgba(255,255,255,0.03);
   --accent: #2563eb; 
-  --card-border: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.06);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
-  --glass: rgba(255,255,255,0.03);
+  --glass: rgba(255,255,255,0.045);
 }
 
 body.dark{
@@ -21,12 +21,12 @@ body.dark{
   --page-bg: #0b0f12;
   --text: #e6eef6;
   --muted: #94a3b8;
-  --card-bg: #30393c;       
-  --section-bg: rgba(255,255,255,0.008);
+  --card-bg: #3f494d;
+  --section-bg: rgba(255,255,255,0.028);
   --accent: #60a5fa;
-  --card-border: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.06);
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
-  --glass: rgba(255,255,255,0.03);
+  --glass: rgba(255,255,255,0.045);
 }
 
 /* Base page */
@@ -360,6 +360,7 @@ body.dark .safety-card {
   left: 0;
   top: 0.1em;
 }
+
 
 
 
