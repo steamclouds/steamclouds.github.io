@@ -4,16 +4,16 @@
 
 /* Theme colors (tweak these if you want other palette) */
 :root{
-  --bg: #f3f6fb;
-  --page-bg: #f8f9fa;
-  --text: #111827;
-  --muted: #6b7280;
-  --card-bg: #ffffff;
-  --section-bg: #ffffff;
-  --accent: #2563eb;
-  --card-border: rgba(16,24,40,0.06);
-  --card-shadow: 0 10px 30px rgba(16,24,40,0.06);
-  --glass: rgba(255,255,255,0.6);
+  --bg: #0b0f12;
+  --page-bg: #0b0f12;
+  --text: #e6eef6;
+  --muted: #94a3b8;
+  --card-bg: #0f1316;
+  --section-bg: rgba(255,255,255,0.02);
+  --accent: #2563eb; 
+  --card-border: rgba(255,255,255,0.04);
+  --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
+  --glass: rgba(255,255,255,0.03);
 }
 
 body.dark{
@@ -338,4 +338,5 @@ body.dark .safety-card {
 .section-box {
   padding: 20px;
 }
+
 
