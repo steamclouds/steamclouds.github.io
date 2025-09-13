@@ -1,7 +1,3 @@
-/* =========================
-   Steam Clouds — Cleaned CSS
-   Improved card separation for light + dark modes
-   ========================= */
 
 /* Reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -216,3 +212,90 @@ footer {
   .feature-card, .release-card { padding: 12px; }
   .feature-head .icon { width:28px; height:28px; }
 }
+
+/* variables for card contrast (fallback safe) */
+:root{
+  --item-border-strong: rgba(0,0,0,0.08);
+  --item-shadow-soft: 0 10px 30px rgba(2,6,23,0.06);
+  --item-top-highlight: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+}
+
+body.dark{
+  --item-border-strong: rgba(255,255,255,0.04);
+  --item-shadow-soft: 0 14px 40px rgba(2,6,23,0.55);
+  --item-top-highlight: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+}
+
+/* apply stronger border & shadow so cards pop from container */
+.feature-card,
+.release-card,
+.tutorial-step,
+.safety-card {
+  border: 1px solid var(--item-border-strong);
+  box-shadow: var(--item-shadow-soft);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); /* subtle lift */
+  position: relative;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
+}
+
+/* stronger hover so users notice elevation */
+.feature-card:hover,
+.release-card:hover,
+.tutorial-step:hover,
+.safety-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 56px rgba(2,6,23,0.12);
+}
+
+/* subtle top highlight line to define card edge */
+.feature-card::before,
+.release-card::before,
+.tutorial-step::before,
+.safety-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--item-top-highlight);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* slightly increase inner spacing so card content breathes */
+.feature-card, .release-card, .safety-card, .tutorial-step {
+  padding: 16px;
+}
+
+/* make sure description area can expand and keep consistent heights */
+.feature-card .feature-body,
+.release-card .meta {
+  color: var(--muted);
+  flex: 1 1 auto;
+}
+
+/* optional: stronger separation between cards & container */
+.section-box { 
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* tweak for very light mode: give cards a hint of white */
+@media (prefers-color-scheme: light) {
+  .feature-card,
+  .release-card,
+  .tutorial-step,
+  .safety-card {
+    background: linear-gradient(180deg, #ffffff, #fbfdff);
+  }
+}
+
+/* ensure dark-mode card background stays slightly different than container */
+body.dark .feature-card,
+body.dark .release-card,
+body.dark .tutorial-step,
+body.dark .safety-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.006));
+}
+
