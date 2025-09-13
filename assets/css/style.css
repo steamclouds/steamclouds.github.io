@@ -392,34 +392,6 @@ body.dark{
   opacity: 0.9;
 }
 
-.faq-question {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  text-align: left;
-  padding: 12px 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  background: none;
-  border: none;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.faq-question .faq-chevron {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  transform: rotate(0deg);
-  transition: transform .25s ease;
-  flex: 0 0 18px;
-}
-
-.faq-question.active .faq-chevron {
-  transform: rotate(180deg);
-}
 
 
 
