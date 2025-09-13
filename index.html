@@ -9,15 +9,13 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="logo">Steam Clouds</div>
     <nav>
       <input type="text" id="search" placeholder="Search releases..." />
     </nav>
   </header>
-
-  <!-- Main Content -->
+  
    <main>
     <section class="section-box" aria-labelledby="releases-title">
       <h2 id="releases-title">Latest Releases</h2>
@@ -26,7 +24,7 @@
        </div>
     </section>
   </main>
-  <!-- Features Section (wrapped in a main card) -->
+
 <section class="features section-box" aria-labelledby="features-title">
   <h2 id="features-title">✨ Core Features</h2>
 
@@ -66,7 +64,7 @@
 <section class="faq section-box">
   <h2>❓ Frequently Asked Questions</h2>
 
-  <!-- Download -->
+
   <div class="faq-item">
     <button class="faq-question" aria-expanded="false">
       📥 How do I download Steam Clouds?
@@ -84,7 +82,7 @@
     </div>
   </div>
 
-  <!-- Install -->
+
   <div class="faq-item">
     <button class="faq-question" aria-expanded="false">
       ⚙️ How to install Steam Clouds?
@@ -99,7 +97,7 @@
     </div>
   </div>
 
-  <!-- Add Games -->
+
   <div class="faq-item">
     <button class="faq-question" aria-expanded="false">
       📥 How to add games directly in the Steam app?
@@ -117,7 +115,7 @@
     </div>
   </div>
 
-  <!-- Missing Add Games Button -->
+
   <div class="faq-item">
     <button class="faq-question" aria-expanded="false">
       ❓ Why the Add Games button doesn't appear after installing SteamClouds and the status is installed?
@@ -135,7 +133,7 @@
     </div>
   </div>
 
-  <!-- Missing After Update -->
+
   <div class="faq-item">
     <button class="faq-question" aria-expanded="false">
       ❓ Why is the Add Games button missing after updating the SteamClouds.exe application?
@@ -163,7 +161,7 @@
 </section>
 
 
-<!-- Safety Statement (wrapped in a main card) -->
+
 <section class="safety section-box" aria-labelledby="safety-title">
   <h2 id="safety-title">🛡️ Safety Statement</h2>
 
@@ -179,7 +177,6 @@
 </section>
 
 
-  <!-- Footer -->
   <footer>
     <p>© 2025 Steam Clouds. All rights reserved.</p>
   </footer>
@@ -226,14 +223,12 @@ function openAnswer(a, q) {
 }
 
 
-
   questions.forEach(q => {
     q.addEventListener('click', function () {
       const answer = this.nextElementSibling;
       if (!answer) return;
       const isOpen = this.getAttribute('aria-expanded') === 'true';
 
-      // close others
       document.querySelectorAll('.faq-answer').forEach(a => {
         const otherQ = a.previousElementSibling;
         if (a !== answer && otherQ && otherQ.getAttribute('aria-expanded') === 'true') {
