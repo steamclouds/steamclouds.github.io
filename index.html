@@ -107,19 +107,42 @@
     <p>© 2025 Steam Clouds. All rights reserved.</p>
   </footer>
 
-  <script src="assets/js/app.js"></script>
   <script>
-    document.querySelectorAll(".faq-question").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        btn.classList.toggle("active");
-        let content=btn.nextElementSibling;
-        if(content.style.maxHeight){
-          content.style.maxHeight=null;
-        }else{
-          content.style.maxHeight=content.scrollHeight+"px";
-        }
-      });
+document.addEventListener("DOMContentLoaded", function () {
+  const faqButtons = document.querySelectorAll(".faq-question");
+  if (!faqButtons.length) return;
+
+  faqButtons.forEach(btn => {
+    if (!btn.querySelector('.faq-chevron')) {
+      const chev = document.createElement('span');
+      chev.className = 'faq-chevron';
+      chev.innerText = '▾';
+      btn.appendChild(chev);
+    }
+
+    const content = btn.nextElementSibling;
+    if (content) {
+      btn.setAttribute('aria-expanded', 'false');
+      content.setAttribute('aria-hidden', 'true');
+      content.style.maxHeight = null;
+    }
+
+    btn.addEventListener('click', function () {
+      const answer = btn.nextElementSibling;
+      if (!answer) return;
+
+      const isOpen = btn.classList.toggle('active');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      answer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+
+      if (isOpen) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      } else {
+        answer.style.maxHeight = null;
+      }
     });
-  </script>
+  });
+});
+</script>
 </body>
 </html>
