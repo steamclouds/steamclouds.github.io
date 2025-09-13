@@ -26,6 +26,8 @@ body {
   color: var(--text);
   line-height: 1.6;
   transition: background 0.25s, color 0.25s;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Header */
@@ -65,6 +67,11 @@ body {
   cursor: pointer;
 }
 
+/* Main layout & grids */
+main {
+  padding: 2rem;
+}
+
 /* Generic grid for releases & features */
 .release-grid,
 .feature-grid {
@@ -72,6 +79,8 @@ body {
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   margin-top: 1rem;
+  grid-auto-rows: 1fr; /* make rows uniform */
+  align-items: start;
 }
 
 /* Card base (release / feature) */
@@ -82,6 +91,10 @@ body {
   padding: 1rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   transition: transform .18s ease, box-shadow .18s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 .release-card:hover,
 .feature-card:hover {
@@ -95,12 +108,18 @@ body {
   margin: 0 0 .5rem 0;
   color: var(--text);
   font-size: 1.05rem;
+  line-height: 1.18;
 }
 .release-card p,
 .feature-card p {
   margin: 0;
   color: #666;
   font-size: .95rem;
+}
+.feature-card .feature-body {
+  margin-top: .5rem;
+  color: #7a7f86;
+  flex: 1 1 auto; /* allow description to grow so cards align */
 }
 
 /* Release card specific */
@@ -116,16 +135,12 @@ body {
 
 /* Features section wrapper */
 .features {
-  padding: 2rem;
-}
-.section-box.features {
-  margin-top: 0; /* use common section-box spacing below */
+  padding: 2rem 1rem;
 }
 
 /* Tutorial styling (supports both plain ol and .tutorial-list/.tutorial-step) */
-.tutorial,
-.tutorial.section-box {
-  padding: 2rem;
+.tutorial {
+  padding: 2rem 1rem;
 }
 .tutorial h2 {
   margin-bottom: 1rem;
@@ -149,9 +164,8 @@ body {
 }
 
 /* Safety section */
-.safety,
-.safety.section-box {
-  padding: 2rem;
+.safety {
+  padding: 2rem 1rem;
 }
 .safety h2 {
   margin-bottom: 1rem;
@@ -184,6 +198,23 @@ body {
   color: var(--accent);
 }
 
+/* Ads box simple styling */
+.ads {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+.ads-box {
+  width: 100%;
+  max-width: 1100px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
 /* Footer */
 footer {
   text-align: center;
@@ -198,4 +229,5 @@ footer {
   .section-box { padding: 1rem; margin: 1rem; }
   .release-card, .feature-card, .tutorial ol li, .tutorial .tutorial-step, .safety .safety-card { padding: .8rem; }
   .header { padding: .75rem 1rem; }
+  .ads-box { padding: .6rem; }
 }
