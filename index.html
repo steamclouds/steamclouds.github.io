@@ -119,11 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isOpen) {
         content.style.maxHeight = content.scrollHeight + "px";
         var label = btn.querySelector(".toggle-label");
-        if (label) label.textContent = "Sembunyikan langkah";
+        if (label) label.textContent = "Close";
       } else {
         content.style.maxHeight = null;
         var label2 = btn.querySelector(".toggle-label");
-        if (label2) label2.textContent = "Lihat langkah";
+        if (label2) label2.textContent = "Open";
       }
     }
   });
