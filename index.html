@@ -240,26 +240,23 @@
 
   <script>
 (function(){
-  // Toggle overlay
   function setLocked(state){
-    var overlay = document.querySelector('.adblock-overlay');
-    if(!overlay) return;
+    var o = document.querySelector('.adblock-overlay');
+    if(!o) return;
     if(state){
       document.documentElement.classList.add('adgate-active');
-      overlay.setAttribute('aria-hidden','false');
-      overlay.style.display = 'flex';
-      try{ overlay.querySelector('.adblock-panel').focus(); } catch(e){}
+      o.setAttribute('aria-hidden','false');
+      o.style.display = 'flex';
+      try{ o.querySelector('.adblock-panel').focus(); } catch(e){}
       document.body.style.overflow = 'hidden';
     } else {
       document.documentElement.classList.remove('adgate-active');
-      overlay.setAttribute('aria-hidden','true');
-      overlay.style.display = 'none';
+      o.setAttribute('aria-hidden','true');
+      o.style.display = 'none';
       document.body.style.overflow = '';
-      try{ localStorage.setItem('adgate_permanent_allow','1'); } catch(e){}
     }
   }
 
-  // Bait div detection
   function createBait(){
     var d = document.createElement('div');
     d.className = 'adsbox bait';
@@ -270,53 +267,30 @@
     return blocked;
   }
 
-  // Check if fpyf8 script is blocked
-  async function probeScript(url,timeout=1000){
-    return new Promise(res=>{
-      var s = document.createElement('script');
-      s.src = url;
-      s.async = true;
-      var done = false;
-      var t = setTimeout(()=>{ if(!done){ done=true; cleanup(); res(false); } }, timeout);
-      function cleanup(){ try{s.parentNode.removeChild(s);}catch(e){} clearTimeout(t); }
-      s.onload = ()=>{ if(!done){ done=true; cleanup(); res(true); } };
-      s.onerror = ()=>{ if(!done){ done=true; cleanup(); res(false); } };
-      document.body.appendChild(s);
-    });
-  }
-
-  async function isBlocked(){
-    if(localStorage.getItem('adgate_permanent_allow') === '1') return false;
-    var baitBlocked = createBait();
-    var scriptLoaded = await probeScript('https://fpyf8.com/88/tag.min.js',900);
-    return baitBlocked || !scriptLoaded;
+  async function checkAdBlock(){
+    try{ return createBait(); } catch(e){ return true; }
   }
 
   function attachOverlayHandlers(){
-    var overlay = document.querySelector('.adblock-overlay');
-    if(!overlay) return;
-    var btn = overlay.querySelector('.adblock-show-fallback');
-    if(btn){
-      btn.addEventListener('click', async ()=>{
-        if(!(await isBlocked())){
-          setLocked(false);
-        } else {
-          alert('AdBlock still detected. Please whitelist this site then retry.');
-        }
+    var o = document.querySelector('.adblock-overlay');
+    if(!o) return;
+    var re = o.querySelector('.adblock-show-fallback');
+    if(re){
+      re.addEventListener('click', function(){
+        setLocked(false);
+        location.reload();
       });
     }
   }
 
-  document.addEventListener('DOMContentLoaded', async ()=>{
-    if(await isBlocked()){
+  document.addEventListener('DOMContentLoaded', async function(){
+    if(await checkAdBlock()){
       setLocked(true);
       attachOverlayHandlers();
     }
   });
-
 })();
 </script>
-
 
 </body>
 </html> 
