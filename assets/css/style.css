@@ -393,6 +393,48 @@ body.dark{
 }
 
 
+.tutorial-toggle {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  padding:10px 14px;
+  background: none;
+  border: 1px solid var(--card-border);
+  border-radius:10px;
+  color:var(--text);
+  cursor:pointer;
+  font-weight:700;
+  margin-top:8px;
+}
+
+.tutorial-toggle .toggle-chevron {
+  display:inline-block;
+  width:18px;
+  height:18px;
+  transform:rotate(0deg);
+  transition:transform .25s ease;
+  line-height:18px;
+  text-align:center;
+}
+
+.tutorial-toggle.active .toggle-chevron {
+  transform:rotate(180deg);
+}
+
+.tutorial-answer {
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .32s ease;
+  padding:0 14px;
+}
+
+.tutorial-answer .tutorial-list {
+  margin-top:12px;
+  margin-bottom:12px;
+}
+
 
 
 
