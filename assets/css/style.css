@@ -19,13 +19,13 @@ body.dark {
   --accent: #60a5fa;
 }
 
-/* Layout */
+/* Base */
 body {
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.25s, color 0.25s;
 }
 
 /* Header */
@@ -35,75 +35,153 @@ body {
   align-items: center;
   padding: 1rem 2rem;
   background: var(--card-bg);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
+  z-index: 10;
 }
 .header .logo {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 .header nav {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
 }
 .header input {
   padding: 0.4rem 0.6rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: transparent;
+  color: var(--text);
 }
 .header button {
   padding: 0.4rem 0.6rem;
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: white;
+  color: #fff;
   cursor: pointer;
-  transition: 0.3s;
-}
-.header button:hover {
-  opacity: 0.85;
 }
 
-/* Main */
-main {
-  padding: 2rem;
-}
-.release-grid {
+/* Generic grid for releases & features */
+.release-grid,
+.feature-grid {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 1rem;
 }
-.release-card {
+
+/* Card base (release / feature) */
+.release-card,
+.feature-card {
   background: var(--card-bg);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: transform 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.release-card:hover {
-  transform: translateY(-4px);
+.release-card:hover,
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
-.release-card h2 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+
+/* Titles & text inside cards */
+.release-card h2,
+.feature-card h3 {
+  margin: 0 0 .5rem 0;
+  color: var(--text);
+  font-size: 1.05rem;
 }
-.release-card p {
-  font-size: 0.9rem;
+.release-card p,
+.feature-card p {
+  margin: 0;
   color: #666;
+  font-size: .95rem;
 }
+
+/* Release card specific */
 .release-card button {
-  margin-top: 0.8rem;
-  padding: 0.4rem 0.8rem;
+  margin-top: .8rem;
+  padding: .4rem .8rem;
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: white;
+  color: #fff;
   cursor: pointer;
-  transition: 0.3s;
 }
-.release-card button:hover {
-  opacity: 0.85;
+
+/* Features section wrapper */
+.features {
+  padding: 2rem;
+}
+.section-box.features {
+  margin-top: 0; /* use common section-box spacing below */
+}
+
+/* Tutorial styling (supports both plain ol and .tutorial-list/.tutorial-step) */
+.tutorial,
+.tutorial.section-box {
+  padding: 2rem;
+}
+.tutorial h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+.tutorial ol,
+.tutorial .tutorial-list {
+  margin-top: 1rem;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: .75rem;
+}
+.tutorial ol li,
+.tutorial .tutorial-step {
+  background: var(--card-bg);
+  padding: .9rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  list-style: decimal inside;
+}
+
+/* Safety section */
+.safety,
+.safety.section-box {
+  padding: 2rem;
+}
+.safety h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+.safety p,
+.safety .safety-card {
+  margin-bottom: 1rem;
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* Section container box (wraps Features / Tutorial / Safety) */
+.section-box {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.06);
+  margin: 2rem auto;
+  max-width: 1100px;
+}
+.section-box h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.6rem;
+  color: var(--accent);
 }
 
 /* Footer */
@@ -112,95 +190,12 @@ footer {
   padding: 1rem;
   background: var(--card-bg);
   margin-top: 2rem;
-  font-size: 0.85rem;
+  font-size: .875rem;
 }
 
-/* Features */
-.features {
-  padding: 2rem;
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .section-box { padding: 1rem; margin: 1rem; }
+  .release-card, .feature-card, .tutorial ol li, .tutorial .tutorial-step, .safety .safety-card { padding: .8rem; }
+  .header { padding: .75rem 1rem; }
 }
-.features h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-.feature-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-.feature-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: transform 0.2s;
-}
-.feature-card:hover {
-  transform: translateY(-4px);
-}
-.feature-card h3 {
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-  color: var(--text);
-}
-.feature-card p {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* Tutorial */
-.tutorial {
-  padding: 2rem;
-}
-.tutorial h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-.tutorial ol {
-  padding-left: 1.5rem;
-  display: grid;
-  gap: 0.6rem;
-}
-.tutorial li {
-  background: var(--card-bg);
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* Safety */
-.safety {
-  padding: 2rem;
-}
-.safety h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-.safety p {
-  margin-bottom: 1rem;
-  background: var(--card-bg);
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* Section Container Box */
-.section-box {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-top: 2rem;
-}
-
-/* Judul di dalam kotak */
-.section-box h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  color: var(--accent);
-}
-
-
