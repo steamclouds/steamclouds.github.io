@@ -1,8 +1,4 @@
-
-/* Reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-/* Theme colors */
 :root{
   --bg: #0b0f12;
   --page-bg: #0b0f12;
@@ -17,10 +13,7 @@
   --border-color: #333;
   --text-color: #ffffff;
   --card-hover-bg: #2a2a2a;
-  
 }
-
-
 body.dark{
   --bg: #0b0f12;
   --page-bg: #0b0f12;
@@ -33,8 +26,6 @@ body.dark{
   --card-shadow: 0 14px 40px rgba(2,6,23,0.6);
   --glass: rgba(255,255,255,0.03);
 }
-
-/* Base page */
 html,body{height:100%}
 body{
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -45,16 +36,12 @@ body{
   line-height:1.6;
   transition: background .25s ease, color .25s ease;
 }
-
-/* Container helpers */
 .container {
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
   padding: 20px;
 }
-
-/* Header */
 .header {
   display:flex;
   align-items:center;
@@ -82,8 +69,6 @@ body{
   padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer;
   box-shadow: 0 6px 18px rgba(37,99,235,0.12);
 }
-
-/* Ads box */
 .ads { display:flex; justify-content:center; margin:18px 0; }
 .ads-box {
   width:100%; max-width:1120px; padding:12px; border-radius:12px;
@@ -93,11 +78,7 @@ body{
   color:var(--muted);
   text-align:center;
 }
-
-/* Main layout */
 main { padding: 12px 0 28px; }
-
-/* Release cards grid */
 .release-grid {
   display:grid;
   gap:18px;
@@ -117,8 +98,6 @@ main { padding: 12px 0 28px; }
 .release-card h2{ font-size:1.02rem; margin-bottom:8px; color:var(--text); }
 .release-card p{ color:var(--muted); margin-bottom:8px; font-size:.95rem; }
 .release-card .meta{ color:var(--muted); font-size:.85rem; margin-bottom:10px; }
-
-/* Section container */
 .section-box {
   background: var(--section-bg);
   border-radius: 14px;
@@ -130,13 +109,11 @@ main { padding: 12px 0 28px; }
   transition: background .18s ease, box-shadow .18s ease;
 }
 .section-box h2 { font-size:1.35rem; margin-bottom:14px; color:var(--accent); }
-
-/* Feature grid — uniform rows + equal-height cards */
 .feature-grid {
   display: grid;
   gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  grid-auto-rows: 1fr; /* ensure rows are equal height */
+  grid-auto-rows: 1fr;
   align-items: start;
 }
 .feature-card {
@@ -159,8 +136,6 @@ main { padding: 12px 0 28px; }
 .feature-head .icon { font-size:18px; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background: rgba(255,255,255,0.02); }
 .feature-card h3 { margin:0; font-size:1.02rem; color:var(--text); }
 .feature-card .feature-body { margin-top:10px; color:var(--muted); flex:1 1 auto; }
-
-/* Tutorial list as cards */
 .tutorial .tutorial-list,
 .tutorial ol {
   display:grid;
@@ -178,8 +153,6 @@ main { padding: 12px 0 28px; }
   color: var(--text);
   list-style: decimal inside;
 }
-
-/* Safety cards */
 .safety .safety-cards,
 .safety p {
   margin-top:10px;
@@ -194,19 +167,13 @@ main { padding: 12px 0 28px; }
   color: var(--text);
   line-height:1.5;
 }
-
-/* Footer */
 footer {
   margin-top: 28px;
   padding: 18px 0;
   text-align:center;
   color:var(--muted);
 }
-
-/* Spacing helpers for sections */
 .spacer { height: 18px; }
-
-/* Responsive tweaks */
 @media (max-width: 980px) {
   .header { padding: 12px; border-radius: 8px; }
   .release-grid, .feature-grid { gap: 14px; }
@@ -217,34 +184,27 @@ footer {
   .feature-card, .release-card { padding: 12px; }
   .feature-head .icon { width:28px; height:28px; }
 }
-
-/* variables for card contrast (fallback safe) */
 :root{
   --item-border-strong: rgba(0,0,0,0.08);
   --item-shadow-soft: 0 10px 30px rgba(2,6,23,0.06);
   --item-top-highlight: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
 }
-
 body.dark{
   --item-border-strong: rgba(255,255,255,0.04);
   --item-shadow-soft: 0 14px 40px rgba(2,6,23,0.55);
   --item-top-highlight: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
 }
-
-/* apply stronger border & shadow so cards pop from container */
 .feature-card,
 .release-card,
 .tutorial-step,
 .safety-card {
   border: 1px solid var(--item-border-strong);
   box-shadow: var(--item-shadow-soft);
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); /* subtle lift */
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
   position: relative;
   overflow: hidden;
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
 }
-
-/* stronger hover so users notice elevation */
 .feature-card:hover,
 .release-card:hover,
 .tutorial-step:hover,
@@ -252,8 +212,6 @@ body.dark{
   transform: translateY(-8px);
   box-shadow: 0 22px 56px rgba(2,6,23,0.12);
 }
-
-/* subtle top highlight line to define card edge */
 .feature-card::before,
 .release-card::before,
 .tutorial-step::before,
@@ -268,25 +226,17 @@ body.dark{
   opacity: 0.9;
   pointer-events: none;
 }
-
-
 .feature-card, .release-card, .safety-card, .tutorial-step {
   padding: 16px;
 }
-
-
 .feature-card .feature-body,
 .release-card .meta {
   color: var(--muted);
   flex: 1 1 auto;
 }
-
-
 .section-box { 
   border: 1px solid rgba(0,0,0,0.04);
 }
-
-
 @media (prefers-color-scheme: light) {
   .feature-card,
   .release-card,
@@ -295,15 +245,12 @@ body.dark{
     background: linear-gradient(180deg, #ffffff, #fbfdff);
   }
 }
-
-
 body.dark .feature-card,
 body.dark .release-card,
 body.dark .tutorial-step,
 body.dark .safety-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.006));
 }
-
 .btn {
   display: inline-block;
   padding: 8px 12px;
@@ -318,45 +265,34 @@ body.dark .safety-card {
   transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
   text-align:center;
 }
-
-
 .btn.small { padding: 6px 10px; font-size: .95rem; }
-
-
 .btn:hover { transform: translateY(-3px); filter:brightness(1.03); }
-
 .release-card {
   display:flex;
   flex-direction:column;
   justify-content:space-between;
 }
-
 .release-card .card-actions {
   margin-top: 12px;
   display:flex;
   justify-content:flex-start; 
   gap:8px;
 }
-
 #releases-title { margin-bottom: 12px; color: var(--accent); font-size: 1.35rem; }
-
 .section-box {
   padding: 20px;
 }
-
 .release-notes-list {
   list-style-type: none;
   padding-left: 0;
   margin-top: 8px;
 }
-
 .release-notes-list li {
   position: relative;
   padding-left: 16px;
   margin-bottom: 6px;
   line-height: 1.5;
 }
-
 .release-notes-list li::before {
   content: "•";
   color: var(--accent);
@@ -365,45 +301,36 @@ body.dark .safety-card {
   left: 0;
   top: 0.1em;
 }
-
-
 :root{
   --feature-card-bg: #213036;
   --release-card-bg: #151a1d;
 }
-
 body.dark{
   --feature-card-bg: #294044;
   --release-card-bg: #1a2023;
 }
-
 .feature-card {
   background-image: none !important;
   background-color: var(--feature-card-bg) !important;
   border-color: rgba(255,255,255,0.06) !important;
 }
-
 .release-card,
 .download-card {
   background-image: none !important;
   background-color: var(--release-card-bg) !important;
   border-color: rgba(255,255,255,0.04) !important;
 }
-
 .feature-card::before,
 .release-card::before {
   background: var(--item-top-highlight) !important;
   opacity: 0.9;
 }
-
 .faq {
   margin-top: 24px;
 }
-
 .faq-item {
   margin-bottom: 8px;
 }
-
 .faq-question {
   width: 100%;
   padding: 12px 16px;
@@ -415,36 +342,30 @@ body.dark{
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
   display: flex;
-  align-items: center; 
+  align-items: center;
   gap: 8px;
 }
-
 .faq-question:hover {
   background: rgba(255,255,255,0.01);
   border-color: var(--accent);
 }
-
 .faq-answer {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
   padding: 12px 16px;
   background: var(--card-bg);
-  border-bottom: 1px solid var(--card-border); 
+  border-bottom: 1px solid var(--card-border);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   color: var(--muted);
-  padding-left: 24px; 
+  padding-left: 24px;
 }
-
 .faq-question[aria-expanded="true"] {
   border-bottom: none;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-
 .faq-answer[aria-hidden="false"] {
   max-height: 500px;
 }
-
-
