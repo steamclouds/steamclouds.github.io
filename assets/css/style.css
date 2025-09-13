@@ -112,15 +112,9 @@ main { padding: 12px 0 28px; }
 .feature-grid {
   display: grid;
   gap: 18px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   grid-auto-rows: 1fr;
   align-items: start;
-}
-
-@media (max-width: 640px) {
-  .feature-grid {
-    grid-template-columns: 1fr; 
-  }
 }
 .feature-card {
   display:flex;
@@ -479,3 +473,4 @@ body.dark{
   justify-content: center;
 }
 .adblock-overlay[aria-hidden="false"] { display:flex; }
+
