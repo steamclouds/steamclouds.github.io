@@ -167,31 +167,78 @@
 
   <script src="assets/js/app.js"></script>
   <script>
-  document.querySelectorAll('.faq-question').forEach(question => {
-  question.addEventListener('click', function() {
-    const answer = this.nextElementSibling;
-    const isOpen = this.getAttribute('aria-expanded') === 'true';
-    
-    document.querySelectorAll('.faq-answer[aria-hidden="false"]').forEach(otherAnswer => {
-      if (otherAnswer !== answer) {
-        otherAnswer.style.maxHeight = '0';
-        otherAnswer.setAttribute('aria-hidden', 'true');
-        const otherQuestion = otherAnswer.previousElementSibling;
-        if (otherQuestion) {
-          otherQuestion.setAttribute('aria-expanded', 'false');
+document.addEventListener('DOMContentLoaded', () => {
+  const questions = document.querySelectorAll('.faq-question');
+
+  // init: make sure answers have aria-hidden and start closed
+  document.querySelectorAll('.faq-answer').forEach(a => {
+    if (!a.hasAttribute('aria-hidden')) a.setAttribute('aria-hidden', 'true');
+    a.style.maxHeight = '0';
+    a.classList.remove('open');
+  });
+
+  // helper: close answer with smooth animation
+  function closeAnswer(a, q) {
+    if (!a) return;
+    // if maxHeight is 'none', set it to current scrollHeight so transition can run
+    if (getComputedStyle(a).maxHeight === 'none') {
+      a.style.maxHeight = a.scrollHeight + 'px';
+      // force reflow
+      void a.offsetHeight;
+    }
+    a.style.maxHeight = '0';
+    a.classList.remove('open');
+    a.setAttribute('aria-hidden', 'true');
+    if (q) q.setAttribute('aria-expanded', 'false');
+  }
+
+  // helper: open answer measuring after .open applied
+  function openAnswer(a, q) {
+    if (!a) return;
+    // add class so CSS padding/gap become effective before measurement
+    a.classList.add('open');
+    a.setAttribute('aria-hidden', 'false');
+    if (q) q.setAttribute('aria-expanded', 'true');
+
+    // ensure start from 0 then force reflow
+    a.style.maxHeight = '0';
+    void a.offsetHeight;
+
+    // measure now that .open (and its padding) is applied
+    const measured = a.scrollHeight;
+    const buffer = 16; // safety buffer for margins/gap/padding (tweak if needed)
+    a.style.maxHeight = (measured + buffer) + 'px';
+
+    // after transition, remove inline maxHeight so content can reflow naturally
+    function onEnd(evt) {
+      if (evt.propertyName === 'max-height') {
+        a.style.maxHeight = 'none';
+        a.removeEventListener('transitionend', onEnd);
+      }
+    }
+    a.addEventListener('transitionend', onEnd);
+  }
+
+  questions.forEach(q => {
+    q.addEventListener('click', function () {
+      const answer = this.nextElementSibling;
+      if (!answer) return;
+      const isOpen = this.getAttribute('aria-expanded') === 'true';
+
+      // close others
+      document.querySelectorAll('.faq-answer').forEach(a => {
+        const otherQ = a.previousElementSibling;
+        if (a !== answer && otherQ && otherQ.getAttribute('aria-expanded') === 'true') {
+          closeAnswer(a, otherQ);
         }
+      });
+
+      if (isOpen) {
+        closeAnswer(answer, this);
+      } else {
+        openAnswer(answer, this);
       }
     });
-    
-    this.setAttribute('aria-expanded', !isOpen);
-    answer.setAttribute('aria-hidden', isOpen);
-    
-    if (!isOpen) {
-      const contentHeight = answer.scrollHeight;
-      answer.style.maxHeight = contentHeight + 'px';
-    } else {
-      answer.style.maxHeight = '0';
-    }
   });
 });
 </script>
