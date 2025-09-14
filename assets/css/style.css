@@ -734,14 +734,13 @@ body.dark{
   flex-direction: column; 
 }
 
-.support-section .card,
-.socials-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 8px 20px rgba(2,6,23,0.04);
-  padding: 16px 16px 24px; /* bawah diperbesar */
-  border-radius: 12px;
-  width: 100%;
-  box-sizing: border-box;
+.support-section .card {
+  padding: 20px;       
+  padding-bottom: 30px; 
+}
+
+.support-section .card .buttons,
+.support-section .card p:last-child {
+  margin-bottom: 10px; 
 }
 
