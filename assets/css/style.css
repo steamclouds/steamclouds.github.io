@@ -744,3 +744,11 @@ body.dark{
   margin-bottom: 10px; 
 }
 
+.support-section {
+  margin-bottom: 40px; 
+}
+
+.support-section .card {
+  padding: 20px 20px 30px; 
+}
+
