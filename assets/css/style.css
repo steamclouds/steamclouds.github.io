@@ -669,5 +669,31 @@ body.dark{
   }
 }
 
+.section-box {
+margin: 12px auto;
+padding: 18px;
+}
+
+.release-grid {
+margin-bottom: 12px;
+}
+
+.support-section,
+.donate-section {
+margin: 6px auto 12px;
+padding: 0 20px;
+box-sizing: border-box;
+}
+
+.support-section .cards,
+.donate-inner {
+gap: 14px;
+}
+
+.spacer { height: 12px; }
+
+.section-box + .section-box { margin-top: 12px; }
+
+.features.section-box { margin-top: 12px; }
 
 
