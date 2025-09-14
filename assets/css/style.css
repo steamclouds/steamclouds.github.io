@@ -720,6 +720,20 @@ body.dark{
   }
 }
 
+.support-section .cards {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: stretch;  
+}
+
+.support-section .card,
+.socials-card {
+  height: 100%;           
+  display: flex;
+  flex-direction: column; 
+}
+
 
 
 
