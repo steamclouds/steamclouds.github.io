@@ -490,7 +490,7 @@ body.dark{
 
 .donate-inner {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   align-items: start;
   width: 100%;
@@ -599,5 +599,6 @@ body.dark{
 .donate-buttons .qris-btn {
   background: #22c55e; 
 }
+
 
 
