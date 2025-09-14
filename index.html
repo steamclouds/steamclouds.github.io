@@ -394,56 +394,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script>
-(function(){
-  var MONETAG_FREQ_MS = 5 * 60 * 1000; // 5 menit
-  function canShowMonetag(){
-    try{
-      var t = Number(localStorage.getItem('lastMonetagShown')||0);
-      return Date.now() - t > MONETAG_FREQ_MS;
-    } catch(e){ return true; }
-  }
-  function markMonetagShown(){
-    try{ localStorage.setItem('lastMonetagShown', String(Date.now())); }catch(e){}
-  }
-
-  function createBait(){
-    var d = document.createElement('div');
-    d.className = 'adsbox bait';
-    d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';
-    document.body.appendChild(d);
-    var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none');
-    document.body.removeChild(d);
-    return blocked;
-  }
-
-  async function checkAdBlock(){
-    try{ return createBait(); } catch(e){ return true; }
-  }
-
-  document.addEventListener('DOMContentLoaded', async function(){
-    if(await checkAdBlock()){
-      // kalau adblock aktif → overlay
-      var o = document.querySelector('.adblock-overlay');
-      if(o){
-        document.documentElement.classList.add('adgate-active');
-        o.setAttribute('aria-hidden','false');
-        o.style.display = 'flex';
-      }
-    } else {
-      // hanya load Monetag kalau boleh tampil
-      if(canShowMonetag()){
-        var s = document.createElement('script');
-        s.src = "https://fpyf8.com/88/tag.min.js";
-        s.async = true;
-        s.dataset.zone = "170766";
-        document.body.appendChild(s);
-        markMonetagShown();
-      }
-    }
-  });
-})();
-</script>
-
 </body>
 </html>
