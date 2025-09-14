@@ -670,6 +670,56 @@ body.dark{
 }
 
 
+.support-section .cards,
+.donate-inner,
+.donate-section .donate-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.support-section .card,
+.donate-card,
+.socials-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.support-section .card .card-body,
+.donate-card .card-body,
+.socials-card .card-body {
+  flex: 1 1 auto;
+  margin-bottom: 12px;
+}
+
+.donate-actions,
+.donate-buttons,
+.support-section .card .card-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.support-section .card h3,
+.donate-card h3,
+.socials-card h3 {
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 880px) {
+  .support-section .cards,
+  .donate-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 
 
