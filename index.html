@@ -414,6 +414,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
-
+<script>
+document.querySelectorAll('.qris-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector('#qris-modal').style.display = 'flex';
+  });
+});
+document.querySelector('.close-modal').addEventListener('click', () => {
+  document.querySelector('#qris-modal').style.display = 'none';
+});
+</script>
 </body>
 </html>
