@@ -361,59 +361,6 @@
     });
   })();
   </script>
-  <script>
-(function(){
-  function setLocked(state){
-    var o = document.querySelector('.adblock-overlay');
-    if(!o) return;
-    if(state){
-      document.documentElement.classList.add('adgate-active');
-      o.setAttribute('aria-hidden','false');
-      o.style.display = 'flex';
-      try{ o.querySelector('.adblock-panel').focus(); } catch(e){}
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.documentElement.classList.remove('adgate-active');
-      o.setAttribute('aria-hidden','true');
-      o.style.display = 'none';
-      document.body.style.overflow = '';
-    }
-  }
-
-  function createBait(){
-    var d = document.createElement('div');
-    d.className = 'adsbox bait';
-    d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;';
-    document.body.appendChild(d);
-    var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none');
-    document.body.removeChild(d);
-    return blocked;
-  }
-
-  async function checkAdBlock(){
-    try{ return createBait(); } catch(e){ return true; }
-  }
-
-  function attachOverlayHandlers(){
-    var o = document.querySelector('.adblock-overlay');
-    if(!o) return;
-    var re = o.querySelector('.adblock-show-fallback');
-    if(re){
-      re.addEventListener('click', function(){
-        setLocked(false);
-        location.reload();
-      });
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', async function(){
-    if(await checkAdBlock()){
-      setLocked(true);
-      attachOverlayHandlers();
-    }
-  });
-})();
-</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const faqQuestions = document.querySelectorAll('.faq-question');
