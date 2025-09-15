@@ -264,5 +264,84 @@
     });
   });
   </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // MENU TOGGLE (robust)
+  const menuToggle = document.getElementById('menuToggle');
+  const mainMenu = document.getElementById('main-menu');
+
+  if (menuToggle && mainMenu) {
+    // ensure menu starts hidden
+    mainMenu.hidden = mainMenu.hasAttribute('hidden');
+
+    menuToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      mainMenu.hidden = expanded; // toggle hidden true/false
+      if (!mainMenu.hidden) {
+        // focus first link for accessibility
+        const first = mainMenu.querySelector('a, button');
+        if (first) first.focus();
+      }
+    });
+
+    // close menu if click outside
+    document.addEventListener('click', function (e) {
+      if (!menuToggle.contains(e.target) && !mainMenu.contains(e.target)) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        mainMenu.hidden = true;
+      }
+    });
+
+    // close with Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        mainMenu.hidden = true;
+      }
+    });
+  }
+
+  // FAQ toggle fallback (in case original script didn't run)
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  faqQuestions.forEach(q => {
+    q.addEventListener('click', () => {
+      const ans = q.nextElementSibling;
+      if (!ans) return;
+      const open = ans.classList.toggle('open');
+      ans.style.maxHeight = open ? ans.scrollHeight + 'px' : null;
+      ans.setAttribute('aria-hidden', open ? 'false' : 'true');
+      q.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+      // close other FAQs (optional)
+      document.querySelectorAll('.faq-answer.open').forEach(a => {
+        if (a !== ans) {
+          a.classList.remove('open');
+          a.style.maxHeight = null;
+          a.setAttribute('aria-hidden', 'true');
+          const btn = a.previousElementSibling;
+          if (btn && btn.classList.contains('faq-question')) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  });
+
+  // Ensure ad overlay is hidden by default (so it doesn't capture clicks)
+  const overlay = document.querySelector('.adblock-overlay');
+  if (overlay) {
+    // if overlay aria-hidden attribute not set, set to true (so it won't block)
+    if (!overlay.hasAttribute('aria-hidden') || overlay.getAttribute('aria-hidden') === 'true') {
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // If page was accidentally set to adgate-active, remove for debugging/dev
+  // (remove the next line in production if adgate feature is desired)
+  document.documentElement.classList.remove('adgate-active');
+});
+</script>
+
 </body>
 </html>
