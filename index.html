@@ -4,77 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Steam Clouds</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
   <script src="https://fpyf8.com/88/tag.min.js" data-zone="170766" async data-cfasync="false"></script>
-  
-  <style>
-    section[id] { scroll-margin-top: 84px; }
-    .menu-toggle {
-      display: inline-flex; align-items:center; gap:8px;
-      background: transparent; border: 1px solid rgba(255,255,255,0.06);
-      color: var(--text, #e6eef6); padding: 8px 12px; border-radius:10px;
-      cursor:pointer; font-weight:600; backdrop-filter: blur(6px);
-    }
-    .main-menu { list-style:none; margin:0; padding:8px; position:absolute; right:16px; top:64px; width:220px;
-      background: var(--card-bg,#13181b); border-radius:10px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-      border:1px solid rgba(255,255,255,0.03); z-index:999; display:grid; gap:6px;
-    }
-    .main-menu[hidden]{ display:none; }
-    .main-menu a { display:block; padding:8px 10px; text-decoration:none; color:var(--text,#e6eef6); border-radius:8px; }
-    .main-menu a:hover, .main-menu a:focus { background: rgba(255,255,255,0.02); outline:none; }
-
-    .ad-block { display:flex; justify-content:center; padding:1rem; margin:0.75rem 0; }
-    .ad-container { width:100%; max-width:980px; position:relative; border-radius:12px; overflow:hidden;
-      background: var(--card-bg,#13181b); box-shadow:0 8px 30px rgba(3,6,10,0.6); padding:0.5rem;
-    }
-    .ad-close { position:absolute; right:8px; top:8px; background:rgba(0,0,0,0.35); border:none; color:#fff;
-      width:34px; height:34px; border-radius:8px; font-size:20px; line-height:1; cursor:pointer; z-index:30;
-      backdrop-filter: blur(4px);
-    }
-    .ad-label { position:absolute; left:8px; top:10px; font-size:12px; padding:4px 8px; background:rgba(255,255,255,0.04);
-      border-radius:999px; color: var(--muted,#94a3b8); z-index:20;
-    }
-    .ad-container ins.adsbygoogle, .ad-container .ad-fallback img { display:block; width:100%; height:auto; border-radius:8px; }
-    .ad-container .ad-fallback { display:none; }
-    .ad-container.show-fallback .ad-fallback { display:block; }
-    .ad-container.show-fallback ins.adsbygoogle { display:none; }
-
-    .adblock-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-      background: rgba(4,6,8,0.6); z-index:1200; padding:24px; transition:opacity 220ms ease; opacity:0; pointer-events:none;
-    }
-    .adblock-overlay[aria-hidden="false"] { opacity:1; pointer-events:auto; }
-    .adblock-panel { width:100%; max-width:720px; background:var(--page-bg,#0b0f12); color:var(--text,#e6eef6);
-      border-radius:12px; padding:20px; box-shadow:0 10px 40px rgba(0,0,0,0.6); position:relative;
-    }
-    .adblock-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-    .adblock-actions button { padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; cursor:pointer; }
-    .adblock-close { position:absolute; right:10px; top:10px; border:none; background:rgba(0,0,0,0.25); color:#fff; width:34px; height:34px; border-radius:8px; }
-
-    @media (max-width:640px){ .main-menu { left:8px; right:8px; top:56px; width:auto; } .adblock-panel { padding:14px; border-radius:8px; } }
-
-    .adgate-active header,
-    .adgate-active main,
-    .adgate-active footer,
-    .adgate-active .release-grid,
-    .adgate-active .features,
-    .adgate-active .faq,
-    .adgate-active .safety {
-      pointer-events: none !important;
-      user-select: none !important;
-      filter: blur(2px);
-      opacity: 0.9;
-    }
-
-    .adblock-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .adblock-overlay[aria-hidden="false"] { display:flex; }
-  </style>
 </head>
 <body>
   <header class="header">
