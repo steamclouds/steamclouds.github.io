@@ -191,156 +191,168 @@
 
   <script src="assets/js/app.js"></script>
 
-  <!-- Inline helpers: menu toggle + FAQ (accessible) -->
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // MENU TOGGLE
-    const menuToggle = document.getElementById('menuToggle');
-    const mainMenu = document.getElementById('main-menu');
+ <script>
 
-    function openMenu() {
-      mainMenu.hidden = false;
-      menuToggle.setAttribute('aria-expanded', 'true');
-      // Optional: focus first link
-      const first = mainMenu.querySelector('[role="menuitem"]');
-      if(first) first.focus();
-      document.addEventListener('click', outsideClickHandler);
-      document.addEventListener('keydown', escHandler);
-    }
-    function closeMenu() {
-      mainMenu.hidden = true;
-      menuToggle.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', outsideClickHandler);
-      document.removeEventListener('keydown', escHandler);
-    }
-    function outsideClickHandler(e) {
-      if(!mainMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-        closeMenu();
+(function () {
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = $('#menuToggle');
+    const mainMenu = $('#main-menu');
+
+    if (menuToggle && mainMenu) {
+      mainMenu.hidden = mainMenu.hasAttribute('hidden') || mainMenu.hidden === true;
+      if (!mainMenu.hasAttribute('role')) mainMenu.setAttribute('role', 'menu');
+      if (!menuToggle.hasAttribute('aria-expanded')) menuToggle.setAttribute('aria-expanded', 'false');
+
+      function openMenu() {
+        mainMenu.hidden = false;
+        menuToggle.setAttribute('aria-expanded', 'true');
+        const first = mainMenu.querySelector('[role="menuitem"], a, button');
+        if (first) first.focus();
+        document.addEventListener('click', outsideClick);
+        document.addEventListener('keydown', onKeyDown);
       }
+      function closeMenu() {
+        mainMenu.hidden = true;
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('click', outsideClick);
+        document.removeEventListener('keydown', onKeyDown);
+      }
+
+      function outsideClick(e) {
+        if (!menuToggle.contains(e.target) && !mainMenu.contains(e.target)) closeMenu();
+      }
+      function onKeyDown(e) {
+        if (e.key === 'Escape') return closeMenu();
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          const items = Array.from(mainMenu.querySelectorAll('[role="menuitem"], a, button'));
+          if (!items.length) return;
+          const idx = items.indexOf(document.activeElement);
+          let next = 0;
+          if (e.key === 'ArrowDown') next = (idx + 1) % items.length;
+          if (e.key === 'ArrowUp') next = (idx - 1 + items.length) % items.length;
+          items[next].focus();
+          e.preventDefault();
+        }
+      }
+
+      menuToggle.addEventListener('click', e => {
+        e.stopPropagation();
+        const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        if (expanded) closeMenu(); else openMenu();
+      });
+
+      mainMenu.addEventListener('click', e => {
+        const link = e.target.closest('a[role="menuitem"], a, button');
+        if (link) closeMenu();
+      });
     }
-    function escHandler(e){
-      if(e.key === 'Escape') closeMenu();
-    }
 
-    menuToggle.addEventListener('click', function(e){
-      e.stopPropagation();
-      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      if(expanded) closeMenu(); else openMenu();
-    });
+    const faqContainer = $('.faq');
+    if (faqContainer) {
+      faqContainer.addEventListener('click', e => {
+        const btn = e.target.closest('.faq-question');
+        if (!btn) return;
+        const answer = btn.nextElementSibling;
+        if (!answer || !answer.classList.contains('faq-answer')) return;
 
-    // Close menu when clicking any menu link
-    mainMenu.querySelectorAll('a[role="menuitem"]').forEach(a => {
-      a.addEventListener('click', () => closeMenu());
-    });
-
-    // FAQ toggle (existing behaviour but inside same DOMContentLoaded)
-    const faqQuestions = document.querySelectorAll('.faq-question');
-    faqQuestions.forEach(question => {
-      question.addEventListener('click', () => {
-        const answer = question.nextElementSibling;
         const isOpen = answer.classList.contains('open');
 
-        // Tutup semua FAQ lain (optional)
-        document.querySelectorAll('.faq-answer.open').forEach(a => {
-          a.classList.remove('open');
-          a.style.maxHeight = null;
-          a.setAttribute('aria-hidden', 'true');
-          const btn = a.previousElementSibling;
-          if(btn && btn.classList.contains('faq-question')) btn.setAttribute('aria-expanded','false');
+       $$('.faq .faq-answer.open').forEach(a => {
+          if (a !== answer) {
+            a.classList.remove('open');
+            a.style.maxHeight = null;
+            a.setAttribute('aria-hidden', 'true');
+            const prevBtn = a.previousElementSibling;
+            if (prevBtn && prevBtn.classList.contains('faq-question')) prevBtn.setAttribute('aria-expanded', 'false');
+          }
         });
 
-        if(!isOpen){
+        if (!isOpen) {
           answer.classList.add('open');
-          answer.style.maxHeight = answer.scrollHeight + "px";
+          const h = answer.scrollHeight;
+          answer.style.maxHeight = h + 'px';
           answer.setAttribute('aria-hidden', 'false');
-          question.setAttribute('aria-expanded', 'true');
+          btn.setAttribute('aria-expanded', 'true');
         } else {
           answer.classList.remove('open');
           answer.style.maxHeight = null;
           answer.setAttribute('aria-hidden', 'true');
-          question.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-expanded', 'false');
         }
       });
-    });
-  });
-  </script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  // MENU TOGGLE (robust)
-  const menuToggle = document.getElementById('menuToggle');
-  const mainMenu = document.getElementById('main-menu');
 
-  if (menuToggle && mainMenu) {
-    // ensure menu starts hidden
-    mainMenu.hidden = mainMenu.hasAttribute('hidden');
-
-    menuToggle.addEventListener('click', function (e) {
-      e.stopPropagation();
-      const expanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', String(!expanded));
-      mainMenu.hidden = expanded; // toggle hidden true/false
-      if (!mainMenu.hidden) {
-        // focus first link for accessibility
-        const first = mainMenu.querySelector('a, button');
-        if (first) first.focus();
-      }
-    });
-
-    // close menu if click outside
-    document.addEventListener('click', function (e) {
-      if (!menuToggle.contains(e.target) && !mainMenu.contains(e.target)) {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        mainMenu.hidden = true;
-      }
-    });
-
-    // close with Escape
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        mainMenu.hidden = true;
-      }
-    });
-  }
-
-  // FAQ toggle fallback (in case original script didn't run)
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  faqQuestions.forEach(q => {
-    q.addEventListener('click', () => {
-      const ans = q.nextElementSibling;
-      if (!ans) return;
-      const open = ans.classList.toggle('open');
-      ans.style.maxHeight = open ? ans.scrollHeight + 'px' : null;
-      ans.setAttribute('aria-hidden', open ? 'false' : 'true');
-      q.setAttribute('aria-expanded', open ? 'true' : 'false');
-
-      // close other FAQs (optional)
-      document.querySelectorAll('.faq-answer.open').forEach(a => {
-        if (a !== ans) {
-          a.classList.remove('open');
-          a.style.maxHeight = null;
-          a.setAttribute('aria-hidden', 'true');
-          const btn = a.previousElementSibling;
-          if (btn && btn.classList.contains('faq-question')) btn.setAttribute('aria-expanded', 'false');
+      $$('.faq .faq-item').forEach(item => {
+        const q = item.querySelector('.faq-question');
+        const a = item.querySelector('.faq-answer');
+        if (q && a) {
+          if (!q.hasAttribute('aria-expanded')) q.setAttribute('aria-expanded', 'false');
+          if (!a.hasAttribute('aria-hidden')) a.setAttribute('aria-hidden', 'true');
+          a.style.maxHeight = a.classList.contains('open') ? a.scrollHeight + 'px' : null;
         }
       });
-    });
-  });
-
-  // Ensure ad overlay is hidden by default (so it doesn't capture clicks)
-  const overlay = document.querySelector('.adblock-overlay');
-  if (overlay) {
-    // if overlay aria-hidden attribute not set, set to true (so it won't block)
-    if (!overlay.hasAttribute('aria-hidden') || overlay.getAttribute('aria-hidden') === 'true') {
-    
     }
-  }
 
-  // If page was accidentally set to adgate-active, remove for debugging/dev
-  // (remove the next line in production if adgate feature is desired)
-  document.documentElement.classList.remove('adgate-active');
-});
+    const overlay = document.querySelector('.adblock-overlay');
+
+    function showOverlay() {
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('adgate-active');
+      document.body.style.overflow = 'hidden';
+    }
+    function hideOverlay(persist = false) {
+      if (!overlay) return;
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('adgate-active');
+      document.body.style.overflow = '';
+      try { if (persist) localStorage.setItem('adblock_overlay_dismissed', '1'); } catch (e) {}
+    }
+
+    if (overlay) {
+      const btn = overlay.querySelector('.adblock-show-fallback');
+      if (btn) btn.addEventListener('click', () => hideOverlay(true));
+
+      try {
+        if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
+          hideOverlay();
+        } else {
+          const testScript = document.createElement('script');
+          testScript.src = 'https://fpyf8.com/88/tag.min.js?_=' + Date.now();
+          testScript.async = true;
+
+          let fired = false;
+          const to = setTimeout(() => { if (!fired) detectBait(); }, 1200);
+
+          testScript.onload = () => { fired = true; clearTimeout(to); hideOverlay(); };
+          testScript.onerror = () => { fired = true; clearTimeout(to); detectBait(); };
+
+          function detectBait() {
+            const bait = document.createElement('div');
+            bait.className = 'ad-bait adsbox ad-unit';
+            bait.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;';
+            document.body.appendChild(bait);
+            const blocked = getComputedStyle(bait).display === 'none' || bait.offsetParent === null || bait.clientHeight === 0;
+            document.body.removeChild(bait);
+            if (blocked) showOverlay(); else hideOverlay();
+          }
+
+          document.head.appendChild(testScript);
+        }
+      } catch (e) {
+        hideOverlay();
+      }
+    }
+
+    document.documentElement.classList.remove('adgate-active');
+  });
+})();
 </script>
+
 
 </body>
 </html>
