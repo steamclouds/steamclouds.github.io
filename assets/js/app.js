@@ -369,6 +369,7 @@ function closeAnswer(btn, answer) {
         });
       }
 
+
       document.addEventListener('keydown', async (e) => {
         if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
           const blocked = await detectAdblock(900);
@@ -392,4 +393,5 @@ function closeAnswer(btn, answer) {
     });
   });
 })();
+
 
