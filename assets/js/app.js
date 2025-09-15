@@ -7,8 +7,8 @@
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({
       '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
+      '<': '<',
+      '>': '>',
       '"': '&quot;',
       "'": '&#39;'
     })[c] || '');
@@ -125,8 +125,6 @@
     fetchGitHubReleases();
   });
 
-  const AD_SCRIPT_SRC = 'https://fpyf8.com/88/tag.min.js';
-
   function onReady(fn) {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', fn);
@@ -180,217 +178,222 @@
   }
 
   function initFAQ() {
-  try {
-    const items = Array.from(document.querySelectorAll('.faq-item'));
-    if (!items.length) return;
-
-    items.forEach(item => {
-      const btn = item.querySelector('.faq-question');
-      const answer = item.querySelector('.faq-answer');
-      if (!btn || !answer) return;
-
-      btn.type = 'button';
-      btn.setAttribute('aria-expanded', 'false');
-      answer.setAttribute('aria-hidden', 'true');
-      answer.style.maxHeight = '0px';
-
-      btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        if (!expanded) openAnswer(btn, answer);
-        else closeAnswer(btn, answer);
-      });
-
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          btn.click();
-        }
-      });
-    });
-  } catch (err) {
-    console.error('initFAQ error:', err);
-  }
-}
-
-function openAnswer(btn, answer) {
-  btn.setAttribute('aria-expanded', 'true');
-  answer.setAttribute('aria-hidden', 'false');
-  answer.classList.add('open');
-  answer.style.display = '';
-  const full = answer.scrollHeight;
-  answer.style.maxHeight = full + 'px';
-}
-
-function closeAnswer(btn, answer) {
-  btn.setAttribute('aria-expanded', 'false');
-  answer.setAttribute('aria-hidden', 'true');
-  answer.style.maxHeight = answer.scrollHeight + 'px';
-  requestAnimationFrame(() => { answer.style.maxHeight = '0px'; });
-  const onEnd = function () {
-    answer.classList.remove('open');
-    answer.style.display = '';
-    answer.removeEventListener('transitionend', onEnd);
-  };
-  answer.addEventListener('transitionend', onEnd);
-}
-
-
- function detectAdblock(timeout = 1200) {
-  return new Promise((resolve) => {
     try {
-      let resolved = false;
+      const items = Array.from(document.querySelectorAll('.faq-item'));
+      if (!items.length) return;
 
-      function finish(val) {
-        if (!resolved) {
-          resolved = true;
-          resolve(val);
+      items.forEach(item => {
+        const btn = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        if (!btn || !answer) return;
+
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded', 'false');
+        answer.setAttribute('aria-hidden', 'true');
+        answer.style.maxHeight = '0px';
+
+        btn.addEventListener('click', () => {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          if (!expanded) openAnswer(btn, answer);
+          else closeAnswer(btn, answer);
+        });
+
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    } catch (err) {
+      console.error('initFAQ error:', err);
+    }
+  }
+
+  function openAnswer(btn, answer) {
+    btn.setAttribute('aria-expanded', 'true');
+    answer.setAttribute('aria-hidden', 'false');
+    answer.classList.add('open');
+    answer.style.display = '';
+    const full = answer.scrollHeight;
+    answer.style.maxHeight = full + 'px';
+  }
+
+  function closeAnswer(btn, answer) {
+    btn.setAttribute('aria-expanded', 'false');
+    answer.setAttribute('aria-hidden', 'true');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    requestAnimationFrame(() => { answer.style.maxHeight = '0px'; });
+    const onEnd = function () {
+      answer.classList.remove('open');
+      answer.style.display = '';
+      answer.removeEventListener('transitionend', onEnd);
+    };
+    answer.addEventListener('transitionend', onEnd);
+  }
+
+  function detectAdblock(timeout = 1200) {
+    return new Promise((resolve) => {
+      try {
+        let resolved = false;
+
+        function finish(val) {
+          if (!resolved) {
+            resolved = true;
+            resolve(val);
+          }
         }
+
+        // Cek localStorage terlebih dahulu
+        try {
+          if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
+            finish(false);
+            return;
+          }
+        } catch (e) {}
+
+        // Metode 1: Deteksi dengan bait
+        const bait = document.createElement('div');
+        bait.className = 'ad-bait adsbox ad-unit';
+        bait.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;';
+        document.body.appendChild(bait);
+
+        setTimeout(() => {
+          const style = window.getComputedStyle(bait);
+          const baitBlocked = !style || style.display === 'none' || 
+                             bait.offsetParent === null || 
+                             bait.offsetHeight === 0;
+          
+          if (bait.parentNode) bait.parentNode.removeChild(bait);
+          
+          // Jika bait menunjukkan iklan diblokir, langsung kembalikan true
+          if (baitBlocked) {
+            finish(true);
+            return;
+          }
+          
+          // Metode 2: Deteksi dengan script iklan
+          const testScript = document.createElement('script');
+          testScript.src = 'https://fpyf8.com/88/tag.min.js?_=' + Date.now();
+          testScript.async = true;
+          
+          let scriptTimeout = setTimeout(() => {
+            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
+            finish(true); // Anggap diblokir jika tidak ada respons dalam waktu yang ditentukan
+          }, timeout);
+          
+          testScript.onload = () => {
+            clearTimeout(scriptTimeout);
+            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
+            finish(false); // Iklan berhasil dimuat, berarti tidak ada adblock
+          };
+          
+          testScript.onerror = () => {
+            clearTimeout(scriptTimeout);
+            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
+            finish(true); // Gagal memuat script, berarti adblock aktif
+          };
+          
+          document.head.appendChild(testScript);
+        }, 50);
+      } catch (err) {
+        console.error('detectAdblock error', err);
+        resolve(false); // Jika terjadi error, anggap tidak ada adblock
+      }
+    });
+  }
+
+  function initAdblockOverlay() {
+    try {
+      const overlay = document.querySelector('.adblock-overlay');
+      const panel = overlay ? overlay.querySelector('.adblock-panel') : null;
+      const retryBtn = overlay ? overlay.querySelector('.adblock-show-fallback') : null;
+
+      if (!overlay) return;
+
+      function showOverlay() {
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('adgate-active');
+        document.body.style.overflow = 'hidden';
+        if (panel) panel.focus();
       }
 
-      const bait = document.createElement('div');
-      bait.className = 'ad-bait-detect';
-      bait.style.cssText = 'width:1px;height:1px;position:fixed;left:-9999px;top:-9999px;';
-      document.body.appendChild(bait);
-
-      setTimeout(() => {
-        const style = window.getComputedStyle(bait);
-        const baitBlocked = !style || style.display === 'none' || bait.offsetParent === null || bait.offsetHeight === 0;
-        if (bait.parentNode) bait.parentNode.removeChild(bait);
-        if (baitBlocked) {
-          console.log('detectAdblock: bait indicates blocked');
-        } else {
-          console.log('detectAdblock: bait indicates not blocked');
-        }
-
-        const img = new Image();
-        let to = setTimeout(() => {
-          img.onload = img.onerror = null;
-          if (!resolved) finish(baitBlocked ? true : true);
-        }, timeout);
-
-        img.onload = function () {
-          clearTimeout(to);
-          console.log('detectAdblock: image probe loaded');
-          finish(false);
-        };
-        img.onerror = function () {
-          clearTimeout(to);
-          console.log('detectAdblock: image probe failed, trying script probe');
-          try {
-            const s = document.createElement('script');
-            s.async = true;
-            s.src = AD_SCRIPT_SRC + '?r=' + Date.now() + Math.random().toString(36).slice(2,8);
-            let scResolved = false;
-            s.onload = function () {
-              if (!scResolved) {
-                scResolved = true;
-                if (s.parentNode) s.parentNode.removeChild(s);
-                console.log('detectAdblock: script probe loaded');
-                finish(false);
-              }
-            };
-            s.onerror = function () {
-              if (!scResolved) {
-                scResolved = true;
-                if (s.parentNode) s.parentNode.removeChild(s);
-                console.log('detectAdblock: script probe blocked');
-                finish(true);
-              }
-            };
-            setTimeout(() => {
-              if (!scResolved) {
-                scResolved = true;
-                if (s.parentNode) s.parentNode.removeChild(s);
-                console.log('detectAdblock: script probe timeout');
-                finish(true);
-              }
-            }, timeout);
-            (document.head || document.documentElement).appendChild(s);
-          } catch (e) {
-            console.log('detectAdblock: script probe error', e);
-            finish(true);
-          }
-        };
-
-        img.src = 'https://www.gstatic.com/generate_204?r=' + Date.now();
-      }, 60);
-    } catch (err) {
-      console.error('detectAdblock error', err);
-      resolve(true);
-    }
-  });
-}
-
-function initAdblockOverlay() {
-  try {
-    const overlay = document.querySelector('.adblock-overlay');
-    const panel = overlay ? overlay.querySelector('.adblock-panel') : null;
-    const retryBtn = overlay ? overlay.querySelector('.adblock-show-fallback') : null;
-
-    if (!overlay) return;
-
-    async function initialCheck() {
-      const blocked = await detectAdblock();
-      if (blocked) showOverlay();
-      else hideOverlay();
-    }
-
-    function showOverlay() {
-      overlay.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('adgate-active');
-      if (panel && typeof panel.focus === 'function') panel.focus();
-      overlay.style.pointerEvents = 'auto';
-    }
-
-    function hideOverlay() {
-      overlay.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('adgate-active');
-      overlay.style.pointerEvents = '';
-    }
-
-    if (retryBtn) {
-      retryBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        retryBtn.setAttribute('disabled', 'true');
-        const originalText = retryBtn.textContent || 'Try again';
-        retryBtn.textContent = 'Checking...';
+      function hideOverlay(persist = false) {
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('adgate-active');
+        document.body.style.overflow = '';
+        
         try {
-          const blocked = await detectAdblock(1400);
-          if (!blocked) {
-            retryBtn.textContent = 'AdBlock disabled — continuing...';
-            setTimeout(() => {
-              hideOverlay();
-              retryBtn.removeAttribute('disabled');
-              retryBtn.textContent = originalText;
-            }, 220);
+          if (persist) localStorage.setItem('adblock_overlay_dismissed', '1');
+        } catch (e) {}
+      }
+
+      async function checkAdblock() {
+        try {
+          const isBlocked = await detectAdblock();
+          if (isBlocked) {
+            showOverlay();
           } else {
-            retryBtn.textContent = 'AdBlock still enabled - Try again.';
-            setTimeout(() => {
-              retryBtn.removeAttribute('disabled');
-              retryBtn.textContent = originalText;
-            }, 900);
+            hideOverlay(true);
           }
         } catch (err) {
-          console.error('retry detect error', err);
-          retryBtn.removeAttribute('disabled');
-          retryBtn.textContent = originalText;
+          console.error('Adblock check error:', err);
+          hideOverlay(true); // Asumsikan tidak ada adblock jika terjadi error
+        }
+      }
+
+      if (retryBtn) {
+        retryBtn.addEventListener('click', async () => {
+          retryBtn.disabled = true;
+          const originalText = retryBtn.textContent;
+          retryBtn.textContent = 'Checking...';
+          
+          try {
+            const isBlocked = await detectAdblock(1500);
+            if (!isBlocked) {
+              retryBtn.textContent = 'AdBlock disabled - Continuing...';
+              setTimeout(() => hideOverlay(true), 500);
+            } else {
+              retryBtn.textContent = 'AdBlock still enabled - Try again.';
+              setTimeout(() => {
+                retryBtn.disabled = false;
+                retryBtn.textContent = originalText;
+              }, 1000);
+            }
+          } catch (err) {
+            console.error('Retry check error:', err);
+            retryBtn.textContent = 'Error checking - Try again.';
+            setTimeout(() => {
+              retryBtn.disabled = false;
+              retryBtn.textContent = originalText;
+            }, 1000);
+          }
+        });
+      }
+
+      // Cek localStorage terlebih dahulu
+      try {
+        if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
+          hideOverlay();
+          return;
+        }
+      } catch (e) {}
+
+      // Lakukan deteksi awal
+      checkAdblock();
+      
+      // Tambahkan tombol escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.style.display !== 'none') {
+          hideOverlay();
         }
       });
+    } catch (err) {
+      console.error('initAdblockOverlay error:', err);
     }
-
-    document.addEventListener('keydown', async (e) => {
-      if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
-        const blocked = await detectAdblock(900);
-        if (!blocked) hideOverlay();
-      }
-    });
-
-    initialCheck();
-  } catch (err) {
-    console.error('initAdblockOverlay error:', err);
   }
-}
-
 
   onReady(function () {
     initMainMenu();
@@ -402,6 +405,3 @@ function initAdblockOverlay() {
     });
   });
 })();
-
-
-
