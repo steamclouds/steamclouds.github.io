@@ -1,307 +1,307 @@
+// assets/js/app.js
+(function () {
+  'use strict';
 
-const releaseList = document.getElementById("release-list");
-const searchInput = document.getElementById("search");
-const menuToggle = document.getElementById("menuToggle");
-const mainMenu = document.getElementById("main-menu");
-const faqQuestions = document.querySelectorAll(".faq-question");
-const adblockOverlay = document.querySelector(".adblock-overlay");
-const adblockFallbackBtn = document.querySelector(".adblock-show-fallback");
+  const AD_SCRIPT_SRC = 'https://fpyf8.com/88/tag.min.js'; // dari index.html (digunakan untuk deteksi)
 
-
-function escapeHtml(s) {
-  return String(s || '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;',
-    '<': '<',
-    '>': '>',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[c] || '');
-}
-
-
-function decodeHTMLEntities(str) {
-  if (!str) return '';
-  return str.replace(/&amp;/g, '&')
-            .replace(/</g, '<')
-            .replace(/>/g, '>')
-            .replace(/&#39;/g, "'")
-            .replace(/&quot;/g, '"');
-}
-
-
-function safeHref(s) {
-  try {
-    if (!s) return '#';
-    if (s.startsWith('#') || s.startsWith('http://') || s.startsWith('https://')) return s;
-    return encodeURI(s);
-  } catch (e) { return '#'; }
-}
-
-
-function renderReleaseCard(release) {
-  const card = document.createElement("div");
-  card.className = "release-card";
-  
-  
-  const cleanedNotes = release.notes
-    .replace(/```\n?/g, '')         
-    .replace(/• /g, '-')            
-    .replace(/^- /, "")              
-    .split('\n')
-    .filter(line => line.trim() !== '')
-    .map(line => line.replace(/^[-•] /, '')) 
-    .join('\n');
-
-  
-  const notesList = cleanedNotes.split('\n').map(note => 
-    `<li>${escapeHtml(note.trim())}</li>`
-  ).join('');
-
-  card.innerHTML = `
-    <div class="card-main">
-      <h2>Version ${escapeHtml(release.version)}</h2>
-      <ul class="release-notes-list">
-        ${notesList}
-      </ul>
-      <div class="meta">Released: ${escapeHtml(release.date)}</div>
-    </div>
-    <div class="card-actions">
-      <a class="btn small" href="${safeHref(release.url)}" target="_blank" rel="noopener">Download</a>
-    </div>
-  `;
-  
-  return card;
-}
-
-async function fetchGitHubReleases() {
-  try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec');
-    
-    if (!response.ok) {
-      throw new Error(`Error fetching releases: ${response.statusText}`);
-    }
-    
-    const releasesData = await response.json();
-    
-    const validReleases = releasesData
-      .filter(rel => !rel.draft && !rel.prerelease)
-      .map(rel => {
-        const exeAsset = rel.assets.find(asset => 
-          asset.name.toLowerCase().endsWith('.exe') || 
-          asset.name.toLowerCase().includes('steamclouds')
-        );
-        
-        return {
-          version: rel.tag_name,
-          date: new Date(rel.published_at).toLocaleDateString('en-US'),
-          notes: rel.body || 'No release notes available',
-          url: exeAsset ? exeAsset.browser_download_url : '#'
-        };
-      })
-      .sort((a, b) => new Date(b.date) - new Date(a.date)); // Urutkan dari terbaru
-    
-    releaseList.innerHTML = '';
-    validReleases.forEach(rel => {
-      releaseList.appendChild(renderReleaseCard(rel));
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    releaseList.innerHTML = `<p>Error loading releases: ${error.message}</p>`;
-  }
-}
-
-if (searchInput) {
-  searchInput.addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase().trim();
-    const cards = Array.from(releaseList.children);
-    
-    cards.forEach(card => {
-      const version = card.querySelector('h2').textContent.toLowerCase();
-      const notes = card.querySelector('.release-notes-list').textContent.toLowerCase();
-      
-      if (version.includes(term) || notes.includes(term)) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-}
-
-function initMenu() {
-  if (!menuToggle || !mainMenu) return;
-  
-  function openMenu() {
-    mainMenu.hidden = false;
-    menuToggle.setAttribute('aria-expanded', 'true');
-    const firstItem = mainMenu.querySelector('[role="menuitem"], a, button');
-    if (firstItem) firstItem.focus();
-    document.addEventListener('click', handleOutsideClick);
-    document.addEventListener('keydown', handleMenuKeydown);
-  }
-  
-  function closeMenu() {
-    mainMenu.hidden = true;
-    menuToggle.setAttribute('aria-expanded', 'false');
-    document.removeEventListener('click', handleOutsideClick);
-    document.removeEventListener('keydown', handleMenuKeydown);
-  }
-  
-  function handleOutsideClick(e) {
-    if (!menuToggle.contains(e.target) && !mainMenu.contains(e.target)) {
-      closeMenu();
+  function onReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
     }
   }
-  
-  function handleMenuKeydown(e) {
-    if (e.key === 'Escape') {
-      closeMenu();
-      menuToggle.focus();
-    }
-    
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      const items = Array.from(mainMenu.querySelectorAll('[role="menuitem"], a, button'));
-      if (!items.length) return;
-      
-      const currentIndex = items.indexOf(document.activeElement);
-      let nextIndex;
-      
-      if (e.key === 'ArrowDown') {
-        nextIndex = (currentIndex + 1) % items.length;
-      } else {
-        nextIndex = (currentIndex - 1 + items.length) % items.length;
-      }
-      
-      items[nextIndex].focus();
-      e.preventDefault();
-    }
-  }
-  
-  menuToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-    isExpanded ? closeMenu() : openMenu();
-  });
-  
-  mainMenu.addEventListener('click', (e) => {
-    const target = e.target.closest('a, button');
-    if (target) closeMenu();
-  });
-}
 
-function initFAQ() {
-  faqQuestions.forEach(question => {
-    question.addEventListener('click', () => {
-      const answer = question.nextElementSibling;
-      const isExpanded = question.getAttribute('aria-expanded') === 'true';
-      
-      document.querySelectorAll('.faq-answer').forEach(item => {
-        item.classList.remove('open');
-        item.style.maxHeight = null;
-        item.setAttribute('aria-hidden', 'true');
-      });
-      
-      document.querySelectorAll('.faq-question').forEach(item => {
-        item.setAttribute('aria-expanded', 'false');
-      });
-      
-      if (!isExpanded) {
-        answer.classList.add('open');
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-        answer.setAttribute('aria-hidden', 'false');
-        question.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
-}
-
-function initAdblockDetection() {
-  if (!adblockOverlay || !adblockFallbackBtn) return;
-  
-  function hideAdblockOverlay(persist = false) {
-    adblockOverlay.style.display = 'none';
-    adblockOverlay.setAttribute('aria-hidden', 'true');
-    document.documentElement.classList.remove('adgate-active');
-    document.body.style.overflow = '';
-    
+  // -------------------------
+  // Menu toggle (accessible)
+  // -------------------------
+  function initMainMenu() {
     try {
-      if (persist) localStorage.setItem('adblock_overlay_dismissed', '1');
-    } catch (e) {}
-  }
-  
-  function showAdblockOverlay() {
-    adblockOverlay.style.display = 'flex';
-    adblockOverlay.setAttribute('aria-hidden', 'false');
-    document.documentElement.classList.add('adgate-active');
-    document.body.style.overflow = 'hidden';
-  }
-  
-  function detectAdblock() {
-    try {
-      if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
-        hideAdblockOverlay();
-        return;
+      const menuToggle = document.getElementById('menuToggle');
+      const mainMenu = document.getElementById('main-menu');
+
+      if (!menuToggle || !mainMenu) return;
+
+      function openMenu() {
+        mainMenu.hidden = false;
+        menuToggle.setAttribute('aria-expanded', 'true');
+        mainMenu.querySelectorAll('a[role="menuitem"]')[0]?.focus();
       }
-      
-      const testScript = document.createElement('script');
-      testScript.src = 'https://fpyf8.com/88/tag.min.js?_=' + Date.now();
-      testScript.async = true;
-      
-      let fired = false;
-      const timeout = setTimeout(() => {
-        if (!fired) {
-          fired = true;
-          detectBait();
+
+      function closeMenu() {
+        mainMenu.hidden = true;
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.focus();
+      }
+
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (mainMenu.hidden) openMenu();
+        else closeMenu();
+      });
+
+      // close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!mainMenu.hidden && !mainMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+          closeMenu();
         }
-      }, 1200);
-      
-      testScript.onload = () => {
-        fired = true;
-        clearTimeout(timeout);
-        hideAdblockOverlay();
-      };
-      
-      testScript.onerror = () => {
-        fired = true;
-        clearTimeout(timeout);
-        detectBait();
-      };
-      
-      function detectBait() {
+      });
+
+      // close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !mainMenu.hidden) closeMenu();
+      });
+
+      // Manage focus trapping lightly (close when a menu item clicked)
+      mainMenu.addEventListener('click', (e) => {
+        const a = e.target.closest('a[role="menuitem"]');
+        if (a) {
+          closeMenu(); // navigate normally
+        }
+      });
+    } catch (err) {
+      console.error('initMainMenu error:', err);
+    }
+  }
+
+  // -------------------------
+  // FAQ toggles
+  // -------------------------
+  function initFAQ() {
+    try {
+      const questions = Array.from(document.querySelectorAll('.faq-question'));
+      if (!questions.length) return;
+
+      questions.forEach((btn) => {
+        // locate answer element (immediately following .faq-answer)
+        const answer = btn.nextElementSibling;
+        if (!answer || !answer.classList.contains('faq-answer')) return;
+
+        // initial accessibility
+        btn.setAttribute('aria-expanded', 'false');
+        answer.setAttribute('aria-hidden', 'true');
+
+        btn.addEventListener('click', () => {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+
+          if (!expanded) {
+            openAnswer(btn, answer);
+          } else {
+            closeAnswer(btn, answer);
+          }
+        });
+
+        // support keyboard Enter / Space
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    } catch (err) {
+      console.error('initFAQ error:', err);
+    }
+  }
+
+  function openAnswer(btn, answer) {
+    btn.setAttribute('aria-expanded', 'true');
+    answer.setAttribute('aria-hidden', 'false');
+    answer.classList.add('open');
+
+    // smooth expand using scrollHeight
+    const full = answer.scrollHeight;
+    answer.style.maxHeight = full + 'px';
+  }
+
+  function closeAnswer(btn, answer) {
+    btn.setAttribute('aria-expanded', 'false');
+    answer.setAttribute('aria-hidden', 'true');
+
+    // animate collapse
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    // force repaint then set to 0
+    requestAnimationFrame(() => {
+      answer.style.maxHeight = '0px';
+    });
+
+    // remove open class after transition
+    answer.addEventListener('transitionend', function _te() {
+      answer.classList.remove('open');
+      answer.removeEventListener('transitionend', _te);
+      answer.style.maxHeight = '';
+    });
+  }
+
+  // -------------------------
+  // AdBlock detection + overlay
+  // -------------------------
+  function detectAdblock(timeout = 900) {
+    // returns Promise<boolean> true = blocked
+    return new Promise((resolve) => {
+      try {
+        let detected = false;
+
+        // 1) bait element technique
         const bait = document.createElement('div');
-        bait.className = 'ad-bait adsbox ad-unit';
-        bait.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;';
+        bait.className = 'ad-banner adsbox adunit pub_300x250';
+        // visually hide but still in layout
+        bait.style.width = '1px';
+        bait.style.height = '1px';
+        bait.style.position = 'absolute';
+        bait.style.left = '-9999px';
         document.body.appendChild(bait);
-        
-        const isBlocked = getComputedStyle(bait).display === 'none' || 
-                          bait.offsetParent === null || 
-                          bait.clientHeight === 0;
-        
+
+        // if adblock removes or hides it via display:none
+        const baitStyle = window.getComputedStyle(bait);
+        if (!baitStyle || baitStyle.display === 'none' || bait.offsetParent === null || bait.offsetHeight === 0) {
+          detected = true;
+        }
+
+        // remove bait
         document.body.removeChild(bait);
-        
+
+        if (detected) {
+          // immediate resolve
+          return resolve(true);
+        }
+
+        // 2) try to load an ad script (duplicate load) and see if onerror fires
+        // add cache buster param to avoid cached results
+        const s = document.createElement('script');
+        s.async = true;
+        s.src = AD_SCRIPT_SRC + '?r=' + Date.now();
+        let resolved = false;
+
+        s.onload = function () {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            resolve(false); // loaded => not blocked
+          }
+        };
+
+        s.onerror = function () {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            resolve(true); // blocked
+          }
+        };
+
+        // fallback timeout: if neither onload nor onerror fired in time, assume blocked
+        const to = setTimeout(function () {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            resolve(true);
+          }
+        }, timeout);
+
+        function cleanup() {
+          clearTimeout(to);
+          if (s.parentNode) s.parentNode.removeChild(s);
+        }
+
+        // append to head
+        (document.head || document.documentElement).appendChild(s);
+      } catch (err) {
+        console.error('detectAdblock error:', err);
+        // be safe: if detection fails, assume not blocked
+        resolve(false);
+      }
+    });
+  }
+
+  function initAdblockOverlay() {
+    try {
+      const overlay = document.querySelector('.adblock-overlay');
+      const panel = overlay?.querySelector('.adblock-panel');
+      const retryBtn = overlay?.querySelector('.adblock-show-fallback');
+
+      if (!overlay) return;
+
+      async function checkAndShow() {
+        const isBlocked = await detectAdblock();
         if (isBlocked) {
-          showAdblockOverlay();
+          showOverlay();
         } else {
-          hideAdblockOverlay();
+          hideOverlay();
         }
       }
-      
-      document.head.appendChild(testScript);
-    } catch (e) {
-      hideAdblockOverlay();
+
+      function showOverlay() {
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('adgate-active');
+        // move focus to panel for accessibility
+        const focusable = panel?.querySelector('button, [tabindex], a');
+        (focusable || panel).focus?.();
+      }
+
+      function hideOverlay() {
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('adgate-active');
+      }
+
+      // retry button: re-run detection
+      if (retryBtn) {
+        retryBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          retryBtn.setAttribute('disabled', 'true');
+          retryBtn.textContent = 'Checking...';
+          try {
+            const blocked = await detectAdblock();
+            if (!blocked) {
+              hideOverlay();
+            } else {
+              // remain visible, maybe show message briefly
+              retryBtn.textContent = 'AdBlock still enabled - Try again.';
+              setTimeout(() => {
+                retryBtn.removeAttribute('disabled');
+                retryBtn.textContent = 'AdBlock disabled - Try again.';
+              }, 800);
+            }
+          } catch (err) {
+            console.error(err);
+            retryBtn.removeAttribute('disabled');
+            retryBtn.textContent = 'AdBlock disabled - Try again.';
+          }
+        });
+      }
+
+      // close overlay if user presses Escape (but don't allow accidental bypass)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
+          // let them close overlay with ESC
+          hideOverlay();
+        }
+      });
+
+      // click outside panel to close (optional)
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          hideOverlay();
+        }
+      });
+
+      // initial check
+      checkAndShow();
+    } catch (err) {
+      console.error('initAdblockOverlay error:', err);
     }
   }
-  
-  adblockFallbackBtn.addEventListener('click', () => {
-    hideAdblockOverlay(true);
-  });
-  
-  detectAdblock();
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchGitHubReleases();
-  initMenu();
-  initFAQ();
-  initAdblockDetection();
-});
+  // -------------------------
+  // Run initialization
+  // -------------------------
+  onReady(function () {
+    initMainMenu();
+    initFAQ();
+    initAdblockOverlay();
+
+    // small defensive guard: log uncaught errors so dev can see console problems
+    window.addEventListener('error', function (ev) {
+      console.warn('window.onerror', ev.message, ev.filename, ev.lineno);
+    });
+  });
+})();
