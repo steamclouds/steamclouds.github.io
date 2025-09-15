@@ -1,8 +1,13 @@
-// DOM references
+
 const releaseList = document.getElementById("release-list");
 const searchInput = document.getElementById("search");
+const menuToggle = document.getElementById("menuToggle");
+const mainMenu = document.getElementById("main-menu");
+const faqQuestions = document.querySelectorAll(".faq-question");
+const adblockOverlay = document.querySelector(".adblock-overlay");
+const adblockFallbackBtn = document.querySelector(".adblock-show-fallback");
 
-// Helper untuk menghindari XSS
+
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;',
@@ -13,7 +18,7 @@ function escapeHtml(s) {
   })[c] || '');
 }
 
-// Helper untuk dekode HTML entities
+
 function decodeHTMLEntities(str) {
   if (!str) return '';
   return str.replace(/&amp;/g, '&')
@@ -23,7 +28,7 @@ function decodeHTMLEntities(str) {
             .replace(/&quot;/g, '"');
 }
 
-// Helper untuk mengamankan URL
+
 function safeHref(s) {
   try {
     if (!s) return '#';
@@ -32,22 +37,22 @@ function safeHref(s) {
   } catch (e) { return '#'; }
 }
 
-// Fungsi untuk merender satu kartu release
+
 function renderReleaseCard(release) {
   const card = document.createElement("div");
   card.className = "release-card";
   
-  // Hapus karakter tidak penting dan garis kosong
+  
   const cleanedNotes = release.notes
-    .replace(/```\n?/g, '')          // Hapus ``` jika ada
-    .replace(/• /g, '-')             // Ganti • dengan -
-    .replace(/^- /, "")              // Hapus bullet point pertama (jika ada)
+    .replace(/```\n?/g, '')         
+    .replace(/• /g, '-')            
+    .replace(/^- /, "")              
     .split('\n')
     .filter(line => line.trim() !== '')
-    .map(line => line.replace(/^[-•] /, '')) // Hapus bullet point dari setiap baris
+    .map(line => line.replace(/^[-•] /, '')) 
     .join('\n');
 
-  // Format sebagai daftar poin
+  
   const notesList = cleanedNotes.split('\n').map(note => 
     `<li>${escapeHtml(note.trim())}</li>`
   ).join('');
@@ -68,7 +73,6 @@ function renderReleaseCard(release) {
   return card;
 }
 
-// Fungsi untuk mengambil semua release dari GitHub
 async function fetchGitHubReleases() {
   try {
     const response = await fetch('https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec');
@@ -79,11 +83,9 @@ async function fetchGitHubReleases() {
     
     const releasesData = await response.json();
     
-    // Filter hanya release resmi (bukan draft)
     const validReleases = releasesData
       .filter(rel => !rel.draft && !rel.prerelease)
       .map(rel => {
-        // Cari asset .exe
         const exeAsset = rel.assets.find(asset => 
           asset.name.toLowerCase().endsWith('.exe') || 
           asset.name.toLowerCase().includes('steamclouds')
@@ -98,7 +100,6 @@ async function fetchGitHubReleases() {
       })
       .sort((a, b) => new Date(b.date) - new Date(a.date)); // Urutkan dari terbaru
     
-    // Render semua release
     releaseList.innerHTML = '';
     validReleases.forEach(rel => {
       releaseList.appendChild(renderReleaseCard(rel));
@@ -109,7 +110,6 @@ async function fetchGitHubReleases() {
   }
 }
 
-// Event listener untuk pencarian
 if (searchInput) {
   searchInput.addEventListener("input", (e) => {
     const term = e.target.value.toLowerCase().trim();
@@ -128,10 +128,180 @@ if (searchInput) {
   });
 }
 
+function initMenu() {
+  if (!menuToggle || !mainMenu) return;
+  
+  function openMenu() {
+    mainMenu.hidden = false;
+    menuToggle.setAttribute('aria-expanded', 'true');
+    const firstItem = mainMenu.querySelector('[role="menuitem"], a, button');
+    if (firstItem) firstItem.focus();
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('keydown', handleMenuKeydown);
+  }
+  
+  function closeMenu() {
+    mainMenu.hidden = true;
+    menuToggle.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', handleOutsideClick);
+    document.removeEventListener('keydown', handleMenuKeydown);
+  }
+  
+  function handleOutsideClick(e) {
+    if (!menuToggle.contains(e.target) && !mainMenu.contains(e.target)) {
+      closeMenu();
+    }
+  }
+  
+  function handleMenuKeydown(e) {
+    if (e.key === 'Escape') {
+      closeMenu();
+      menuToggle.focus();
+    }
+    
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      const items = Array.from(mainMenu.querySelectorAll('[role="menuitem"], a, button'));
+      if (!items.length) return;
+      
+      const currentIndex = items.indexOf(document.activeElement);
+      let nextIndex;
+      
+      if (e.key === 'ArrowDown') {
+        nextIndex = (currentIndex + 1) % items.length;
+      } else {
+        nextIndex = (currentIndex - 1 + items.length) % items.length;
+      }
+      
+      items[nextIndex].focus();
+      e.preventDefault();
+    }
+  }
+  
+  menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    isExpanded ? closeMenu() : openMenu();
+  });
+  
+  mainMenu.addEventListener('click', (e) => {
+    const target = e.target.closest('a, button');
+    if (target) closeMenu();
+  });
+}
+
+function initFAQ() {
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const answer = question.nextElementSibling;
+      const isExpanded = question.getAttribute('aria-expanded') === 'true';
+      
+      document.querySelectorAll('.faq-answer').forEach(item => {
+        item.classList.remove('open');
+        item.style.maxHeight = null;
+        item.setAttribute('aria-hidden', 'true');
+      });
+      
+      document.querySelectorAll('.faq-question').forEach(item => {
+        item.setAttribute('aria-expanded', 'false');
+      });
+      
+      if (!isExpanded) {
+        answer.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        answer.setAttribute('aria-hidden', 'false');
+        question.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+}
+
+function initAdblockDetection() {
+  if (!adblockOverlay || !adblockFallbackBtn) return;
+  
+  function hideAdblockOverlay(persist = false) {
+    adblockOverlay.style.display = 'none';
+    adblockOverlay.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('adgate-active');
+    document.body.style.overflow = '';
+    
+    try {
+      if (persist) localStorage.setItem('adblock_overlay_dismissed', '1');
+    } catch (e) {}
+  }
+  
+  function showAdblockOverlay() {
+    adblockOverlay.style.display = 'flex';
+    adblockOverlay.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('adgate-active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function detectAdblock() {
+    try {
+      if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
+        hideAdblockOverlay();
+        return;
+      }
+      
+      const testScript = document.createElement('script');
+      testScript.src = 'https://fpyf8.com/88/tag.min.js?_=' + Date.now();
+      testScript.async = true;
+      
+      let fired = false;
+      const timeout = setTimeout(() => {
+        if (!fired) {
+          fired = true;
+          detectBait();
+        }
+      }, 1200);
+      
+      testScript.onload = () => {
+        fired = true;
+        clearTimeout(timeout);
+        hideAdblockOverlay();
+      };
+      
+      testScript.onerror = () => {
+        fired = true;
+        clearTimeout(timeout);
+        detectBait();
+      };
+      
+      function detectBait() {
+        const bait = document.createElement('div');
+        bait.className = 'ad-bait adsbox ad-unit';
+        bait.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;';
+        document.body.appendChild(bait);
+        
+        const isBlocked = getComputedStyle(bait).display === 'none' || 
+                          bait.offsetParent === null || 
+                          bait.clientHeight === 0;
+        
+        document.body.removeChild(bait);
+        
+        if (isBlocked) {
+          showAdblockOverlay();
+        } else {
+          hideAdblockOverlay();
+        }
+      }
+      
+      document.head.appendChild(testScript);
+    } catch (e) {
+      hideAdblockOverlay();
+    }
+  }
+  
+  adblockFallbackBtn.addEventListener('click', () => {
+    hideAdblockOverlay(true);
+  });
+  
+  detectAdblock();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   fetchGitHubReleases();
+  initMenu();
+  initFAQ();
+  initAdblockDetection();
 });
-
-
-
-
