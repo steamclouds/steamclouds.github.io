@@ -677,4 +677,5 @@ body.dark .safety-card {
   padding: 20px 20px 30px; 
 }
 
-/* End of stylesheet */
+section[id] { scroll-margin-top: 84px; }
+
