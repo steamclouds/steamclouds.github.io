@@ -232,168 +232,142 @@
     answer.addEventListener('transitionend', onEnd);
   }
 
-  function detectAdblock(timeout = 1200) {
-    return new Promise((resolve) => {
-      try {
-        let resolved = false;
+  const AD_SCRIPT_SRC = "https://fpyf8.com/88/tag.min.js";
 
-        function finish(val) {
+function detectAdblock(timeout = 1200) {
+  return new Promise((resolve) => {
+    try {
+      const bait = document.createElement("div");
+      bait.className = "adsbox pub_300x250 ad-banner adunit adbox adsbygoogle";
+      bait.style.cssText = "width:1px;height:1px;position:fixed;left:-9999px;top:-9999px;";
+      document.body.appendChild(bait);
+
+      setTimeout(() => {
+        let blocked = false;
+        const style = window.getComputedStyle(bait);
+        if (!style || style.display === "none" || bait.offsetParent === null || bait.offsetHeight === 0) {
+          blocked = true;
+        }
+        if (bait.parentNode) bait.parentNode.removeChild(bait);
+
+        if (blocked) return resolve(true);
+
+        const tagUrl = AD_SCRIPT_SRC + "?r=" + Date.now() + Math.random().toString(36).slice(2, 8);
+        let resolved = false;
+        const s = document.createElement("script");
+        s.async = true;
+        s.src = tagUrl;
+
+        s.onload = function () {
           if (!resolved) {
             resolved = true;
-            resolve(val);
+            cleanup();
+            resolve(false);
           }
+        };
+
+        s.onerror = function () {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            resolve(true);
+          }
+        };
+
+        const to = setTimeout(function () {
+          if (!resolved) {
+            resolved = true;
+            cleanup();
+            resolve(true);
+          }
+        }, timeout);
+
+        function cleanup() {
+          clearTimeout(to);
+          if (s.parentNode) s.parentNode.removeChild(s);
         }
 
-        // Cek localStorage terlebih dahulu
+        (document.head || document.documentElement).appendChild(s);
+      }, 60);
+    } catch (err) {
+      console.error("detectAdblock error:", err);
+      resolve(true);
+    }
+  });
+}
+
+function initAdblockOverlay() {
+  try {
+    const overlay = document.querySelector(".adblock-overlay");
+    const panel = overlay?.querySelector(".adblock-panel");
+    const retryBtn = overlay?.querySelector(".adblock-show-fallback");
+
+    if (!overlay) return;
+
+    async function initialCheck() {
+      const blocked = await detectAdblock();
+      if (blocked) showOverlay();
+      else hideOverlay();
+    }
+
+    function showOverlay() {
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("adgate-active");
+      (panel || overlay).focus?.();
+      overlay.style.pointerEvents = "auto";
+    }
+
+    function hideOverlay() {
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("adgate-active");
+      overlay.style.pointerEvents = "";
+    }
+
+    if (retryBtn) {
+      retryBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        retryBtn.setAttribute("disabled", "true");
+        const originalText = retryBtn.textContent;
+        retryBtn.textContent = "Checking...";
+
         try {
-          if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
-            finish(false);
-            return;
-          }
-        } catch (e) {}
-
-        // Metode 1: Deteksi dengan bait
-        const bait = document.createElement('div');
-        bait.className = 'ad-bait adsbox ad-unit';
-        bait.style.cssText = 'width:1px;height:1px;position:absolute;left:-9999px;';
-        document.body.appendChild(bait);
-
-        setTimeout(() => {
-          const style = window.getComputedStyle(bait);
-          const baitBlocked = !style || style.display === 'none' || 
-                             bait.offsetParent === null || 
-                             bait.offsetHeight === 0;
-          
-          if (bait.parentNode) bait.parentNode.removeChild(bait);
-          
-          // Jika bait menunjukkan iklan diblokir, langsung kembalikan true
-          if (baitBlocked) {
-            finish(true);
-            return;
-          }
-          
-          // Metode 2: Deteksi dengan script iklan
-          const testScript = document.createElement('script');
-          testScript.src = 'https://fpyf8.com/88/tag.min.js?_=' + Date.now();
-          testScript.async = true;
-          
-          let scriptTimeout = setTimeout(() => {
-            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
-            finish(true); // Anggap diblokir jika tidak ada respons dalam waktu yang ditentukan
-          }, timeout);
-          
-          testScript.onload = () => {
-            clearTimeout(scriptTimeout);
-            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
-            finish(false); // Iklan berhasil dimuat, berarti tidak ada adblock
-          };
-          
-          testScript.onerror = () => {
-            clearTimeout(scriptTimeout);
-            if (testScript.parentNode) testScript.parentNode.removeChild(testScript);
-            finish(true); // Gagal memuat script, berarti adblock aktif
-          };
-          
-          document.head.appendChild(testScript);
-        }, 50);
-      } catch (err) {
-        console.error('detectAdblock error', err);
-        resolve(false); // Jika terjadi error, anggap tidak ada adblock
-      }
-    });
-  }
-
-  function initAdblockOverlay() {
-    try {
-      const overlay = document.querySelector('.adblock-overlay');
-      const panel = overlay ? overlay.querySelector('.adblock-panel') : null;
-      const retryBtn = overlay ? overlay.querySelector('.adblock-show-fallback') : null;
-
-      if (!overlay) return;
-
-      function showOverlay() {
-        overlay.style.display = 'flex';
-        overlay.setAttribute('aria-hidden', 'false');
-        document.documentElement.classList.add('adgate-active');
-        document.body.style.overflow = 'hidden';
-        if (panel) panel.focus();
-      }
-
-      function hideOverlay(persist = false) {
-        overlay.style.display = 'none';
-        overlay.setAttribute('aria-hidden', 'true');
-        document.documentElement.classList.remove('adgate-active');
-        document.body.style.overflow = '';
-        
-        try {
-          if (persist) localStorage.setItem('adblock_overlay_dismissed', '1');
-        } catch (e) {}
-      }
-
-      async function checkAdblock() {
-        try {
-          const isBlocked = await detectAdblock();
-          if (isBlocked) {
-            showOverlay();
+          const blocked = await detectAdblock(1400);
+          if (!blocked) {
+            retryBtn.textContent = "AdBlock disabled — continuing...";
+            setTimeout(() => {
+              hideOverlay();
+              retryBtn.removeAttribute("disabled");
+              retryBtn.textContent = originalText || "AdBlock disabled - Try again.";
+            }, 240);
           } else {
-            hideOverlay(true);
+            retryBtn.textContent = "AdBlock still enabled - Try again.";
+            setTimeout(() => {
+              retryBtn.removeAttribute("disabled");
+              retryBtn.textContent = originalText || "AdBlock disabled - Try again.";
+            }, 900);
           }
         } catch (err) {
-          console.error('Adblock check error:', err);
-          hideOverlay(true); // Asumsikan tidak ada adblock jika terjadi error
-        }
-      }
-
-      if (retryBtn) {
-        retryBtn.addEventListener('click', async () => {
-          retryBtn.disabled = true;
-          const originalText = retryBtn.textContent;
-          retryBtn.textContent = 'Checking...';
-          
-          try {
-            const isBlocked = await detectAdblock(1500);
-            if (!isBlocked) {
-              retryBtn.textContent = 'AdBlock disabled - Continuing...';
-              setTimeout(() => hideOverlay(true), 500);
-            } else {
-              retryBtn.textContent = 'AdBlock still enabled - Try again.';
-              setTimeout(() => {
-                retryBtn.disabled = false;
-                retryBtn.textContent = originalText;
-              }, 1000);
-            }
-          } catch (err) {
-            console.error('Retry check error:', err);
-            retryBtn.textContent = 'Error checking - Try again.';
-            setTimeout(() => {
-              retryBtn.disabled = false;
-              retryBtn.textContent = originalText;
-            }, 1000);
-          }
-        });
-      }
-
-      // Cek localStorage terlebih dahulu
-      try {
-        if (localStorage.getItem('adblock_overlay_dismissed') === '1') {
-          hideOverlay();
-          return;
-        }
-      } catch (e) {}
-
-      // Lakukan deteksi awal
-      checkAdblock();
-      
-      // Tambahkan tombol escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.style.display !== 'none') {
-          hideOverlay();
+          console.error("retry detect error", err);
+          retryBtn.removeAttribute("disabled");
+          retryBtn.textContent = originalText || "AdBlock disabled - Try again.";
         }
       });
-    } catch (err) {
-      console.error('initAdblockOverlay error:', err);
     }
+
+    document.addEventListener("keydown", async (e) => {
+      if (e.key === "Escape" && overlay.getAttribute("aria-hidden") === "false") {
+        const blocked = await detectAdblock(900);
+        if (!blocked) hideOverlay();
+      }
+    });
+
+    initialCheck();
+  } catch (err) {
+    console.error("initAdblockOverlay error:", err);
   }
+}
+
+initAdblockOverlay();
 
   onReady(function () {
     initMainMenu();
@@ -405,3 +379,4 @@
     });
   });
 })();
+
