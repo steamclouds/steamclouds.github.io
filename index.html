@@ -309,5 +309,24 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+document.addEventListener('DOMContentLoaded', function() {
+  const menuToggle = document.getElementById('menuToggle');
+  const mainMenu = document.getElementById('main-menu');
+
+  menuToggle.addEventListener('click', () => {
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+
+    // Toggle aria
+    menuToggle.setAttribute('aria-expanded', !isExpanded);
+
+    // Toggle menu show/hide
+    if (isExpanded) {
+      mainMenu.hidden = true;
+    } else {
+      mainMenu.hidden = false;
+    }
+  });
+});
+</script>
 </body>
 </html>
