@@ -105,7 +105,7 @@
     });
   }
 
-  function detectAdblock(timeout = 1000) {
+  function detectAdblock(timeout = 1200) {
   return new Promise((resolve) => {
     try {
       const baitClasses = [
@@ -176,7 +176,7 @@
         }
 
         (document.head || document.documentElement).appendChild(s);
-      }, 60);
+      }, 80);
     } catch (err) {
       console.error('detectAdblock error:', err);
       resolve(true);
@@ -215,16 +215,15 @@ function initAdblockOverlay() {
       retryBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         retryBtn.setAttribute('disabled', 'true');
-        const originalText = retryBtn.textContent;
-        retryBtn.textContent = 'Checking (1/3)...';
+        const originalText = retryBtn.textContent || 'Try again';
 
         let consecutiveNotBlocked = 0;
         let lastWasNotBlocked = false;
 
         for (let i = 1; i <= 3; i++) {
           retryBtn.textContent = `Checking (${i}/3)...`;
+          if (i > 1) await new Promise(r => setTimeout(r, 450));
           try {
-            if (i > 1) await new Promise(r => setTimeout(r, 450));
             const blocked = await detectAdblock(1400);
             if (!blocked) {
               if (lastWasNotBlocked) consecutiveNotBlocked++;
@@ -234,7 +233,6 @@ function initAdblockOverlay() {
               lastWasNotBlocked = false;
               consecutiveNotBlocked = 0;
             }
-
             if (consecutiveNotBlocked >= 2) break;
           } catch (err) {
             console.error('retry detect error', err);
@@ -248,13 +246,13 @@ function initAdblockOverlay() {
           setTimeout(() => {
             hideOverlay();
             retryBtn.removeAttribute('disabled');
-            retryBtn.textContent = originalText || 'AdBlock disabled - Try again.';
+            retryBtn.textContent = originalText;
           }, 240);
         } else {
           retryBtn.textContent = 'AdBlock still enabled - Try again.';
           setTimeout(() => {
             retryBtn.removeAttribute('disabled');
-            retryBtn.textContent = originalText || 'AdBlock disabled - Try again.';
+            retryBtn.textContent = originalText;
           }, 900);
         }
       });
@@ -274,6 +272,7 @@ function initAdblockOverlay() {
 }
 
 
+
   onReady(function () {
     initMainMenu();
     initFAQ();
@@ -284,4 +283,5 @@ function initAdblockOverlay() {
     });
   });
 })();
+
 
