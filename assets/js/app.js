@@ -180,54 +180,60 @@
   }
 
   function initFAQ() {
-    try {
-      const questions = Array.from(document.querySelectorAll('.faq-question'));
-      if (!questions.length) return;
+  try {
+    const items = Array.from(document.querySelectorAll('.faq-item'));
+    if (!items.length) return;
 
-      questions.forEach((btn) => {
-        const answer = btn.nextElementSibling;
-        if (!answer || !answer.classList.contains('faq-answer')) return;
+    items.forEach(item => {
+      const btn = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      if (!btn || !answer) return;
 
-        btn.setAttribute('aria-expanded', 'false');
-        answer.setAttribute('aria-hidden', 'true');
+      btn.type = 'button';
+      btn.setAttribute('aria-expanded', 'false');
+      answer.setAttribute('aria-hidden', 'true');
+      answer.style.maxHeight = '0px';
 
-        btn.addEventListener('click', () => {
-          const expanded = btn.getAttribute('aria-expanded') === 'true';
-          if (!expanded) openAnswer(btn, answer);
-          else closeAnswer(btn, answer);
-        });
-
-        btn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            btn.click();
-          }
-        });
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        if (!expanded) openAnswer(btn, answer);
+        else closeAnswer(btn, answer);
       });
-    } catch (err) {
-      console.error('initFAQ error:', err);
-    }
-  }
 
-  function openAnswer(btn, answer) {
-    btn.setAttribute('aria-expanded', 'true');
-    answer.setAttribute('aria-hidden', 'false');
-    answer.classList.add('open');
-    const full = answer.scrollHeight;
-    answer.style.maxHeight = full + 'px';
-  }
-
-  function closeAnswer(btn, answer) {
-    btn.setAttribute('aria-expanded', 'false');
-    answer.setAttribute('aria-hidden', 'true');
-    answer.style.maxHeight = answer.scrollHeight + 'px';
-    requestAnimationFrame(() => { answer.style.maxHeight = '0px'; });
-    answer.addEventListener('transitionend', function _te() {
-      answer.classList.remove('open');
-      answer.removeEventListener('transitionend', _te);
-      answer.style.maxHeight = '';
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
     });
+  } catch (err) {
+    console.error('initFAQ error:', err);
   }
+}
+
+function openAnswer(btn, answer) {
+  btn.setAttribute('aria-expanded', 'true');
+  answer.setAttribute('aria-hidden', 'false');
+  answer.classList.add('open');
+  answer.style.display = '';
+  const full = answer.scrollHeight;
+  answer.style.maxHeight = full + 'px';
+}
+
+function closeAnswer(btn, answer) {
+  btn.setAttribute('aria-expanded', 'false');
+  answer.setAttribute('aria-hidden', 'true');
+  answer.style.maxHeight = answer.scrollHeight + 'px';
+  requestAnimationFrame(() => { answer.style.maxHeight = '0px'; });
+  const onEnd = function () {
+    answer.classList.remove('open');
+    answer.style.display = '';
+    answer.removeEventListener('transitionend', onEnd);
+  };
+  answer.addEventListener('transitionend', onEnd);
+}
+
 
   function detectAdblock(timeout = 1200) {
     return new Promise((resolve) => {
@@ -386,3 +392,4 @@
     });
   });
 })();
+
