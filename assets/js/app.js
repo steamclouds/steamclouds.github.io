@@ -105,30 +105,46 @@
     });
   }
 
-  function detectAdblock(timeout = 900) {
-    return new Promise((resolve) => {
-      try {
-        let detected = false;
+  function detectAdblock(timeout = 1000) {
+  return new Promise((resolve) => {
+    try {
+      const baitClasses = [
+        'adsbox pub_300x250 ad-banner',
+        'adunit adbox adsbygoogle',
+        'ad-slot ad-placeholder advertisement'
+      ];
 
+      let baitBlocked = false;
+      const baits = [];
+
+      for (const cls of baitClasses) {
         const bait = document.createElement('div');
-        bait.className = 'ad-banner adsbox adunit pub_300x250';
-        bait.style.width = '1px';
-        bait.style.height = '1px';
-        bait.style.position = 'absolute';
-        bait.style.left = '-9999px';
+        bait.className = cls;
+        bait.style.cssText = 'width:1px;height:1px;position:fixed;left:-9999px;top:-9999px;';
         document.body.appendChild(bait);
+        baits.push(bait);
+      }
 
-        const baitStyle = window.getComputedStyle(bait);
-        if (!baitStyle || baitStyle.display === 'none' || bait.offsetParent === null || bait.offsetHeight === 0) detected = true;
+      setTimeout(() => {
+        for (const bait of baits) {
+          const style = window.getComputedStyle(bait);
+          if (!style || style.display === 'none' || bait.offsetParent === null || bait.offsetHeight === 0) {
+            baitBlocked = true;
+            break;
+          }
+        }
 
-        document.body.removeChild(bait);
+        for (const b of baits) if (b.parentNode) b.parentNode.removeChild(b);
 
-        if (detected) return resolve(true);
+        if (baitBlocked) {
+          return resolve(true);
+        }
 
+        const tagUrl = AD_SCRIPT_SRC + '?r=' + Date.now() + Math.random().toString(36).slice(2,8);
+        let resolved = false;
         const s = document.createElement('script');
         s.async = true;
-        s.src = AD_SCRIPT_SRC + '?r=' + Date.now();
-        let resolved = false;
+        s.src = tagUrl;
 
         s.onload = function () {
           if (!resolved) {
@@ -160,101 +176,103 @@
         }
 
         (document.head || document.documentElement).appendChild(s);
-      } catch (err) {
-        console.error('detectAdblock error:', err);
-        resolve(false);
-      }
-    });
-  }
+      }, 60);
+    } catch (err) {
+      console.error('detectAdblock error:', err);
+      resolve(true);
+    }
+  });
+}
 
-  function initAdblockOverlay() {
-    try {
-      const overlay = document.querySelector('.adblock-overlay');
-      const panel = overlay?.querySelector('.adblock-panel');
-      const retryBtn = overlay?.querySelector('.adblock-show-fallback');
+function initAdblockOverlay() {
+  try {
+    const overlay = document.querySelector('.adblock-overlay');
+    const panel = overlay?.querySelector('.adblock-panel');
+    const retryBtn = overlay?.querySelector('.adblock-show-fallback');
 
-      if (!overlay) return;
+    if (!overlay) return;
 
-      async function checkAndShow() {
-        const isBlocked = await detectAdblock();
-        if (isBlocked) showOverlay();
-        else hideOverlay();
-      }
+    async function initialCheck() {
+      const blocked = await detectAdblock();
+      if (blocked) showOverlay();
+      else hideOverlay();
+    }
 
-      function showOverlay() {
-        overlay.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('adgate-active');
-        (panel || overlay).focus?.();
-      }
+    function showOverlay() {
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('adgate-active');
+      (panel || overlay).focus?.();
+      overlay.style.pointerEvents = 'auto';
+    }
 
-      function hideOverlay() {
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('adgate-active');
-      }
+    function hideOverlay() {
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('adgate-active');
+      overlay.style.pointerEvents = '';
+    }
 
-      if (retryBtn) {
-        retryBtn.addEventListener('click', async (e) => {
-          e.preventDefault();
-          // disable button & show progress
-          retryBtn.setAttribute('disabled', 'true');
-          const original = retryBtn.textContent;
-          retryBtn.textContent = 'Checking (1/3)...';
+    if (retryBtn) {
+      retryBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        retryBtn.setAttribute('disabled', 'true');
+        const originalText = retryBtn.textContent;
+        retryBtn.textContent = 'Checking (1/3)...';
 
-          // Run multiple attempts and require consecutive success
-          const attempts = 3;
-          let consecutiveSuccess = 0;
-          let lastResult = null;
+        let consecutiveNotBlocked = 0;
+        let lastWasNotBlocked = false;
 
-          for (let i = 1; i <= attempts; i++) {
-            retryBtn.textContent = `Checking (${i}/${attempts})...`;
-            try {
-              // small delay between attempts to allow user to disable/whitelist
-              if (i > 1) await new Promise(r => setTimeout(r, 450));
-              const blocked = await detectAdblock(1200);
-              lastResult = blocked;
-              if (!blocked) {
-                consecutiveSuccess++;
-              } else {
-                consecutiveSuccess = 0;
-              }
-
-              // require 2 consecutive non-blocked results to accept
-              if (consecutiveSuccess >= 2) {
-                break;
-              }
-            } catch (err) {
-              console.error('retry detect error', err);
+        for (let i = 1; i <= 3; i++) {
+          retryBtn.textContent = `Checking (${i}/3)...`;
+          try {
+            if (i > 1) await new Promise(r => setTimeout(r, 450));
+            const blocked = await detectAdblock(1400);
+            if (!blocked) {
+              if (lastWasNotBlocked) consecutiveNotBlocked++;
+              else consecutiveNotBlocked = 1;
+              lastWasNotBlocked = true;
+            } else {
+              lastWasNotBlocked = false;
+              consecutiveNotBlocked = 0;
             }
-          }
 
-          // finalize
-          if (lastResult === false && consecutiveSuccess >= 2) {
-            retryBtn.textContent = 'AdBlock disabled — continuing...';
-            setTimeout(() => hideOverlay(), 220);
-          } else {
-            retryBtn.textContent = 'AdBlock still enabled - Try again.';
-            setTimeout(() => {
-              retryBtn.removeAttribute('disabled');
-              retryBtn.textContent = original || 'AdBlock disabled - Try again.';
-            }, 900);
+            if (consecutiveNotBlocked >= 2) break;
+          } catch (err) {
+            console.error('retry detect error', err);
+            lastWasNotBlocked = false;
+            consecutiveNotBlocked = 0;
           }
-        });
-      }
+        }
 
-      // Only allow closing overlay via Escape (not click outside)
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
-          hideOverlay();
+        if (consecutiveNotBlocked >= 2) {
+          retryBtn.textContent = 'AdBlock disabled — continuing...';
+          setTimeout(() => {
+            hideOverlay();
+            retryBtn.removeAttribute('disabled');
+            retryBtn.textContent = originalText || 'AdBlock disabled - Try again.';
+          }, 240);
+        } else {
+          retryBtn.textContent = 'AdBlock still enabled - Try again.';
+          setTimeout(() => {
+            retryBtn.removeAttribute('disabled');
+            retryBtn.textContent = originalText || 'AdBlock disabled - Try again.';
+          }, 900);
         }
       });
-
-      // disable click-outside-to-close by not listening for overlay clicks
-      // initial check
-      checkAndShow();
-    } catch (err) {
-      console.error('initAdblockOverlay error:', err);
     }
+
+    document.addEventListener('keydown', async (e) => {
+      if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
+        const blocked = await detectAdblock(900);
+        if (!blocked) hideOverlay();
+      }
+    });
+
+    initialCheck();
+  } catch (err) {
+    console.error('initAdblockOverlay error:', err);
   }
+}
+
 
   onReady(function () {
     initMainMenu();
@@ -266,3 +284,4 @@
     });
   });
 })();
+
