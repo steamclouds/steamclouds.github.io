@@ -232,7 +232,209 @@
     answer.addEventListener('transitionend', onEnd);
   }
 
-(function(){ function setLocked(state){ var o = document.querySelector('.adblock-overlay'); if(!o) return; if(state){ document.documentElement.classList.add('adgate-active'); o.setAttribute('aria-hidden','false'); o.style.display = 'flex'; try{ o.querySelector('.adblock-panel').focus(); } catch(e){} document.body.style.overflow = 'hidden'; } else { document.documentElement.classList.remove('adgate-active'); o.setAttribute('aria-hidden','true'); o.style.display = 'none'; document.body.style.overflow = ''; } } function createBait(){ var d = document.createElement('div'); d.className = 'adsbox bait'; d.style.cssText = 'width:1px!important;height:1px!important;position:absolute;left:-9999px;top:-9999px;'; document.body.appendChild(d); var blocked = (d.offsetParent === null) || (d.offsetHeight === 0) || (window.getComputedStyle(d).display === 'none'); document.body.removeChild(d); return blocked; } async function checkAdBlock(){ try{ return createBait(); } catch(e){ return true; } } function attachOverlayHandlers(){ var o = document.querySelector('.adblock-overlay'); if(!o) return; var re = o.querySelector('.adblock-show-fallback'); if(re){ re.addEventListener('click', function(){ setLocked(false); location.reload(); }); } } document.addEventListener('DOMContentLoaded', async function(){ if(await checkAdBlock()){ setLocked(true); attachOverlayHandlers(); } }); })();
+  document.addEventListener('DOMContentLoaded', function(){
+  function renderReleases(releases){
+    var container = document.getElementById('release-list');
+    if (!container){
+      var sec = document.getElementById('releases');
+      if (sec){
+        container = document.createElement('div');
+        container.id = 'release-list';
+        container.className = 'release-grid';
+        sec.appendChild(container);
+      }
+    }
+    if (!container) return;
+    container.innerHTML = '';
+    releases.forEach(function(r){
+      var card = document.createElement('article');
+      card.className = 'release-card';
+      var t = '<div class="release-meta"><h3 class="release-title">'+(r.title||'Unknown')+'</h3><p class="release-sub">'+(r.subtitle||'')+'</p></div>';
+      t += '<div class="release-actions"><a href="'+(r.link||'#')+'" class="btn">Download</a></div>';
+      card.innerHTML = t;
+      container.appendChild(card);
+    });
+    container.style.display = '';
+  }
+
+  renderReleases([
+    { title: 'Example Release — Test', subtitle: 'Sample latest download card', link: '#' }
+  ]);
+
+  var adContainer = document.querySelector('.ad-container');
+  var insEl = document.querySelector('ins.adsbygoogle');
+  function createBaits(){
+    var classes = ['adsbox','ad-banner','adunit','adsbygoogle','doubleclick','googad'];
+    var nodes = [];
+    classes.forEach(function(c){
+      var d = document.createElement('div');
+      d.className = c;
+      d.style.width = '1px';
+      d.style.height = '1px';
+      d.style.position = 'absolute';
+      d.style.left = '-9999px';
+      document.body.appendChild(d);
+      nodes.push(d);
+    });
+    return nodes;
+  }
+  function removeBaits(nodes){
+    nodes.forEach(function(n){ try{ n.parentNode && n.parentNode.removeChild(n); }catch(e){} });
+  }
+  function checkBaits(){
+    var nodes = createBaits();
+    var blocked = false;
+    nodes.forEach(function(n){
+      var rect = n.getBoundingClientRect();
+      var style = window.getComputedStyle(n);
+      if (rect.width === 0 && rect.height === 0) blocked = true;
+      if (style && (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')) blocked = true;
+    });
+    removeBaits(nodes);
+    return blocked;
+  }
+  function checkIns(){
+    var ins = document.querySelector('ins.adsbygoogle');
+    if (!ins) return true;
+    var rect = ins.getBoundingClientRect();
+    var style = window.getComputedStyle(ins);
+    if (rect.width < 8 || rect.height < 8) return true;
+    if (style && (style.display === 'none' || style.visibility === 'hidden')) return true;
+    return false;
+  }
+  function checkScriptLoad(timeout){
+    return new Promise(function(resolve){
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?cb=' + Date.now();
+      var done = false;
+      s.onload = function(){ if (!done){ done = true; try{ s.parentNode && s.parentNode.removeChild(s); }catch(e){}; resolve(false); } };
+      s.onerror = function(){ if (!done){ done = true; try{ s.parentNode && s.parentNode.removeChild(s); }catch(e){}; resolve(true); } };
+      document.head.appendChild(s);
+      setTimeout(function(){ if (!done){ done = true; try{ s.parentNode && s.parentNode.removeChild(s); }catch(e){}; resolve(true); } }, timeout || 1500);
+    });
+  }
+  function detectAdblock(){
+    return new Promise(function(resolve){
+      try{
+        var bait = checkBaits();
+        var ins = checkIns();
+        checkScriptLoad(1200).then(function(scrBlocked){
+          resolve(bait || ins || scrBlocked);
+        }).catch(function(){ resolve(true); });
+      }catch(e){
+        resolve(true);
+      }
+    });
+  }
+  function createLockOverlay(){
+    var ov = document.querySelector('.full-lock-overlay');
+    if (ov) return ov;
+    ov = document.createElement('div');
+    ov.className = 'full-lock-overlay';
+    ov.setAttribute('role','dialog');
+    ov.setAttribute('aria-modal','true');
+    ov.setAttribute('aria-hidden','true');
+    ov.style.position = 'fixed';
+    ov.style.inset = '0';
+    ov.style.zIndex = '999999';
+    ov.style.background = 'rgba(0,0,0,0.92)';
+    ov.style.display = 'none';
+    ov.style.alignItems = 'center';
+    ov.style.justifyContent = 'center';
+    ov.style.textAlign = 'center';
+    ov.style.color = '#fff';
+    ov.style.padding = '24px';
+    var panel = document.createElement('div');
+    panel.style.maxWidth = '720px';
+    panel.style.width = '100%';
+    panel.style.margin = '0 16px';
+    var h = document.createElement('h2');
+    h.textContent = 'Ads blocked — site locked';
+    h.style.margin = '0 0 12px';
+    var p = document.createElement('p');
+    p.textContent = 'You are using an ad blocker. Please whitelist this site to continue using it. You can also view our sponsor banner.';
+    p.style.margin = '0 0 18px';
+    var controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '10px';
+    controls.style.justifyContent = 'center';
+    var btnWhitelist = document.createElement('button');
+    btnWhitelist.textContent = 'I whitelisted';
+    btnWhitelist.style.padding = '10px 14px';
+    var btnSponsor = document.createElement('button');
+    btnSponsor.textContent = 'Show sponsor';
+    btnSponsor.style.padding = '10px 14px';
+    var btnVisit = document.createElement('a');
+    btnVisit.textContent = 'Learn why';
+    btnVisit.href = '#';
+    btnVisit.style.padding = '10px 14px';
+    btnVisit.style.border = '1px solid rgba(255,255,255,0.12)';
+    btnVisit.style.color = '#fff';
+    btnWhitelist.addEventListener('click', function(){
+      try{ localStorage.setItem('adblockIgnore_v4','1'); }catch(e){}
+      hideLock(ov);
+      tryEnableAds();
+      setTimeout(function(){ detectAdblock().then(function(blocked){ if (blocked) showLock(ov); }); }, 1000);
+    });
+    btnSponsor.addEventListener('click', function(){
+      if (adContainer) adContainer.classList.add('show-fallback');
+      hideLock(ov);
+      try{ localStorage.setItem('adblockFallback_v4','1'); }catch(e){}
+    });
+    btnVisit.addEventListener('click', function(e){ try{ window.open('https://example.com/why-ads','_blank'); }catch(err){} });
+    controls.appendChild(btnWhitelist);
+    controls.appendChild(btnSponsor);
+    controls.appendChild(btnVisit);
+    panel.appendChild(h);
+    panel.appendChild(p);
+    panel.appendChild(controls);
+    ov.appendChild(panel);
+    document.body.appendChild(ov);
+    ov.addEventListener('keydown', function(e){ e.stopPropagation(); e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if (ov.style.display !== 'none') e.preventDefault();
+    }, true);
+    document.addEventListener('contextmenu', function(e){
+      if (ov.style.display !== 'none') e.preventDefault();
+    }, true);
+    return ov;
+  }
+  function showLock(ov){
+    ov.setAttribute('aria-hidden','false');
+    ov.style.display = 'flex';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+    var main = document.querySelector('main') || document.querySelector('body');
+    if (main) main.setAttribute('aria-hidden','true');
+  }
+  function hideLock(ov){
+    ov.setAttribute('aria-hidden','true');
+    ov.style.display = 'none';
+    document.documentElement.style.overflow = '';
+    document.body.style.touchAction = '';
+    var main = document.querySelector('main') || document.querySelector('body');
+    if (main) main.removeAttribute('aria-hidden');
+  }
+  function tryEnableAds(){
+    try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+  }
+
+  var lockOv = createLockOverlay();
+  function enforce(){
+    if (localStorage.getItem('adblockFallback_v4') === '1') return;
+    if (localStorage.getItem('adblockIgnore_v4') === '1') return;
+    detectAdblock().then(function(blocked){
+      if (blocked){
+        showLock(lockOv);
+      } else {
+        hideLock(lockOv);
+      }
+    });
+  }
+  enforce();
+  setInterval(enforce, 4000);
+});
 
   onReady(function () {
     initMainMenu();
@@ -244,5 +446,6 @@
     });
   });
 })();
+
 
 
