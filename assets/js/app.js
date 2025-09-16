@@ -56,11 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       return response.json();
     })
-    .then(release => {
-      const cleanedBody = release.body
-        .replace(/```/g, '')
-        .replace(/---/g, '')
-        .replace(/•/g, '-');
+    .then(release => {      
       
       let steamCloudsAsset = null;
       for (let i = 0; i < release.assets.length; i++) {
@@ -129,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           <div class="release-body">
-            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
             <div class="release-assets">
               ${assetsHTML}
             </div>
@@ -181,3 +176,4 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
