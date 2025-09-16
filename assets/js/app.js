@@ -1,309 +1,184 @@
-(function(){
-  function onReady(fn){
-    if(document.readyState !== 'loading') fn();
-    else document.addEventListener('DOMContentLoaded', fn);
-  }
-
-  if(typeof window.renderReleaseCard !== 'function'){
-    window.renderReleaseCard = function(rel){
-      var wrap = document.createElement('div');
-      wrap.className = 'release-card card';
-      wrap.style.border = '1px solid var(--item-border-strong)';
-      wrap.style.padding = '12px';
-      wrap.style.marginBottom = '12px';
-      wrap.style.borderRadius = '12px';
-      wrap.style.background = 'var(--release-card-bg)';
-
-      var head = document.createElement('div');
-      head.style.display = 'flex';
-      head.style.justifyContent = 'space-between';
-      head.style.alignItems = 'baseline';
-
-      var title = document.createElement('h2');
-      title.innerText = rel.version || '(no version)';
-      title.style.margin = '0';
-      title.style.fontSize = '1.02rem';
-
-      var date = document.createElement('div');
-      date.className = 'meta';
-      date.innerText = rel.date || '';
-      date.style.fontSize = '0.85rem';
-
-      head.appendChild(title);
-      head.appendChild(date);
-
-      var notes = document.createElement('div');
-      notes.style.marginTop = '8px';
-      notes.style.whiteSpace = 'pre-wrap';
-      notes.style.maxHeight = '6.6em';
-      notes.style.overflow = 'hidden';
-      notes.style.textOverflow = 'ellipsis';
-      notes.className = 'release-notes';
-      notes.innerText = rel.notes || 'No release notes available';
-
-      var actions = document.createElement('div');
-      actions.className = 'card-actions';
-
-      if(rel.url){
-        var dl = document.createElement('a');
-        dl.href = rel.url;
-        dl.rel = 'noopener noreferrer';
-        dl.target = '_blank';
-        dl.innerText = 'Download';
-        dl.className = 'btn small';
-        actions.appendChild(dl);
-      }
-
-      var more = document.createElement('button');
-      more.type = 'button';
-      more.innerText = 'Notes';
-      more.className = 'btn small';
-      more.addEventListener('click', function(){
-        if(notes.style.maxHeight && notes.style.maxHeight !== 'none'){
-          notes.style.maxHeight = 'none';
-          notes.style.overflow = 'auto';
-          more.innerText = 'Collapse';
-        } else {
-          notes.style.maxHeight = '6.6em';
-          notes.style.overflow = 'hidden';
-          more.innerText = 'Notes';
-        }
-      });
-      actions.appendChild(more);
-
-      wrap.appendChild(head);
-      wrap.appendChild(notes);
-      wrap.appendChild(actions);
-
-      return wrap;
-    };
-  }
-
-  function initMainMenu(){
-    var menuToggle = document.getElementById('menuToggle');
-    var mainMenu = document.getElementById('main-menu');
-    if(!menuToggle || !mainMenu) return;
-    function openMenu(){ mainMenu.hidden = false; menuToggle.setAttribute('aria-expanded','true'); var f = mainMenu.querySelector('a,button'); if(f) f.focus(); }
-    function closeMenu(){ mainMenu.hidden = true; menuToggle.setAttribute('aria-expanded','false'); }
-    menuToggle.addEventListener('click', function(){ var expanded = menuToggle.getAttribute('aria-expanded') === 'true'; if(expanded) closeMenu(); else openMenu(); });
-    document.addEventListener('click', function(e){ if(!mainMenu.contains(e.target) && !menuToggle.contains(e.target)) closeMenu(); });
-  }
-
-  function initFAQ(){
-    var faqItems = document.querySelectorAll('.faq-item button, .faq-question');
-    if(!faqItems || faqItems.length === 0) return;
-    faqItems.forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var controls = btn.getAttribute('aria-controls') || btn.dataset.controls;
-        var expanded = btn.getAttribute('aria-expanded') === 'true';
-        var all = document.querySelectorAll('.faq-item button, .faq-question');
-        all.forEach(function(b){ b.setAttribute('aria-expanded','false'); var cId = b.getAttribute('aria-controls') || b.dataset.controls; if(cId){ var content = document.getElementById(cId); if(content) content.classList.remove('open'); } });
-        if(!expanded && controls){ btn.setAttribute('aria-expanded','true'); var el = document.getElementById(controls); if(el) el.classList.add('open'); }
-      });
-    });
-  }
-
-  function initSearch(){
-    var input = document.getElementById('searchInput');
-    var cards = document.querySelectorAll('.card');
-    if(!input || !cards.length) return;
-    input.addEventListener('input', function(){
-      var val = input.value.toLowerCase();
-      cards.forEach(function(c){
-        var txt = c.textContent.toLowerCase();
-        c.style.display = txt.includes(val) ? '' : 'none';
-      });
-    });
-  }
-
-  async function fetchGitHubReleases(){
-    var releaseList = document.getElementById('release-list');
-    if(!releaseList){
-      releaseList = document.createElement('div');
-      releaseList.id = 'release-list';
-      var container = document.querySelector('.releases') || document.body;
-      container.appendChild(releaseList);
-    }
-    releaseList.innerHTML = '<p>Loading releases...</p>';
-
-    try {
-      const url = 'https://api.github.com/repos/R3verseNinja/steamclouds/releases';
-      const response = await fetch(url);
-      console.log('[fetchGitHubReleases] status:', response.status, response.statusText);
-
-      if(!response.ok){
-        let txt = '(no body)';
-        try { txt = await response.text(); } catch(e){ }
-        console.error('[fetchGitHubReleases] GitHub API error:', response.status, txt);
-        releaseList.innerHTML = `<p>Error loading releases: ${response.status} ${response.statusText}</p>`;
-        return;
-      }
-
-      const releasesData = await response.json();
-      console.log('[fetchGitHubReleases] raw releasesData:', releasesData);
-
-      if(!Array.isArray(releasesData) || releasesData.length === 0){
-        releaseList.innerHTML = '<p>No releases found.</p>';
-        return;
-      }
-
-      const validReleases = releasesData.map(rel => {
-        const assets = Array.isArray(rel.assets) ? rel.assets : [];
-        const exeAsset = assets.find(asset => {
-          const name = asset && asset.name ? asset.name.toLowerCase() : '';
-          return name.endsWith('.exe') || name.includes('steamclouds') || name.includes('steam_clouds');
-        });
-        const downloadUrl = exeAsset ? exeAsset.browser_download_url : (rel.zipball_url || rel.tarball_url || '');
-        return {
-          version: rel.tag_name || rel.name || '(no tag)',
-          date: rel.published_at ? new Date(rel.published_at).toLocaleDateString('en-US') : 'Unknown',
-          notes: rel.body || 'No release notes available',
-          url: downloadUrl
-        };
-      }).filter(r => r.url);
-
-      if(!validReleases.length){
-        releaseList.innerHTML = '<p>No releases found.</p>';
-        return;
-      }
-
-      releaseList.innerHTML = '';
-      validReleases.forEach(function(rel){
-        var card;
-        if(typeof window.renderReleaseCard === 'function'){
-          try { card = window.renderReleaseCard(rel); }
-          catch(e){
-            console.error('[fetchGitHubReleases] renderReleaseCard threw:', e);
-            card = document.createElement('div'); card.className='release-card card'; card.textContent = rel.version + ' — ' + (rel.date || '');
-          }
-        } else {
-          card = document.createElement('div'); card.className='release-card card'; card.textContent = rel.version + ' — ' + (rel.date || '');
-        }
-        if(card instanceof Node){
-          releaseList.appendChild(card);
-        } else if(typeof card === 'string'){
-          var temp = document.createElement('div');
-          temp.innerHTML = card;
-          while(temp.firstChild){
-            releaseList.appendChild(temp.firstChild);
-          }
-        }
-      });
-
-    } catch(error){
-      console.error('[fetchGitHubReleases] Error:', error);
-      releaseList.innerHTML = `<p>Error loading releases: ${error && error.message ? error.message : error}</p>`;
+document.addEventListener('DOMContentLoaded', function() {
+  const menuToggle = document.getElementById('menuToggle');
+  const mainMenu = document.getElementById('main-menu');
+  
+  function adjustMenu() {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    if (isMobile) {
+      menuToggle.style.display = 'block';
+      mainMenu.hidden = true;
+      menuToggle.setAttribute('aria-expanded', 'false');
+    } else {
+      menuToggle.style.display = 'none';
+      mainMenu.hidden = false;
+      menuToggle.setAttribute('aria-expanded', 'true');
     }
   }
 
-  window.initAdblockOverlay = function(){
-    var existingOverlay = document.querySelector('.full-lock-overlay') || document.querySelector('.adblock-overlay');
-    var overlay = existingOverlay || document.createElement('div');
+  adjustMenu();
+  window.addEventListener('resize', adjustMenu);
 
-    if(!existingOverlay){
-      overlay.className = 'full-lock-overlay adblock-overlay';
-      overlay.setAttribute('aria-hidden', 'true');
-      overlay.style.position = 'fixed';
-      overlay.style.inset = '0';
-      overlay.style.zIndex = '999999';
-      overlay.style.display = 'none';
-      overlay.style.alignItems = 'center';
-      overlay.style.justifyContent = 'center';
-      overlay.style.color = '#fff';
-      overlay.style.textAlign = 'center';
-      overlay.style.padding = '24px';
-      var panel = document.createElement('div');
-      panel.className = 'adblock-panel';
-      panel.innerHTML = '<h2>AdBlock Detected</h2><p>Please disable AdBlock to access this website.</p>';
-      overlay.appendChild(panel);
-      document.body.appendChild(overlay);
-    }
-
-    function createBait(){
-      var d = document.createElement('div');
-      d.className = 'ads adsbox ad-banner ad-placement adunit';
-      d.style.width = '1px';
-      d.style.height = '1px';
-      d.style.position = 'absolute';
-      d.style.left = '0';
-      d.style.top = '0';
-      d.style.opacity = '0.01';
-      d.style.pointerEvents = 'none';
-      document.body.appendChild(d);
-      return d;
-    }
-
-    function detectAdblock(){
-      return new Promise(function(resolve){
-        var bait = createBait();
-        window.setTimeout(function(){
-          try {
-            var cs = getComputedStyle(bait);
-            var blocked = !bait || bait.offsetParent === null || bait.clientHeight === 0 ||
-                          cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0';
-            if(bait && bait.parentNode) bait.parentNode.removeChild(bait);
-            console.log('[adblock] detected =', blocked);
-            resolve(blocked);
-          } catch(e){
-            if(bait && bait.parentNode) bait.parentNode.removeChild(bait);
-            console.error('[adblock] detect error', e);
-            resolve(false);
-          }
-        }, 300);
-      });
-    }
-
-    function showLock(){
-      overlay.setAttribute('aria-hidden','false');
-      overlay.style.display = 'flex';
-      document.documentElement.classList.add('adgate-active');
-    }
-    function hideLock(){
-      overlay.setAttribute('aria-hidden','true');
-      overlay.style.display = 'none';
-      document.documentElement.classList.remove('adgate-active');
-    }
-
-    var adBlockedFlag = false;
-    window.addEventListener('error', function(ev){
-      var t = ev && ev.target;
-      if(t && t.tagName === 'SCRIPT' && t.src && (t.src.indexOf('fpyf8.com') !== -1 || t.src.indexOf('tag.min.js') !== -1)){
-        console.warn('[adblock] script blocked or failed to load:', t.src);
-        adBlockedFlag = true;
-        showLock();
-      }
-    }, true);
-
-    function enforce(){
-      if(adBlockedFlag){ showLock(); return; }
-      detectAdblock().then(function(blocked){ if(blocked) showLock(); else hideLock(); });
-    }
-    enforce();
-    setInterval(enforce, 4000);
-  };
-
-  window.addEventListener('error', function(ev){
-    try {
-      if(ev && ev.message){
-        if(ev.target && ev.target.src){
-          console.warn('[resource error]', ev.target.tagName, ev.target.src, ev);
-        } else {
-          console.error('Unhandled error:', ev.message, ev);
-        }
-      }
-    } catch(e){}
-  }, true);
-
-  onReady(function(){
-    try{
-      initMainMenu();
-      initFAQ();
-      initSearch();
-      fetchGitHubReleases();
-      window.initAdblockOverlay();
-    } catch(e){
-      console.error('Init error:', e);
-    }
+  menuToggle.addEventListener('click', () => {
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', !isExpanded);
+    mainMenu.hidden = !isExpanded;
   });
+  
+  document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true' || false;
+      
+      document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.setAttribute('aria-expanded', 'false');
+        const answer = btn.nextElementSibling;
+        if (answer) {
+          answer.setAttribute('aria-hidden', 'true');
+        }
+      });
+      
+      if (!expanded) {
+        button.setAttribute('aria-expanded', 'true');
+        const answer = button.nextElementSibling;
+        if (answer) {
+          answer.setAttribute('aria-hidden', 'false');
+        }
+      }
+    });
+  });
+  
+  const releaseList = document.getElementById('release-list');
+  
+  fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(release => {
+      // Deklarasikan cleanedBody di sini
+      const cleanedBody = release.body
+        .replace(/```/g, '')
+        .replace(/---/g, '')
+        .replace(/•/g, '-');
+      
+      let steamCloudsAsset = null;
+      for (let i = 0; i < release.assets.length; i++) {
+        const asset = release.assets[i];
+        const name = asset.name.toLowerCase();
+        if (name === 'steamclouds.exe' || 
+            (name.indexOf('steamclouds') !== -1 && name.substring(name.length - 4) === '.exe')) {
+          steamCloudsAsset = asset;
+          break;
+        }
+      }
+      
+      let assetsHTML = '';
+      
+      if (steamCloudsAsset) {
+        assetsHTML += `
+          <div class="asset-card">
+            <div>
+              <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
+              <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
+            </div>
+            <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
+          </div>
+        `;
+      }
+      
+      const otherAssets = release.assets.filter(asset => 
+        !steamCloudsAsset || asset.id !== steamCloudsAsset.id
+      );
+      
+      if (otherAssets.length > 0) {
+        otherAssets.forEach(asset => {
+          assetsHTML += `
+            <div class="asset-card">
+              <div>
+                <div class="asset-name" title="${asset.name}">${asset.name}</div>
+                <div class="asset-size">${formatFileSize(asset.size)}</div>
+              </div>
+              <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
+            </div>
+          `;
+        });
+      } else if (!steamCloudsAsset) {
+        assetsHTML = `
+          <div class="asset-card">
+            <div>
+              <div class="asset-name">No executable file found</div>
+              <div class="asset-size">Please contact admin on discord</div>
+            </div>
+            <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
+          </div>
+        `;
+      }
+      
+      releaseList.innerHTML = `
+        <div class="release-card">
+          <div class="release-header">
+            <h3 class="release-title">${release.name || release.tag_name}</h3>
+            <div class="release-meta">
+              <span>Released on ${new Date(release.published_at).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</span>
+              <span>Version ${release.tag_name}</span>
+            </div>
+          </div>
+          <div class="release-body">
+            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
+            <div class="release-assets">
+              ${assetsHTML}
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .catch(error => {
+      console.error('Error fetching GitHub releases:', error);
+      releaseList.innerHTML = `
+        <div class="release-card">
+          <div class="release-body">
+            <div class="release-description">
+              <p>Unable to load the latest release information. Please try again later or visit our <a href="https://github.com/R3verseNinja/steamclouds/releases" target="_blank">GitHub releases page</a> directly.</p>
+            </div>
+            <a href="https://steamclouds.online" class="btn">Steam Clouds</a>
+          </div>
+        </div>
+      `;
+    });
+});
 
-})();
+function markdownToHtml(markdown) {
+  if (!markdown) return '';
+  
+  let html = markdown.replace(/### (.*?)(\n|$)/g, '<h4>$1</h4>');
+  html = html.replace(/## (.*?)(\n|$)/g, '<h3>$1</h3>');
+  html = html.replace(/# (.*?)(\n|$)/g, '<h2>$1</h2>');
+  
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  
+  html = html.replace(/^[*-+](.*?)(\n|$)/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+  
+  html = html.replace(/(^|\n\n)([^\n]+)/g, '$1<p>$2</p>');
+  html = html.replace(/\n/g, '<br>');
+  
+  return html;
+}
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
