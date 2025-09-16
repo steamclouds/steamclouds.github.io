@@ -218,7 +218,6 @@ h2::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 120px;
 }
 
 .asset-info {
@@ -237,10 +236,10 @@ h2::after {
 
 .asset-size {
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
   margin-left: 1rem;
-  margin-top: 0.2rem;
+  margin-top: 1rem;
 }
 
 .btn {
@@ -552,5 +551,6 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
