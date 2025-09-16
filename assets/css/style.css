@@ -380,7 +380,7 @@ h2::after {
 }
 
 .faq-item {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   border-radius: var(--border-radius);
   overflow: hidden;
   border: 1px solid var(--bg-tertiary);
@@ -503,6 +503,7 @@ footer {
     min-width: 280px;
   }
 }
+
 
 
 
