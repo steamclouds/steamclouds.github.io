@@ -234,12 +234,11 @@
     }
     var lockOv=overlay
     function enforce(){
-      if(localStorage.getItem('adblockFallback_v4')==='1')return
-      if(localStorage.getItem('adblockIgnore_v4')==='1')return
       detectAdblock().then(function(blocked){
         if(blocked){showLock(lockOv)}else{hideLock(lockOv)}
       })
     }
+
     enforce()
     setInterval(enforce,4000)
   }
@@ -253,3 +252,4 @@
     window.addEventListener('error',function(ev){console.error('Error:',ev.message)})
   })
 })();
+
