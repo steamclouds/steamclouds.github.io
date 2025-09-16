@@ -47,111 +47,97 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  const releaseList = document.getElementById('release-list');
-  
   fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(release => {
+    let steamCloudsAsset = null;
+    for (let i = 0; i < release.assets.length; i++) {
+      const asset = release.assets[i];
+      const name = asset.name.toLowerCase();
+      if (name === 'steamclouds.exe' || 
+          (name.includes('steamclouds') && name.endsWith('.exe'))) {
+        steamCloudsAsset = asset;
+        break;
       }
-      return response.json();
-    })
-    .then(release => {
-      // Deklarasikan cleanedBody di sini
-      const cleanedBody = release.body
-        .replace(/```/g, '')
-        .replace(/---/g, '')
-        .replace(/•/g, '-');
-      
-      let steamCloudsAsset = null;
-      for (let i = 0; i < release.assets.length; i++) {
-        const asset = release.assets[i];
-        const name = asset.name.toLowerCase();
-        if (name === 'steamclouds.exe' || 
-            (name.indexOf('steamclouds') !== -1 && name.substring(name.length - 4) === '.exe')) {
-          steamCloudsAsset = asset;
-          break;
-        }
-      }
-      
-      let assetsHTML = '';
-      
-      if (steamCloudsAsset) {
+    }
+
+    let assetsHTML = '';
+
+    if (steamCloudsAsset) {
+      assetsHTML += `
+        <div class="asset-card">
+          <div>
+            <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
+            <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
+          </div>
+          <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
+        </div>
+      `;
+    }
+
+    const otherAssets = release.assets.filter(asset => 
+      !steamCloudsAsset || asset.id !== steamCloudsAsset.id
+    );
+
+    if (otherAssets.length > 0) {
+      otherAssets.forEach(asset => {
         assetsHTML += `
           <div class="asset-card">
             <div>
-              <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
-              <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
+              <div class="asset-name" title="${asset.name}">${asset.name}</div>
+              <div class="asset-size">${formatFileSize(asset.size)}</div>
             </div>
-            <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
+            <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
           </div>
         `;
-      }
-      
-      const otherAssets = release.assets.filter(asset => 
-        !steamCloudsAsset || asset.id !== steamCloudsAsset.id
-      );
-      
-      if (otherAssets.length > 0) {
-        otherAssets.forEach(asset => {
-          assetsHTML += `
-            <div class="asset-card">
-              <div>
-                <div class="asset-name" title="${asset.name}">${asset.name}</div>
-                <div class="asset-size">${formatFileSize(asset.size)}</div>
-              </div>
-              <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
-            </div>
-          `;
-        });
-      } else if (!steamCloudsAsset) {
-        assetsHTML = `
-          <div class="asset-card">
-            <div>
-              <div class="asset-name">No executable file found</div>
-              <div class="asset-size">Please contact admin on discord</div>
-            </div>
-            <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
+      });
+    } else if (!steamCloudsAsset) {
+      assetsHTML = `
+        <div class="asset-card">
+          <div>
+            <div class="asset-name">No executable file found</div>
+            <div class="asset-size">Please contact admin on discord</div>
           </div>
-        `;
-      }
-      
-      releaseList.innerHTML = `
-        <div class="release-card">
-          <div class="release-header">
-            <h3 class="release-title">${release.name || release.tag_name}</h3>
-            <div class="release-meta">
-              <span>Released on ${new Date(release.published_at).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</span>
-              <span>Version ${release.tag_name}</span>
-            </div>
-          </div>
-          <div class="release-body">
-            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
-            <div class="release-assets">
-              ${assetsHTML}
-            </div>
-          </div>
+          <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
         </div>
       `;
-    })
-    .catch(error => {
-      console.error('Error fetching GitHub releases:', error);
-      releaseList.innerHTML = `
-        <div class="release-card">
-          <div class="release-body">
-            <div class="release-description">
-              <p>Unable to load the latest release information. Please try again later.</p>
-            </div>
-            <a href="https://steamclouds.online" class="btn">Steam Clouds</a>
+    }
+
+    // Hanya tampilkan judul, info rilis, dan tombol download — TANPA deskripsi!
+    releaseList.innerHTML = `
+      <div class="release-card">
+        <div class="release-header">
+          <h3 class="release-title">${release.name || release.tag_name}</h3>
+          <div class="release-meta">
+            <span>Released on ${new Date(release.published_at).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}</span>
+            <span>Version ${release.tag_name}</span>
           </div>
         </div>
-      `;
-    });
-});
+        <div class="release-assets">
+          ${assetsHTML}
+        </div>
+      </div>
+    `;
+  })
+  .catch(error => {
+    console.error('Error fetching GitHub releases:', error);
+    releaseList.innerHTML = `
+      <div class="release-card">
+        <h3>Failed to Load Release</h3>
+        <p>Unable to fetch the latest version. Please try again later.</p>
+        <a href="https://steamclouds.online" class="btn">Visit SteamClouds</a>
+      </div>
+    `;
+  });
 
 function markdownToHtml(markdown) {
   if (!markdown) return '';
@@ -182,4 +168,5 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
