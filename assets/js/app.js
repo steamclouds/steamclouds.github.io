@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (isMobile) {
       menuToggle.style.display = 'block';
-      mainMenu.hidden = true;
-      menuToggle.setAttribute('aria-expanded', 'false');
-    } else {
-      menuToggle.style.display = 'none';
       mainMenu.hidden = false;
       menuToggle.setAttribute('aria-expanded', 'true');
+    } else {
+      menuToggle.style.display = 'none';
+       mainMenu.hidden = true;
+      menuToggle.setAttribute('aria-expanded', 'false');
     }
   }
 
@@ -155,3 +155,4 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
