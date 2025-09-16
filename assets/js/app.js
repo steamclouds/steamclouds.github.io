@@ -60,42 +60,52 @@
     })
   }
 
- function fetchGitHubReleases(){
-  var releaseList = document.getElementById('release-list');
-  if(!releaseList) return;
+ async function fetchGitHubReleases() {
+  const releaseList = document.getElementById("release-list");
+  if (!releaseList) return;
 
-  fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases')
-    .then(function(res){ return res.json(); })
-    .then(function(data){
-      releaseList.innerHTML = '';
-      data.slice(0,5).forEach(function(rel){
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-
-        // Cari asset SteamClouds.exe di setiap release
-        var exe = rel.assets.find(function(asset){
-          return asset.name === 'SteamClouds.exe';
-        });
-
-        if(exe){
-          a.href = exe.browser_download_url;
-          a.textContent = rel.name + ' - Download SteamClouds.exe';
-          a.target = '_blank';
-          li.appendChild(a);
-          releaseList.appendChild(li);
-        }
-      });
-
-      if(!releaseList.children.length){
-        releaseList.innerHTML = '<li>No valid releases found.</li>';
-      }
-    })
-    .catch(function(){
-      if(!releaseList.children.length){
-        releaseList.innerHTML = '<li>Failed to load releases.</li>';
-      }
+  try {
+    const response = await fetch("https://api.github.com/repos/R3verseNinja/steamclouds/releases", {
+      headers: { "User-Agent": "SteamCloudsApp" }
     });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching releases: ${response.statusText}`);
+    }
+
+    const releasesData = await response.json();
+
+    const validReleases = releasesData
+      .filter(rel => !rel.draft && !rel.prerelease)
+      .map(rel => {
+        const exeAsset = rel.assets.find(asset =>
+          asset.name.toLowerCase().endsWith(".exe") ||
+          asset.name.toLowerCase().includes("steamclouds")
+        );
+
+        const downloadUrl = exeAsset
+          ? exeAsset.browser_download_url
+          : rel.zipball_url; // fallback ke source zip
+
+        return {
+          version: rel.tag_name,
+          date: new Date(rel.published_at).toLocaleDateString("en-US"),
+          notes: rel.body || "No release notes available",
+          url: downloadUrl
+        };
+      })
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    releaseList.innerHTML = "";
+    validReleases.forEach(rel => {
+      releaseList.appendChild(renderReleaseCard(rel));
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    releaseList.innerHTML = `<p>Error loading releases: ${error.message}</p>`;
+  }
 }
+
 
   window.initAdblockOverlay=function(){
     var existingOverlay=document.querySelector('.full-lock-overlay')
@@ -168,4 +178,5 @@
     window.addEventListener('error',function(ev){console.error('Error:',ev.message)})
   })
 })();
+
 
