@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = !isExpanded;
+    mainMenu.hidden = isExpanded;
   });
   
   document.querySelectorAll('.faq-question').forEach(button => {
@@ -155,4 +155,5 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
