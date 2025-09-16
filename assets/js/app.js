@@ -3,10 +3,30 @@ document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('menuToggle');
   const mainMenu = document.getElementById('main-menu');
   
+  // Fungsi untuk menyesuaikan tampilan menu berdasarkan ukuran layar
+  function adjustMenu() {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    if (isMobile) {
+      menuToggle.style.display = 'block';
+      mainMenu.hidden = true;
+      menuToggle.setAttribute('aria-expanded', 'false');
+    } else {
+      menuToggle.style.display = 'none';
+      mainMenu.hidden = false;
+      menuToggle.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // Panggil fungsi saat halaman dimuat dan saat window di-resize
+  adjustMenu();
+  window.addEventListener('resize', adjustMenu);
+
+  // Event listener untuk tombol menu
   menuToggle.addEventListener('click', () => {
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = !isExpanded;
+    mainMenu.hidden = isExpanded; // Perubahan disini
   });
   
   // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
@@ -169,6 +189,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
