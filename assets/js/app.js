@@ -1,9 +1,7 @@
-// Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('menuToggle');
   const mainMenu = document.getElementById('main-menu');
   
-  // Fungsi untuk menyesuaikan tampilan menu berdasarkan ukuran layar
   function adjustMenu() {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     
@@ -18,23 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Panggil fungsi saat halaman dimuat dan saat window di-resize
   adjustMenu();
   window.addEventListener('resize', adjustMenu);
 
-  // Event listener untuk tombol menu
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
     mainMenu.hidden = !isExpanded;
   });
   
-  // FAQ accordion
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
       
-      // Close all
       document.querySelectorAll('.faq-question').forEach(btn => {
         btn.setAttribute('aria-expanded', 'false');
         const answer = btn.nextElementSibling;
@@ -43,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
       
-      // Toggle current
       if (!expanded) {
         button.setAttribute('aria-expanded', 'true');
         const answer = button.nextElementSibling;
@@ -54,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Fetch GitHub releases (TANPA spasi berlebih)
   const releaseList = document.getElementById('release-list');
   
   fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
@@ -65,7 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(release => {
-      const cleanedBody = release.body.replace(/```/g, '');
+      const cleanedBody = release.body
+        .replace(/```/g, '')
+        .replace(/---/g, '')
+        .replace(/•/g, '-');
+      
       let steamCloudsAsset = null;
       for (let i = 0; i < release.assets.length; i++) {
         const asset = release.assets[i];
@@ -91,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
       }
       
-      // Add other assets if needed
       const otherAssets = release.assets.filter(asset => 
         !steamCloudsAsset || asset.id !== steamCloudsAsset.id
       );
@@ -109,14 +104,13 @@ document.addEventListener('DOMContentLoaded', function() {
           `;
         });
       } else if (!steamCloudsAsset) {
-        // Tidak ada file .exe dan tidak ada asset lain
         assetsHTML = `
           <div class="asset-card">
             <div>
               <div class="asset-name">No executable file found</div>
-              <div class="asset-size">Please check GitHub releases directly</div>
+              <div class="asset-size">Please contact admin on discord</div>
             </div>
-            <a href="https://github.com/R3verseNinja/steamclouds/releases" class="btn">View Releases</a>
+            <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
           </div>
         `;
       }
@@ -151,40 +145,33 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="release-description">
               <p>Unable to load the latest release information. Please try again later or visit our <a href="https://github.com/R3verseNinja/steamclouds/releases" target="_blank">GitHub releases page</a> directly.</p>
             </div>
-            <a href="https://github.com/R3verseNinja/steamclouds/releases" class="btn">View All Releases</a>
+            <a href="https://steamclouds.online" class="btn">Steam Clouds</a>
           </div>
         </div>
       `;
     });
 });
 
-// Convert markdown to simple HTML
 function markdownToHtml(markdown) {
   if (!markdown) return '';
   
-  // Convert headers
   let html = markdown.replace(/### (.*?)(\n|$)/g, '<h4>$1</h4>');
   html = html.replace(/## (.*?)(\n|$)/g, '<h3>$1</h3>');
   html = html.replace(/# (.*?)(\n|$)/g, '<h2>$1</h2>');
   
-  // Convert bold
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
-  // Convert links
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
   
-  // Convert lists
-  html = html.replace(/^\* (.*?)(\n|$)/gm, '<li>$1</li>');
+  html = html.replace(/^[*-+](.*?)(\n|$)/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
   
-  // Convert paragraphs
   html = html.replace(/(^|\n\n)([^\n]+)/g, '$1<p>$2</p>');
   html = html.replace(/\n/g, '<br>');
   
   return html;
 }
 
-// Format file size
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   
