@@ -1,4 +1,3 @@
-// Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('menuToggle');
   const mainMenu = document.getElementById('main-menu');
@@ -9,10 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (isMobile) {
       menuToggle.style.display = 'block';
+      // Pastikan menu tertutup saat halaman dimuat
       mainMenu.hidden = true;
       menuToggle.setAttribute('aria-expanded', 'false');
     } else {
       menuToggle.style.display = 'none';
+      // Di desktop, menu selalu terbuka
       mainMenu.hidden = false;
       menuToggle.setAttribute('aria-expanded', 'true');
     }
@@ -26,10 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = !isExpanded; // Perubahan disini
+    mainMenu.hidden = !isExpanded; // INI YANG SALAH - harusnya !isExpanded
   });
   
-  // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
+  // FAQ accordion
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Fetch GitHub releases
+  // Fetch GitHub releases (tanpa spasi berlebih)
   const releaseList = document.getElementById('release-list');
   
   fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
@@ -66,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(release => {
       const cleanedBody = release.body.replace(/```/g, '');
-
       const steamCloudsAsset = release.assets.find(asset => 
         asset.name.toLowerCase() === 'steamclouds.exe' || 
         asset.name.toLowerCase().includes('steamclouds') && 
@@ -105,12 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
           `;
         });
       } else if (!steamCloudsAsset) {
+        // Tidak ada file .exe dan tidak ada asset lain
         assetsHTML = `
           <div class="asset-card">
             <div>
               <div class="asset-name">No executable file found</div>
-              <div class="asset-size">Please check discord or contact admin.</div>
+              <div class="asset-size">Please check GitHub releases directly</div>
             </div>
+            <a href="https://github.com/R3verseNinja/steamclouds/releases" class="btn">View Releases</a>
           </div>
         `;
       }
@@ -129,20 +131,23 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           <div class="release-body">
-            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
-            ${assetsHTML}
+            <div class="release-description">${markdownToHtml(release.body)}</div>
+            <div class="release-assets">
+              ${assetsHTML}
+            </div>
           </div>
         </div>
       `;
-    });
+    })
     .catch(error => {
-      console.error('Error fetching server releases:', error);
+      console.error('Error fetching GitHub releases:', error);
       releaseList.innerHTML = `
         <div class="release-card">
           <div class="release-body">
             <div class="release-description">
-              <p>Unable to load the latest release information. Please try again later.</p>
+              <p>Unable to load the latest release information. Please try again later or visit our <a href="https://github.com/R3verseNinja/steamclouds/releases" target="_blank">GitHub releases page</a> directly.</p>
             </div>
+            <a href="https://github.com/R3verseNinja/steamclouds/releases" class="btn">View All Releases</a>
           </div>
         </div>
       `;
@@ -185,10 +190,3 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
-
-
-
-
-
-
