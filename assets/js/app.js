@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const mainMenu = document.getElementById('main-menu');
   
   menuToggle.addEventListener('click', () => {
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
     mainMenu.hidden = isExpanded;
   });
@@ -169,4 +169,5 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
