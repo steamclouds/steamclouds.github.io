@@ -129,11 +129,9 @@ h2::after {
   border-radius: 3px;
 }
 
-/* Perubahan untuk release menjadi scrollable horizontal */
 .release-grid {
   display: flex;
   gap: 1.5rem;
-  overflow-x: auto;
   padding-bottom: 1rem;
   scrollbar-width: thin;
   scrollbar-color: var(--bg-tertiary) var(--bg-secondary);
@@ -162,9 +160,10 @@ h2::after {
   box-shadow: var(--card-shadow);
   transition: var(--transition);
   border: 1px solid var(--bg-tertiary);
-  min-width: 260px;        
-  flex: 0 0 260px;       
+  min-width: 300px;
+  flex: 0 0 auto;
   padding: 1rem;
+  width: 100%; 
 }
 
 .release-card:hover {
@@ -206,14 +205,12 @@ h2::after {
 }
 
 .release-assets {
-  padding: 0.6rem 0.5rem;
+  padding: 0 1rem; 
   width: 100%;
   box-sizing: border-box;
-  display: flex;              
-  gap: 0.75rem;
-  align-items: stretch;
-  overflow-x: auto;           
-  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .asset-info-card {
@@ -268,16 +265,13 @@ h2::after {
 .asset-card {
   background-color: var(--bg-tertiary);
   border-radius: var(--border-radius);
-  padding: 0.9rem;
+  padding: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: auto;
+  margin-bottom: 0.5rem;
+  width: 100%;
   box-sizing: border-box;
-  flex: 0 0 360px;            
-  min-width: 320px;        
-  gap: 0.75rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .asset-info { 
@@ -596,6 +590,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
