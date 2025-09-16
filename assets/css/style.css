@@ -174,7 +174,7 @@ h2::after {
 }
 
 .release-header {
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--bg-tertiary);
 }
@@ -203,7 +203,6 @@ h2::after {
   color: var(--text-secondary);
   max-height: 120px;
   overflow: hidden;
-  white-space: pre-line
 }
 
 .release-assets {
@@ -216,8 +215,7 @@ h2::after {
   background-color: var(--bg-tertiary);
   border-radius: var(--border-radius);
   padding: 0.8rem;
-  display: block;
-  width: 100%;
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -381,7 +379,7 @@ h2::after {
 }
 
 .faq-item {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
   border-radius: var(--border-radius);
   overflow: hidden;
   border: 1px solid var(--bg-tertiary);
@@ -428,11 +426,6 @@ h2::after {
 .faq-answer[aria-hidden="false"] {
   max-height: 500px;
   padding: 0;
-}
-
-.faq-answer ol {
-  margin-top: 0; 
-  padding-left: 1.5rem; 
 }
 
 footer {
@@ -504,12 +497,5 @@ footer {
     min-width: 280px;
   }
 }
-
-
-
-
-
-
-
 
 
