@@ -216,7 +216,8 @@ h2::after {
   background-color: var(--bg-tertiary);
   border-radius: var(--border-radius);
   padding: 0.8rem;
-  display: flex;
+  display: block;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 }
@@ -503,6 +504,7 @@ footer {
     min-width: 280px;
   }
 }
+
 
 
 
