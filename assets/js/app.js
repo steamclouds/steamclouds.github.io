@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = !isExpanded; // Perubahan disini
+    mainMenu.hidden = !isExpanded;
   });
   
-  // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
+  // FAQ accordion
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Fetch GitHub releases
+  // Fetch GitHub releases (TANPA spasi berlebih)
   const releaseList = document.getElementById('release-list');
   
   fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           <div class="release-body">
-            <div class="release-description">${markdownToHtml(release.body)}</div>
+            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
             <div class="release-assets">
               ${assetsHTML}
             </div>
@@ -194,8 +194,3 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
-
-
-
-
