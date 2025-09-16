@@ -1,9 +1,8 @@
-// Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('menuToggle');
   const mainMenu = document.getElementById('main-menu');
   
-  // Fungsi untuk menyesuaikan tampilan menu berdasarkan ukuran layar
+ 
   function adjustMenu() {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     
@@ -18,23 +17,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Panggil fungsi saat halaman dimuat dan saat window di-resize
+  
   adjustMenu();
   window.addEventListener('resize', adjustMenu);
 
-  // Event listener untuk tombol menu
+  
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
     mainMenu.hidden = !isExpanded;
   });
   
-  // FAQ accordion
+  
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
       
-      // Close all
       document.querySelectorAll('.faq-question').forEach(btn => {
         btn.setAttribute('aria-expanded', 'false');
         const answer = btn.nextElementSibling;
@@ -43,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
       
-      // Toggle current
       if (!expanded) {
         button.setAttribute('aria-expanded', 'true');
         const answer = button.nextElementSibling;
@@ -54,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Fetch GitHub releases (TANPA spasi berlebih)
   const releaseList = document.getElementById('release-list');
   
   fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases/latest')
@@ -193,4 +189,5 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
