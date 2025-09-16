@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(release => {
-      const cleanedBody = release.body.replace(/```/g, '');
       let steamCloudsAsset = null;
       for (let i = 0; i < release.assets.length; i++) {
         const asset = release.assets[i];
@@ -194,3 +193,4 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
