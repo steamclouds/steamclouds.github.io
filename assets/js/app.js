@@ -72,7 +72,8 @@ menuToggle.addEventListener('click', () => {
       }
       return response.json();
     })
-    .then(release => {      
+    .then(release => {
+      const cleanedBody = release.body.replace(/```/g, '');
       let steamCloudsAsset = null;
       for (let i = 0; i < release.assets.length; i++) {
         const asset = release.assets[i];
@@ -84,43 +85,44 @@ menuToggle.addEventListener('click', () => {
         }
       }
       
+      let assetsHTML = '';
+      
+      if (steamCloudsAsset) {
+        assetsHTML += `
+          <div class="asset-card">
+            <div>
+              <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
+              <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
+            </div>
+            <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
+          </div>
+        `;
+      }
+      
       const otherAssets = release.assets.filter(asset => 
         !steamCloudsAsset || asset.id !== steamCloudsAsset.id
       );
       
-      let assetsHTML = '';
-      
-      if (steamCloudsAsset) {
-  assetsHTML += `
-    <div class="asset-card">
-      <div>
-        <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
-        <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
-      </div>
-      <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
-    </div>
-  `;
-}
-
-if (otherAssets && Array.isArray(otherAssets)) {
-  otherAssets.forEach(asset => {
-    assetsHTML += `
-      <div class="asset-card">
-        <div>
-          <div class="asset-name" title="${asset.name}">${asset.name}</div>
-          <div class="asset-size">${formatFileSize(asset.size)}</div>
-        </div>
-        <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
-      </div>
-    `;
-  });
+      if (otherAssets.length > 0) {
+        otherAssets.forEach(asset => {
+          assetsHTML += `
+            <div class="asset-card">
+              <div>
+                <div class="asset-name" title="${asset.name}">${asset.name}</div>
+                <div class="asset-size">${formatFileSize(asset.size)}</div>
+              </div>
+              <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
+            </div>
+          `;
+        });
       } else if (!steamCloudsAsset) {
         assetsHTML = `
           <div class="asset-card">
             <div>
               <div class="asset-name">No executable file found</div>
-              <div class="asset-size">Please contact admin on discord</div>
+              <div class="asset-size">Please contact admin</div>
             </div>
+            <a href="https://discord.gg/Qsp6Sbq6wy" class="btn">Join Discord</a>
           </div>
         `;
       }
@@ -139,10 +141,10 @@ if (otherAssets && Array.isArray(otherAssets)) {
             </div>
           </div>
           <div class="release-body">
+            <div class="release-description">${markdownToHtml(cleanedBody)}</div>
             <div class="release-assets">
               ${assetsHTML}
             </div>
-             <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
           </div>
         </div>
       `;
@@ -161,6 +163,7 @@ if (otherAssets && Array.isArray(otherAssets)) {
     });
 });
 
+
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   
@@ -170,6 +173,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
