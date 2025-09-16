@@ -1,13 +1,9 @@
 (function(){
-  // ---------- util: DOM ready ----------
   function onReady(fn){
     if(document.readyState !== 'loading') fn();
     else document.addEventListener('DOMContentLoaded', fn);
   }
 
-  // ---------- fallback safe renderReleaseCard ----------
-  // Pastikan fungsi ini selalu ada (menghindari ReferenceError).
-  // Kalau kamu punya versi custom, biarkan — tapi fallback ini memastikan UI tetap bekerja.
   if(typeof window.renderReleaseCard !== 'function'){
     window.renderReleaseCard = function(rel){
       var wrap = document.createElement('div');
@@ -83,7 +79,6 @@
     };
   }
 
-  // ---------- Main menu ----------
   function initMainMenu(){
     var menuToggle = document.getElementById('menuToggle');
     var mainMenu = document.getElementById('main-menu');
@@ -94,7 +89,6 @@
     document.addEventListener('click', function(e){ if(!mainMenu.contains(e.target) && !menuToggle.contains(e.target)) closeMenu(); });
   }
 
-  // ---------- FAQ ----------
   function initFAQ(){
     var faqItems = document.querySelectorAll('.faq-item button, .faq-question');
     if(!faqItems || faqItems.length === 0) return;
@@ -109,7 +103,6 @@
     });
   }
 
-  // ---------- Search ----------
   function initSearch(){
     var input = document.getElementById('searchInput');
     var cards = document.querySelectorAll('.card');
@@ -123,7 +116,6 @@
     });
   }
 
-  // ---------- Fetch GitHub Releases (robust) ----------
   async function fetchGitHubReleases(){
     var releaseList = document.getElementById('release-list');
     if(!releaseList){
@@ -136,12 +128,12 @@
 
     try {
       const url = 'https://api.github.com/repos/R3verseNinja/steamclouds/releases';
-      const response = await fetch(url); // Jangan override User-Agent di browser
+      const response = await fetch(url);
       console.log('[fetchGitHubReleases] status:', response.status, response.statusText);
 
       if(!response.ok){
         let txt = '(no body)';
-        try { txt = await response.text(); } catch(e){ /* ignore */ }
+        try { txt = await response.text(); } catch(e){ }
         console.error('[fetchGitHubReleases] GitHub API error:', response.status, txt);
         releaseList.innerHTML = `<p>Error loading releases: ${response.status} ${response.statusText}</p>`;
         return;
@@ -177,7 +169,6 @@
 
       releaseList.innerHTML = '';
       validReleases.forEach(function(rel){
-        // PASTIKAN tidak ada ReferenceError: cek typeof terlebih dahulu
         var card;
         if(typeof window.renderReleaseCard === 'function'){
           try { card = window.renderReleaseCard(rel); }
@@ -188,7 +179,15 @@
         } else {
           card = document.createElement('div'); card.className='release-card card'; card.textContent = rel.version + ' — ' + (rel.date || '');
         }
-        releaseList.appendChild(card);
+        if(card instanceof Node){
+          releaseList.appendChild(card);
+        } else if(typeof card === 'string'){
+          var temp = document.createElement('div');
+          temp.innerHTML = card;
+          while(temp.firstChild){
+            releaseList.appendChild(temp.firstChild);
+          }
+        }
       });
 
     } catch(error){
@@ -197,7 +196,6 @@
     }
   }
 
-  // ---------- AdBlock detection & overlay ----------
   window.initAdblockOverlay = function(){
     var existingOverlay = document.querySelector('.full-lock-overlay') || document.querySelector('.adblock-overlay');
     var overlay = existingOverlay || document.createElement('div');
@@ -284,7 +282,6 @@
     setInterval(enforce, 4000);
   };
 
-  // ---------- resource load error helper (logs) ----------
   window.addEventListener('error', function(ev){
     try {
       if(ev && ev.message){
@@ -297,13 +294,11 @@
     } catch(e){}
   }, true);
 
-  // ---------- startup ----------
   onReady(function(){
     try{
       initMainMenu();
       initFAQ();
       initSearch();
-      // pastikan renderReleaseCard sudah didefinisikan di global (fallback sudah di-set di atas)
       fetchGitHubReleases();
       window.initAdblockOverlay();
     } catch(e){
