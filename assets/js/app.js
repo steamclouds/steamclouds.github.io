@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           <div class="release-body">
             <div class="release-description">${markdownToHtml(cleanedBody)}</div>
-            <!-- ... -->
+            ${assetsHTML}
           </div>
         </div>
       `;
@@ -185,6 +185,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
