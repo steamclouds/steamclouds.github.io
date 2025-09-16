@@ -3,18 +3,34 @@ document.addEventListener('DOMContentLoaded', function() {
   const mainMenu = document.getElementById('main-menu');
   
   function adjustMenu() {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    
-    if (isMobile) {
-      menuToggle.style.display = 'block';
-      mainMenu.hidden = true;
-      menuToggle.setAttribute('aria-expanded', 'false');
-    } else {
-      menuToggle.style.display = 'none';
-      mainMenu.hidden = false;
-      menuToggle.setAttribute('aria-expanded', 'true');
-    }
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  
+  if (isMobile) {
+    menuToggle.style.display = 'block';
+    mainMenu.hidden = true;
+    mainMenu.style.display = 'none'; 
+    menuToggle.setAttribute('aria-expanded', 'false');
+  } else {
+    menuToggle.style.display = 'none';
+    mainMenu.hidden = false;
+    mainMenu.style.display = 'flex'; 
+    menuToggle.setAttribute('aria-expanded', 'true');
   }
+}
+
+// Di bagian event listener menuToggle
+menuToggle.addEventListener('click', () => {
+  const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+  menuToggle.setAttribute('aria-expanded', !isExpanded);
+  mainMenu.hidden = isExpanded;
+  
+  // Tambahkan ini untuk mengontrol display secara eksplisit
+  if (isExpanded) {
+    mainMenu.style.display = 'none';
+  } else {
+    mainMenu.style.display = 'flex';
+  }
+});
 
   adjustMenu();
   window.addEventListener('resize', adjustMenu);
@@ -155,6 +171,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
