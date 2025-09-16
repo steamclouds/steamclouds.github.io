@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="release-card">
           <div class="release-body">
             <div class="release-description">
-              <p>Unable to load the latest release information. Please try again later or visit our <a href="https://github.com/R3verseNinja/steamclouds/releases" target="_blank">GitHub releases page</a> directly.</p>
+              <p>Unable to load the latest release information. Please try again later.</p>
             </div>
             <a href="https://steamclouds.online" class="btn">Steam Clouds</a>
           </div>
@@ -182,3 +182,4 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
