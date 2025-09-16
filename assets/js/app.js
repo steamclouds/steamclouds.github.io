@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(release => {      
-      
       let steamCloudsAsset = null;
       for (let i = 0; i < release.assets.length; i++) {
         const asset = release.assets[i];
@@ -147,26 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function markdownToHtml(markdown) {
-  if (!markdown) return '';
-  
-  let html = markdown.replace(/### (.*?)(\n|$)/g, '<h4>$1</h4>');
-  html = html.replace(/## (.*?)(\n|$)/g, '<h3>$1</h3>');
-  html = html.replace(/# (.*?)(\n|$)/g, '<h2>$1</h2>');
-  
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-  
-  html = html.replace(/^[*-+](.*?)(\n|$)/gm, '<li>$1</li>');
-  html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
-  
-  html = html.replace(/(^|\n\n)([^\n]+)/g, '$1<p>$2</p>');
-  html = html.replace(/\n/g, '<br>');
-  
-  return html;
-}
-
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   
@@ -176,4 +155,3 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
