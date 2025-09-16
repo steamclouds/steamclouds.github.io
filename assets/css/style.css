@@ -222,7 +222,7 @@ h2::after {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem; 
-  width: 200%;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -237,7 +237,7 @@ h2::after {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
+  max-width: 180px;
 }
 
 .asset-size {
@@ -537,6 +537,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
