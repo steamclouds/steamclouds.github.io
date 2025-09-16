@@ -237,7 +237,7 @@ h2::after {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
+  max-width: 200px;
 }
 
 .asset-size {
@@ -537,6 +537,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
