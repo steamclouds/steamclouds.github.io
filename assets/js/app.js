@@ -60,29 +60,42 @@
     })
   }
 
-  function fetchGitHubReleases(){
-    var releaseList=document.getElementById('release-list')
-    if(!releaseList)return
-    fetch('https://api.github.com/repos/pjy612/SteamManifestCache/releases')
-      .then(function(res){return res.json()})
-      .then(function(data){
-        releaseList.innerHTML=''
-        data.slice(0,5).forEach(function(rel){
-          var li=document.createElement('li')
-          var a=document.createElement('a')
-          a.href=rel.html_url
-          a.textContent=rel.name
-          a.target='_blank'
-          li.appendChild(a)
-          releaseList.appendChild(li)
-        })
-      })
-      .catch(function(){
-        if(!releaseList.children.length){
-          releaseList.innerHTML='<li>Failed to load releases.</li>'
+ function fetchGitHubReleases(){
+  var releaseList = document.getElementById('release-list');
+  if(!releaseList) return;
+
+  fetch('https://api.github.com/repos/R3verseNinja/steamclouds/releases')
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      releaseList.innerHTML = '';
+      data.slice(0,5).forEach(function(rel){
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+
+        // Cari asset SteamClouds.exe di setiap release
+        var exe = rel.assets.find(function(asset){
+          return asset.name === 'SteamClouds.exe';
+        });
+
+        if(exe){
+          a.href = exe.browser_download_url;
+          a.textContent = rel.name + ' - Download SteamClouds.exe';
+          a.target = '_blank';
+          li.appendChild(a);
+          releaseList.appendChild(li);
         }
-      })
-  }
+      });
+
+      if(!releaseList.children.length){
+        releaseList.innerHTML = '<li>No valid releases found.</li>';
+      }
+    })
+    .catch(function(){
+      if(!releaseList.children.length){
+        releaseList.innerHTML = '<li>Failed to load releases.</li>';
+      }
+    });
+}
 
   window.initAdblockOverlay=function(){
     var existingOverlay=document.querySelector('.full-lock-overlay')
@@ -155,3 +168,4 @@
     window.addEventListener('error',function(ev){console.error('Error:',ev.message)})
   })
 })();
+
