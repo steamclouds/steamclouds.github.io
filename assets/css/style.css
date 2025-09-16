@@ -174,7 +174,7 @@ h2::after {
 }
 
 .release-header {
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--bg-tertiary);
 }
@@ -219,6 +219,8 @@ h2::after {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem; 
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .asset-info {
@@ -532,6 +534,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
