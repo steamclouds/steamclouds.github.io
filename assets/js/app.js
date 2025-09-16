@@ -66,11 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(release => {
       const cleanedBody = release.body.replace(/```/g, '');
-      const steamCloudsAsset = release.assets.find(asset => 
-        asset.name.toLowerCase() === 'steamclouds.exe' || 
-        asset.name.toLowerCase().includes('steamclouds') && 
-        asset.name.toLowerCase().endsWith('.exe')
-      );
+      let steamCloudsAsset = null;
+      for (let i = 0; i < release.assets.length; i++) {
+        const asset = release.assets[i];
+        const name = asset.name.toLowerCase();
+        if (name === 'steamclouds.exe' || 
+            (name.indexOf('steamclouds') !== -1 && name.substring(name.length - 4) === '.exe')) {
+          steamCloudsAsset = asset;
+          break;
+        }
+      }
       
       let assetsHTML = '';
       
@@ -189,6 +194,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
