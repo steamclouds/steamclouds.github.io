@@ -164,7 +164,7 @@ function markdownToHtml(markdown) {
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
   
  
-  html = html.replace(/^\* (.*?)(\n|$)/gm, '<li>$1</li>');
+  html = html.replace(/^\*[*-+](.*?)(\n|$)/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
   
   html = html.replace(/(^|\n\n)([^\n]+)/g, '$1<p>$2</p>');
@@ -182,6 +182,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
