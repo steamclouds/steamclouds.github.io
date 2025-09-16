@@ -129,12 +129,11 @@ h2::after {
   border-radius: 3px;
 }
 
-/* Perubahan untuk release menjadi scrollable horizontal */
+
 .release-grid {
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  padding-bottom: 1rem;
   scrollbar-width: thin;
   scrollbar-color: var(--bg-tertiary) var(--bg-secondary);
   margin: 0 -2rem;
@@ -156,15 +155,14 @@ h2::after {
 }
 
 .release-card {
+  min-width: 220px;
+  max-width: 320px;
+  padding: 0.6rem;
+  border-radius: 10px;
   background-color: var(--bg-secondary);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--card-shadow);
-  transition: var(--transition);
   border: 1px solid var(--bg-tertiary);
-  min-width: 250px;
-  flex: 0 0 auto;
-  padding: 1rem;
+  color: var(--text-primary);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.35);
 }
 
 .release-card:hover {
@@ -174,27 +172,30 @@ h2::after {
 }
 
 .release-header {
-  padding: 1.5rem;
+   padding: 0.45rem 0.6rem;
   background-color: var(--bg-tertiary);
-  border-bottom: 1px solid var(--bg-tertiary);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  margin-bottom: 0;
 }
 
 .release-title {
-  font-size: 1.4rem;
-  margin-bottom: 0.3rem;
+  font-size: 1.15rem;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
   color: var(--accent);
 }
 
 .release-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
 }
 
 .release-body {
-  padding: 1rem;
+  padding: 0.5rem 0.6rem;
+  padding-top: 0.7rem;
 }
 
 .release-description {
@@ -207,33 +208,46 @@ h2::after {
 
 .release-assets {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+
 }
 
 .asset-card {
-  background-color: var(--bg-tertiary);
-  border-radius: var(--border-radius);
-  padding: 0.8rem;
+  padding: 0.45rem 0.7rem;
+  min-height: 40px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.6rem;
+  border-radius: 8px;
+}
+
+.asset-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  width: 100%;
+}
+
+.asset-actions {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
 }
 
 .asset-name {
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 150px;
+  font-size: 0.95rem;
 }
 
 .asset-size {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  flex-shrink: 0;
-  margin-left: 1rem;
+  font-size: 0.78rem;
+  margin-top: 0;
+}
+
+.asset-actions .btn,
+.release-body > .btn {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
 }
 
 .btn {
@@ -241,14 +255,25 @@ h2::after {
   background-color: var(--accent);
   color: white;
   padding: 0.6rem 1.2rem;
-  border-radius: var(--border-radius);
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition);
   border: none;
   cursor: pointer;
   font-size: 0.9rem;
-  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+
+
+@media (max-width: 480px) {
+  .release-card { min-width: 280px; max-width: none; padding: 0.8rem; }
+  .release-title { font-size: 1.15rem; }
+  .release-body { padding-top: 0.5rem; }
+  .asset-card { padding: 0.6rem; min-height: 48px; }
 }
 
 .btn:hover {
