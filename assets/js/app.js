@@ -315,18 +315,22 @@
     });
   }
   function detectAdblock(){
-    return new Promise(function(resolve){
-      try{
-        var bait = checkBaits();
-        var ins = checkIns();
-        checkScriptLoad(1200).then(function(scrBlocked){
-          resolve(bait || ins || scrBlocked);
-        }).catch(function(){ resolve(true); });
-      }catch(e){
+  return new Promise(function(resolve){
+    try{
+      const baitRes = checkBaits(); // true = bait tampak diblok
+      const insRes = (typeof checkInsElement === 'function') ? checkInsElement() : checkIns();
+      return checkScriptLoad().then(function(scriptRes){
+        const blocked = (scriptRes && (baitRes || insRes)) || (baitRes && insRes);
+        resolve(blocked);
+      }).catch(function(){
         resolve(true);
-      }
-    });
-  }
+      });
+    }catch(e){
+      resolve(true);
+    }
+  });
+}
+
   function createLockOverlay(){
     var ov = document.querySelector('.full-lock-overlay');
     if (ov) return ov;
@@ -446,6 +450,7 @@
     });
   });
 })();
+
 
 
 
