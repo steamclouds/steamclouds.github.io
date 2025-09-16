@@ -84,34 +84,36 @@ menuToggle.addEventListener('click', () => {
         }
       }
       
-      let assetsHTML = '';
-      
-      if (steamCloudsAsset) {
-        assetsHTML += `
-          <div class="asset-card">
-            <div>
-              <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
-              <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
-            </div>
-            <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
-          </div>
-        `;
-      }
-      
       const otherAssets = release.assets.filter(asset => 
         !steamCloudsAsset || asset.id !== steamCloudsAsset.id
       );
       
-      if (otherAssets.length > 0) {
-        otherAssets.forEach(asset => {
-          assetsHTML += `
-            <div class="asset-card">
-              <div>
-                <div class="asset-name" title="${asset.name}">${asset.name}</div>
-                <div class="asset-size">${formatFileSize(asset.size)}</div>
-              </div>
-          `;
-        });
+      let assetsHTML = '';
+      
+      if (steamCloudsAsset) {
+  assetsHTML += `
+    <div class="asset-card">
+      <div>
+        <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
+        <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
+      </div>
+      <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
+    </div>
+  `;
+}
+
+if (otherAssets && Array.isArray(otherAssets)) {
+  otherAssets.forEach(asset => {
+    assetsHTML += `
+      <div class="asset-card">
+        <div>
+          <div class="asset-name" title="${asset.name}">${asset.name}</div>
+          <div class="asset-size">${formatFileSize(asset.size)}</div>
+        </div>
+        <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
+      </div>
+    `;
+  });
       } else if (!steamCloudsAsset) {
         assetsHTML = `
           <div class="asset-card">
@@ -119,7 +121,6 @@ menuToggle.addEventListener('click', () => {
               <div class="asset-name">No executable file found</div>
               <div class="asset-size">Please contact admin on discord</div>
             </div>
-            <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
           </div>
         `;
       }
@@ -169,6 +170,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
