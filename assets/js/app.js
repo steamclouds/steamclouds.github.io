@@ -1,148 +1,115 @@
 (function(){
-  // util: DOM ready
+  // ---------- util: DOM ready ----------
   function onReady(fn){
-    if(document.readyState !== 'loading'){ fn(); } else { document.addEventListener('DOMContentLoaded', fn); }
+    if(document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
   }
 
-  /* ----------------------
-     RENDER RELEASE CARD (definisi pasti ada)
-  ---------------------- */
-  function renderReleaseCard(rel){
-    var wrap = document.createElement('div');
-    wrap.className = 'release-card card';
-    wrap.style.border = '1px solid var(--item-border-strong)';
-    wrap.style.padding = '12px';
-    wrap.style.marginBottom = '12px';
-    wrap.style.borderRadius = '12px';
-    wrap.style.background = 'var(--release-card-bg)';
+  // ---------- fallback safe renderReleaseCard ----------
+  // Pastikan fungsi ini selalu ada (menghindari ReferenceError).
+  // Kalau kamu punya versi custom, biarkan — tapi fallback ini memastikan UI tetap bekerja.
+  if(typeof window.renderReleaseCard !== 'function'){
+    window.renderReleaseCard = function(rel){
+      var wrap = document.createElement('div');
+      wrap.className = 'release-card card';
+      wrap.style.border = '1px solid var(--item-border-strong)';
+      wrap.style.padding = '12px';
+      wrap.style.marginBottom = '12px';
+      wrap.style.borderRadius = '12px';
+      wrap.style.background = 'var(--release-card-bg)';
 
-    var head = document.createElement('div');
-    head.style.display = 'flex';
-    head.style.justifyContent = 'space-between';
-    head.style.alignItems = 'baseline';
+      var head = document.createElement('div');
+      head.style.display = 'flex';
+      head.style.justifyContent = 'space-between';
+      head.style.alignItems = 'baseline';
 
-    var title = document.createElement('h2');
-    title.innerText = rel.version || '(no version)';
-    title.style.margin = '0';
-    title.style.fontSize = '1.02rem';
+      var title = document.createElement('h2');
+      title.innerText = rel.version || '(no version)';
+      title.style.margin = '0';
+      title.style.fontSize = '1.02rem';
 
-    var date = document.createElement('div');
-    date.className = 'meta';
-    date.innerText = rel.date || '';
-    date.style.fontSize = '0.85rem';
+      var date = document.createElement('div');
+      date.className = 'meta';
+      date.innerText = rel.date || '';
+      date.style.fontSize = '0.85rem';
 
-    head.appendChild(title);
-    head.appendChild(date);
+      head.appendChild(title);
+      head.appendChild(date);
 
-    var notes = document.createElement('div');
-    notes.style.marginTop = '8px';
-    notes.style.whiteSpace = 'pre-wrap';
-    notes.style.maxHeight = '6.6em';
-    notes.style.overflow = 'hidden';
-    notes.style.textOverflow = 'ellipsis';
-    notes.className = 'release-notes';
-    notes.innerText = rel.notes || 'No release notes available';
+      var notes = document.createElement('div');
+      notes.style.marginTop = '8px';
+      notes.style.whiteSpace = 'pre-wrap';
+      notes.style.maxHeight = '6.6em';
+      notes.style.overflow = 'hidden';
+      notes.style.textOverflow = 'ellipsis';
+      notes.className = 'release-notes';
+      notes.innerText = rel.notes || 'No release notes available';
 
-    var actions = document.createElement('div');
-    actions.className = 'card-actions';
+      var actions = document.createElement('div');
+      actions.className = 'card-actions';
 
-    if(rel.url){
-      var dl = document.createElement('a');
-      dl.href = rel.url;
-      dl.rel = 'noopener noreferrer';
-      dl.target = '_blank';
-      dl.innerText = 'Download';
-      dl.className = 'btn small';
-      actions.appendChild(dl);
-    }
-
-    var more = document.createElement('button');
-    more.type = 'button';
-    more.innerText = 'Notes';
-    more.className = 'btn small';
-    more.addEventListener('click', function(){
-      if(notes.style.maxHeight && notes.style.maxHeight !== 'none'){
-        notes.style.maxHeight = 'none';
-        notes.style.overflow = 'auto';
-        more.innerText = 'Collapse';
-      } else {
-        notes.style.maxHeight = '6.6em';
-        notes.style.overflow = 'hidden';
-        more.innerText = 'Notes';
+      if(rel.url){
+        var dl = document.createElement('a');
+        dl.href = rel.url;
+        dl.rel = 'noopener noreferrer';
+        dl.target = '_blank';
+        dl.innerText = 'Download';
+        dl.className = 'btn small';
+        actions.appendChild(dl);
       }
-    });
-    actions.appendChild(more);
 
-    wrap.appendChild(head);
-    wrap.appendChild(notes);
-    wrap.appendChild(actions);
+      var more = document.createElement('button');
+      more.type = 'button';
+      more.innerText = 'Notes';
+      more.className = 'btn small';
+      more.addEventListener('click', function(){
+        if(notes.style.maxHeight && notes.style.maxHeight !== 'none'){
+          notes.style.maxHeight = 'none';
+          notes.style.overflow = 'auto';
+          more.innerText = 'Collapse';
+        } else {
+          notes.style.maxHeight = '6.6em';
+          notes.style.overflow = 'hidden';
+          more.innerText = 'Notes';
+        }
+      });
+      actions.appendChild(more);
 
-    return wrap;
+      wrap.appendChild(head);
+      wrap.appendChild(notes);
+      wrap.appendChild(actions);
+
+      return wrap;
+    };
   }
 
-  /* ----------------------
-     MAIN MENU
-  ---------------------- */
+  // ---------- Main menu ----------
   function initMainMenu(){
     var menuToggle = document.getElementById('menuToggle');
     var mainMenu = document.getElementById('main-menu');
     if(!menuToggle || !mainMenu) return;
-
-    function openMenu(){
-      mainMenu.hidden = false;
-      menuToggle.setAttribute('aria-expanded','true');
-      var firstLink = mainMenu.querySelector('a,button');
-      if(firstLink) firstLink.focus();
-    }
-    function closeMenu(){
-      mainMenu.hidden = true;
-      menuToggle.setAttribute('aria-expanded','false');
-    }
-    menuToggle.addEventListener('click', function(){
-      var expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      if(expanded){ closeMenu(); } else { openMenu(); }
-    });
-    document.addEventListener('click', function(e){
-      if(!mainMenu.contains(e.target) && !menuToggle.contains(e.target)){
-        closeMenu();
-      }
-    });
+    function openMenu(){ mainMenu.hidden = false; menuToggle.setAttribute('aria-expanded','true'); var f = mainMenu.querySelector('a,button'); if(f) f.focus(); }
+    function closeMenu(){ mainMenu.hidden = true; menuToggle.setAttribute('aria-expanded','false'); }
+    menuToggle.addEventListener('click', function(){ var expanded = menuToggle.getAttribute('aria-expanded') === 'true'; if(expanded) closeMenu(); else openMenu(); });
+    document.addEventListener('click', function(e){ if(!mainMenu.contains(e.target) && !menuToggle.contains(e.target)) closeMenu(); });
   }
 
-  /* ----------------------
-     FAQ ACCORDION
-  ---------------------- */
+  // ---------- FAQ ----------
   function initFAQ(){
     var faqItems = document.querySelectorAll('.faq-item button, .faq-question');
-    if(!faqItems || faqItems.length===0) return;
+    if(!faqItems || faqItems.length === 0) return;
     faqItems.forEach(function(btn){
       btn.addEventListener('click', function(){
-        // normalized to data-controls or aria-controls
         var controls = btn.getAttribute('aria-controls') || btn.dataset.controls;
         var expanded = btn.getAttribute('aria-expanded') === 'true';
-        // collapse others
         var all = document.querySelectorAll('.faq-item button, .faq-question');
-        all.forEach(function(b){
-          b.setAttribute('aria-expanded','false');
-          var cId = b.getAttribute('aria-controls') || b.dataset.controls;
-          if(cId){
-            var content = document.getElementById(cId);
-            if(content) content.classList.remove('open');
-          }
-        });
-
-        if(!expanded && controls){
-          btn.setAttribute('aria-expanded','true');
-          var elem = document.getElementById(controls);
-          if(elem) elem.classList.add('open');
-        }
+        all.forEach(function(b){ b.setAttribute('aria-expanded','false'); var cId = b.getAttribute('aria-controls') || b.dataset.controls; if(cId){ var content = document.getElementById(cId); if(content) content.classList.remove('open'); } });
+        if(!expanded && controls){ btn.setAttribute('aria-expanded','true'); var el = document.getElementById(controls); if(el) el.classList.add('open'); }
       });
     });
   }
 
-  /* ----------------------
-     SIMPLE SEARCH (cards)
-  ---------------------- */
+  // ---------- Search ----------
   function initSearch(){
     var input = document.getElementById('searchInput');
     var cards = document.querySelectorAll('.card');
@@ -156,9 +123,7 @@
     });
   }
 
-  /* ----------------------
-     FETCH GITHUB RELEASES (safe)
-  ---------------------- */
+  // ---------- Fetch GitHub Releases (robust) ----------
   async function fetchGitHubReleases(){
     var releaseList = document.getElementById('release-list');
     if(!releaseList){
@@ -167,17 +132,16 @@
       var container = document.querySelector('.releases') || document.body;
       container.appendChild(releaseList);
     }
-
     releaseList.innerHTML = '<p>Loading releases...</p>';
 
     try {
       const url = 'https://api.github.com/repos/R3verseNinja/steamclouds/releases';
-      const response = await fetch(url); // no custom User-Agent
+      const response = await fetch(url); // Jangan override User-Agent di browser
       console.log('[fetchGitHubReleases] status:', response.status, response.statusText);
 
       if(!response.ok){
-        let txt = '';
-        try { txt = await response.text(); } catch(e){ txt = '(no body)'; }
+        let txt = '(no body)';
+        try { txt = await response.text(); } catch(e){ /* ignore */ }
         console.error('[fetchGitHubReleases] GitHub API error:', response.status, txt);
         releaseList.innerHTML = `<p>Error loading releases: ${response.status} ${response.statusText}</p>`;
         return;
@@ -213,27 +177,27 @@
 
       releaseList.innerHTML = '';
       validReleases.forEach(function(rel){
-        // fallback jika renderReleaseCard somehow hilang
+        // PASTIKAN tidak ada ReferenceError: cek typeof terlebih dahulu
         var card;
-        if(typeof renderReleaseCard === 'function'){
-          card = renderReleaseCard(rel);
+        if(typeof window.renderReleaseCard === 'function'){
+          try { card = window.renderReleaseCard(rel); }
+          catch(e){
+            console.error('[fetchGitHubReleases] renderReleaseCard threw:', e);
+            card = document.createElement('div'); card.className='release-card card'; card.textContent = rel.version + ' — ' + (rel.date || '');
+          }
         } else {
-          card = document.createElement('div');
-          card.className = 'release-card card';
-          card.textContent = rel.version + ' — ' + (rel.date || '');
+          card = document.createElement('div'); card.className='release-card card'; card.textContent = rel.version + ' — ' + (rel.date || '');
         }
         releaseList.appendChild(card);
       });
 
     } catch(error){
       console.error('[fetchGitHubReleases] Error:', error);
-      releaseList.innerHTML = `<p>Error loading releases: ${error.message}</p>`;
+      releaseList.innerHTML = `<p>Error loading releases: ${error && error.message ? error.message : error}</p>`;
     }
   }
 
-  /* ----------------------
-     ADBLOCK OVERLAY (improved)
-  ---------------------- */
+  // ---------- AdBlock detection & overlay ----------
   window.initAdblockOverlay = function(){
     var existingOverlay = document.querySelector('.full-lock-overlay') || document.querySelector('.adblock-overlay');
     var overlay = existingOverlay || document.createElement('div');
@@ -244,7 +208,7 @@
       overlay.style.position = 'fixed';
       overlay.style.inset = '0';
       overlay.style.zIndex = '999999';
-      overlay.style.display = 'flex';
+      overlay.style.display = 'none';
       overlay.style.alignItems = 'center';
       overlay.style.justifyContent = 'center';
       overlay.style.color = '#fff';
@@ -292,22 +256,20 @@
     }
 
     function showLock(){
-      overlay.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden','false');
       overlay.style.display = 'flex';
       document.documentElement.classList.add('adgate-active');
     }
     function hideLock(){
-      overlay.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden','true');
       overlay.style.display = 'none';
       document.documentElement.classList.remove('adgate-active');
     }
 
-    // jika script ad eksternal gagal load (ERR_BLOCKED_BY_CLIENT), kita anggap adblock aktif
     var adBlockedFlag = false;
-    // listen resource load errors
     window.addEventListener('error', function(ev){
       var t = ev && ev.target;
-      if(t && t.tagName === 'SCRIPT' && t.src && t.src.indexOf('fpyf8.com') !== -1){
+      if(t && t.tagName === 'SCRIPT' && t.src && (t.src.indexOf('fpyf8.com') !== -1 || t.src.indexOf('tag.min.js') !== -1)){
         console.warn('[adblock] script blocked or failed to load:', t.src);
         adBlockedFlag = true;
         showLock();
@@ -315,25 +277,17 @@
     }, true);
 
     function enforce(){
-      if(adBlockedFlag){
-        showLock();
-        return;
-      }
-      detectAdblock().then(function(blocked){
-        if(blocked) showLock(); else hideLock();
-      });
+      if(adBlockedFlag){ showLock(); return; }
+      detectAdblock().then(function(blocked){ if(blocked) showLock(); else hideLock(); });
     }
     enforce();
     setInterval(enforce, 4000);
   };
 
-  /* ----------------------
-     GLOBAL ERROR LOG (help debug resource blocking)
-  ---------------------- */
+  // ---------- resource load error helper (logs) ----------
   window.addEventListener('error', function(ev){
     try {
-      if(ev && ev.message) {
-        // resource load errors have ev.target (script/link/img)
+      if(ev && ev.message){
         if(ev.target && ev.target.src){
           console.warn('[resource error]', ev.target.tagName, ev.target.src, ev);
         } else {
@@ -343,14 +297,13 @@
     } catch(e){}
   }, true);
 
-  /* ----------------------
-     STARTUP
-  ---------------------- */
+  // ---------- startup ----------
   onReady(function(){
-    try {
+    try{
       initMainMenu();
       initFAQ();
       initSearch();
+      // pastikan renderReleaseCard sudah didefinisikan di global (fallback sudah di-set di atas)
       fetchGitHubReleases();
       window.initAdblockOverlay();
     } catch(e){
