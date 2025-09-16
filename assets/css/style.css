@@ -206,6 +206,9 @@ h2::after {
 }
 
 .release-assets {
+  padding: 0 1rem; /
+  width: 100%;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
@@ -534,6 +537,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
