@@ -101,14 +101,27 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="asset-card">
           <div>
             <div class="asset-name">No executable file found</div>
-            <div class="asset-size">Please contact admin on discord</div>
+            <div class="asset-size">Please contact admin on Discord</div>
           </div>
           <a href="https://discord.com/invite/G89gC8wJg4" class="btn">Join Discord</a>
         </div>
       `;
     }
 
-    // Hanya tampilkan judul, info rilis, dan tombol download — TANPA deskripsi!
+    // Buat tombol changelog, tapi jangan tampilkan body dulu
+    const changelogButton = release.body.trim() ? `
+      <button type="button" class="btn btn-outline mt-2" id="toggleChangelog">View Changelog</button>
+      <div id="changelog-content" class="changelog-content" style="display: none; margin-top: 1rem;">
+        ${markdownToHtml(
+          release.body
+            .replace(/```/g, '')
+            .replace(/---/g, '')
+            .replace(/•/g, '-')
+        )}
+      </div>
+    ` : '';
+
+    // Render hanya: header + assets + tombol changelog (tanpa isi langsung)
     releaseList.innerHTML = `
       <div class="release-card">
         <div class="release-header">
@@ -125,8 +138,21 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="release-assets">
           ${assetsHTML}
         </div>
+        ${changelogButton}
       </div>
     `;
+
+    // Tambahkan event listener untuk tombol changelog
+    const toggleBtn = document.getElementById('toggleChangelog');
+    const contentDiv = document.getElementById('changelog-content');
+
+    if (toggleBtn && contentDiv) {
+      toggleBtn.addEventListener('click', () => {
+        const isHidden = contentDiv.style.display === 'none';
+        contentDiv.style.display = isHidden ? 'block' : 'none';
+        toggleBtn.textContent = isHidden ? 'Hide Changelog' : 'View Changelog';
+      });
+    }
   })
   .catch(error => {
     console.error('Error fetching GitHub releases:', error);
@@ -168,5 +194,6 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
