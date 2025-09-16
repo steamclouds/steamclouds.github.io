@@ -180,7 +180,7 @@ h2::after {
 }
 
 .release-title {
-  font-size: 1.4rem;
+  font-size: 1rem;
   margin-bottom: 0.3rem;
   color: var(--accent);
 }
@@ -537,6 +537,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
