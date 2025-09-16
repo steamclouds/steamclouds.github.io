@@ -428,11 +428,6 @@ h2::after {
   padding: 0;
 }
 
-.faq-answer ol {
-  margin-top: 0; 
-  padding-left: 1.5rem; 
-}
-
 footer {
   background-color: var(--bg-secondary);
   padding: 2rem 0;
@@ -502,6 +497,7 @@ footer {
     min-width: 280px;
   }
 }
+
 
 
 
