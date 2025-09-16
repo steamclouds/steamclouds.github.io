@@ -4,12 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const mainMenu = document.getElementById('main-menu');
   
   menuToggle.addEventListener('click', () => {
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
     menuToggle.setAttribute('aria-expanded', !isExpanded);
     mainMenu.hidden = isExpanded;
   });
   
-  // FAQ accordion
+  // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
@@ -17,13 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
       // Close all
       document.querySelectorAll('.faq-question').forEach(btn => {
         btn.setAttribute('aria-expanded', 'false');
-        btn.nextElementSibling.setAttribute('aria-hidden', 'true');
+        const answer = btn.nextElementSibling;
+        if (answer) {
+          answer.setAttribute('aria-hidden', 'true');
+        }
       });
       
       // Toggle current
       if (!expanded) {
         button.setAttribute('aria-expanded', 'true');
-        button.nextElementSibling.setAttribute('aria-hidden', 'false');
+        const answer = button.nextElementSibling;
+        if (answer) {
+          answer.setAttribute('aria-hidden', 'false');
+        }
       }
     });
   });
@@ -42,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Find SteamClouds.exe asset
       const steamCloudsAsset = release.assets.find(asset => 
         asset.name.toLowerCase() === 'steamclouds.exe' || 
-        asset.name.toLowerCase().includes('steamclouds')
+        asset.name.toLowerCase().includes('steamclouds') && 
+        asset.name.toLowerCase().endsWith('.exe')
       );
       
       let assetsHTML = '';
@@ -51,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         assetsHTML += `
           <div class="asset-card">
             <div>
-              <div class="asset-name">${steamCloudsAsset.name}</div>
+              <div class="asset-name" title="${steamCloudsAsset.name}">${steamCloudsAsset.name}</div>
               <div class="asset-size">${formatFileSize(steamCloudsAsset.size)}</div>
             </div>
             <a href="${steamCloudsAsset.browser_download_url}" class="btn">Download</a>
@@ -60,19 +67,34 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       // Add other assets if needed
-      release.assets.forEach(asset => {
-        if (asset.id !== steamCloudsAsset?.id) {
+      const otherAssets = release.assets.filter(asset => 
+        !steamCloudsAsset || asset.id !== steamCloudsAsset.id
+      );
+      
+      if (otherAssets.length > 0) {
+        otherAssets.forEach(asset => {
           assetsHTML += `
             <div class="asset-card">
               <div>
-                <div class="asset-name">${asset.name}</div>
+                <div class="asset-name" title="${asset.name}">${asset.name}</div>
                 <div class="asset-size">${formatFileSize(asset.size)}</div>
               </div>
               <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
             </div>
           `;
-        }
-      });
+        });
+      } else if (!steamCloudsAsset) {
+        // Tidak ada file .exe dan tidak ada asset lain
+        assetsHTML = `
+          <div class="asset-card">
+            <div>
+              <div class="asset-name">No executable file found</div>
+              <div class="asset-size">Please check GitHub releases directly</div>
+            </div>
+            <a href="https://github.com/R3verseNinja/steamclouds/releases" class="btn">View Releases</a>
+          </div>
+        `;
+      }
       
       releaseList.innerHTML = `
         <div class="release-card">
