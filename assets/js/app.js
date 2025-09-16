@@ -110,8 +110,6 @@ menuToggle.addEventListener('click', () => {
                 <div class="asset-name" title="${asset.name}">${asset.name}</div>
                 <div class="asset-size">${formatFileSize(asset.size)}</div>
               </div>
-              <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
-            </div>
           `;
         });
       } else if (!steamCloudsAsset) {
@@ -143,6 +141,7 @@ menuToggle.addEventListener('click', () => {
             <div class="release-assets">
               ${assetsHTML}
             </div>
+             <a href="${asset.browser_download_url}" class="btn btn-outline">Download</a>
           </div>
         </div>
       `;
@@ -171,6 +170,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
