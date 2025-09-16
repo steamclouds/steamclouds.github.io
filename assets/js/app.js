@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const mainMenu = document.getElementById('main-menu');
   
   menuToggle.addEventListener('click', () => {
-    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = isExpanded;
+    mainMenu.hidden = !isExpanded;
   });
   
   // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
@@ -169,5 +169,6 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
