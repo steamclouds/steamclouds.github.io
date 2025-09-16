@@ -162,8 +162,8 @@ h2::after {
   box-shadow: var(--card-shadow);
   transition: var(--transition);
   border: 1px solid var(--bg-tertiary);
-  min-width: 320px;
-  flex: 0 0 320px;
+  min-width: 260px;        
+  flex: 0 0 260px;       
   padding: 1rem;
 }
 
@@ -206,26 +206,29 @@ h2::after {
 }
 
 .release-assets {
-  padding: 0.75rem 1rem; 
+  padding: 0.6rem 0.5rem;
   width: 100%;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;              
   gap: 0.75rem;
-  align-items: center;
+  align-items: stretch;
+  overflow-x: auto;           
+  -webkit-overflow-scrolling: touch;
 }
 
 .asset-card {
   background-color: var(--bg-tertiary);
   border-radius: var(--border-radius);
-  padding: 0.6rem;
+  padding: 0.9rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
-  width: 100%;
+  width: auto;
   box-sizing: border-box;
+  flex: 0 0 360px;            
+  min-width: 320px;        
   gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .asset-info { 
@@ -236,11 +239,11 @@ h2::after {
 .asset-name {
   font-weight: 600;
   color: var(--text-primary);
-  white-space: normal;        
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;     
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.2;
   margin-bottom: 0.15rem;
@@ -256,7 +259,7 @@ h2::after {
   display: inline-block;
   background-color: var(--accent);
   color: white;
-  padding: 0.5rem 0.9rem;
+  padding: 0.45rem 0.8rem;
   border-radius: var(--border-radius);
   text-decoration: none;
   font-weight: 600;
@@ -544,6 +547,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
