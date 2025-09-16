@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(release => {
-      // Deklarasikan cleanedBody di sini
       const cleanedBody = release.body
         .replace(/```/g, '')
         .replace(/---/g, '')
