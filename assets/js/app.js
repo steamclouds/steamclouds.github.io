@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(release => {
-      // Find SteamClouds.exe asset
+      const cleanedBody = release.body.replace(/```/g, '');
       const steamCloudsAsset = release.assets.find(asset => 
         asset.name.toLowerCase() === 'steamclouds.exe' || 
         asset.name.toLowerCase().includes('steamclouds') && 
@@ -169,3 +169,4 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
