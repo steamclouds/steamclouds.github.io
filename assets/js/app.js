@@ -1,8 +1,83 @@
 (function(){
   // util: DOM ready
   function onReady(fn){
-    if(document.readyState !== 'loading'){ fn(); }
-    else { document.addEventListener('DOMContentLoaded', fn); }
+    if(document.readyState !== 'loading'){ fn(); } else { document.addEventListener('DOMContentLoaded', fn); }
+  }
+
+  /* ----------------------
+     RENDER RELEASE CARD (definisi pasti ada)
+  ---------------------- */
+  function renderReleaseCard(rel){
+    var wrap = document.createElement('div');
+    wrap.className = 'release-card card';
+    wrap.style.border = '1px solid var(--item-border-strong)';
+    wrap.style.padding = '12px';
+    wrap.style.marginBottom = '12px';
+    wrap.style.borderRadius = '12px';
+    wrap.style.background = 'var(--release-card-bg)';
+
+    var head = document.createElement('div');
+    head.style.display = 'flex';
+    head.style.justifyContent = 'space-between';
+    head.style.alignItems = 'baseline';
+
+    var title = document.createElement('h2');
+    title.innerText = rel.version || '(no version)';
+    title.style.margin = '0';
+    title.style.fontSize = '1.02rem';
+
+    var date = document.createElement('div');
+    date.className = 'meta';
+    date.innerText = rel.date || '';
+    date.style.fontSize = '0.85rem';
+
+    head.appendChild(title);
+    head.appendChild(date);
+
+    var notes = document.createElement('div');
+    notes.style.marginTop = '8px';
+    notes.style.whiteSpace = 'pre-wrap';
+    notes.style.maxHeight = '6.6em';
+    notes.style.overflow = 'hidden';
+    notes.style.textOverflow = 'ellipsis';
+    notes.className = 'release-notes';
+    notes.innerText = rel.notes || 'No release notes available';
+
+    var actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    if(rel.url){
+      var dl = document.createElement('a');
+      dl.href = rel.url;
+      dl.rel = 'noopener noreferrer';
+      dl.target = '_blank';
+      dl.innerText = 'Download';
+      dl.className = 'btn small';
+      actions.appendChild(dl);
+    }
+
+    var more = document.createElement('button');
+    more.type = 'button';
+    more.innerText = 'Notes';
+    more.className = 'btn small';
+    more.addEventListener('click', function(){
+      if(notes.style.maxHeight && notes.style.maxHeight !== 'none'){
+        notes.style.maxHeight = 'none';
+        notes.style.overflow = 'auto';
+        more.innerText = 'Collapse';
+      } else {
+        notes.style.maxHeight = '6.6em';
+        notes.style.overflow = 'hidden';
+        more.innerText = 'Notes';
+      }
+    });
+    actions.appendChild(more);
+
+    wrap.appendChild(head);
+    wrap.appendChild(notes);
+    wrap.appendChild(actions);
+
+    return wrap;
   }
 
   /* ----------------------
@@ -38,19 +113,28 @@
      FAQ ACCORDION
   ---------------------- */
   function initFAQ(){
-    var faqItems = document.querySelectorAll('.faq-item button');
+    var faqItems = document.querySelectorAll('.faq-item button, .faq-question');
+    if(!faqItems || faqItems.length===0) return;
     faqItems.forEach(function(btn){
       btn.addEventListener('click', function(){
+        // normalized to data-controls or aria-controls
+        var controls = btn.getAttribute('aria-controls') || btn.dataset.controls;
         var expanded = btn.getAttribute('aria-expanded') === 'true';
-        faqItems.forEach(function(b){
+        // collapse others
+        var all = document.querySelectorAll('.faq-item button, .faq-question');
+        all.forEach(function(b){
           b.setAttribute('aria-expanded','false');
-          var content = document.getElementById(b.getAttribute('aria-controls'));
-          if(content) content.hidden = true;
+          var cId = b.getAttribute('aria-controls') || b.dataset.controls;
+          if(cId){
+            var content = document.getElementById(cId);
+            if(content) content.classList.remove('open');
+          }
         });
-        if(!expanded){
+
+        if(!expanded && controls){
           btn.setAttribute('aria-expanded','true');
-          var c = document.getElementById(btn.getAttribute('aria-controls'));
-          if(c) c.hidden = false;
+          var elem = document.getElementById(controls);
+          if(elem) elem.classList.add('open');
         }
       });
     });
@@ -73,107 +157,13 @@
   }
 
   /* ----------------------
-     RENDER RELEASE CARD
-     (dibuat agar fetchGithub punya UI output yang bersih)
-  ---------------------- */
-  function renderReleaseCard(rel){
-    var wrap = document.createElement('div');
-    wrap.className = 'release-card card';
-    wrap.style.border = '1px solid rgba(255,255,255,0.06)';
-    wrap.style.padding = '12px';
-    wrap.style.marginBottom = '12px';
-    wrap.style.borderRadius = '8px';
-    wrap.style.background = 'rgba(255,255,255,0.02)';
-
-    var head = document.createElement('div');
-    head.style.display = 'flex';
-    head.style.justifyContent = 'space-between';
-    head.style.alignItems = 'baseline';
-
-    var title = document.createElement('div');
-    title.innerText = rel.version || '(no version)';
-    title.style.fontWeight = '600';
-    title.style.fontSize = '1rem';
-
-    var date = document.createElement('div');
-    date.innerText = rel.date || '';
-    date.style.fontSize = '0.9rem';
-    date.style.opacity = '0.8';
-
-    head.appendChild(title);
-    head.appendChild(date);
-
-    var notes = document.createElement('div');
-    notes.style.marginTop = '8px';
-    notes.style.whiteSpace = 'pre-wrap';
-    notes.style.maxHeight = '6.6em';
-    notes.style.overflow = 'hidden';
-    notes.style.textOverflow = 'ellipsis';
-    notes.style.opacity = '0.95';
-    notes.innerText = rel.notes || 'No release notes available';
-
-    var actions = document.createElement('div');
-    actions.style.marginTop = '10px';
-    actions.style.display = 'flex';
-    actions.style.gap = '8px';
-
-    if(rel.url){
-      var dl = document.createElement('a');
-      dl.href = rel.url;
-      dl.rel = 'noopener noreferrer';
-      dl.target = '_blank';
-      dl.innerText = 'Download';
-      dl.className = 'btn btn-primary';
-      dl.style.padding = '6px 10px';
-      dl.style.borderRadius = '6px';
-      dl.style.textDecoration = 'none';
-      dl.style.background = 'rgba(255,255,255,0.06)';
-      dl.style.color = 'inherit';
-      actions.appendChild(dl);
-    }
-
-    // optional: view full notes button
-    var more = document.createElement('button');
-    more.type = 'button';
-    more.innerText = 'Notes';
-    more.style.padding = '6px 10px';
-    more.style.borderRadius = '6px';
-    more.style.background = 'transparent';
-    more.style.border = '1px solid rgba(255,255,255,0.04)';
-    more.addEventListener('click', function(){
-      // toggle expand
-      if(notes.style.maxHeight && notes.style.maxHeight !== 'none'){
-        notes.style.maxHeight = 'none';
-        more.innerText = 'Collapse';
-      } else {
-        notes.style.maxHeight = '6.6em';
-        notes.style.overflow = 'hidden';
-        more.innerText = 'Notes';
-      }
-    });
-    actions.appendChild(more);
-
-    wrap.appendChild(head);
-    wrap.appendChild(notes);
-    wrap.appendChild(actions);
-
-    return wrap;
-  }
-
-  /* ----------------------
-     FETCH GITHUB RELEASES (FIXED)
-     - tidak mengirim header User-Agent
-     - logging untuk debugging
-     - safe checks
+     FETCH GITHUB RELEASES (safe)
   ---------------------- */
   async function fetchGitHubReleases(){
     var releaseList = document.getElementById('release-list');
-
-    // jika elemen tidak ada, buat placeholder minimal
     if(!releaseList){
       releaseList = document.createElement('div');
       releaseList.id = 'release-list';
-      // masukkan di body atau container khusus jika ada
       var container = document.querySelector('.releases') || document.body;
       container.appendChild(releaseList);
     }
@@ -182,9 +172,7 @@
 
     try {
       const url = 'https://api.github.com/repos/R3verseNinja/steamclouds/releases';
-      const response = await fetch(url); // jangan override User-Agent
-
-      // debug: log status dan headers (headers limited in browser)
+      const response = await fetch(url); // no custom User-Agent
       console.log('[fetchGitHubReleases] status:', response.status, response.statusText);
 
       if(!response.ok){
@@ -203,25 +191,20 @@
         return;
       }
 
-      // map ke valid releases (ambil exe asset jika ada, fallback ke zipball)
       const validReleases = releasesData.map(rel => {
         const assets = Array.isArray(rel.assets) ? rel.assets : [];
         const exeAsset = assets.find(asset => {
           const name = asset && asset.name ? asset.name.toLowerCase() : '';
-          // lebih permissive: cek .exe, 'steamclouds', atau steamclouds.exe
           return name.endsWith('.exe') || name.includes('steamclouds') || name.includes('steam_clouds');
         });
-
-        const downloadUrl = exeAsset ? exeAsset.browser_download_url
-                          : (rel.zipball_url || rel.tarball_url || '');
-
+        const downloadUrl = exeAsset ? exeAsset.browser_download_url : (rel.zipball_url || rel.tarball_url || '');
         return {
           version: rel.tag_name || rel.name || '(no tag)',
           date: rel.published_at ? new Date(rel.published_at).toLocaleDateString('en-US') : 'Unknown',
           notes: rel.body || 'No release notes available',
           url: downloadUrl
         };
-      }).filter(r => r.url); // hanya yang punya url download
+      }).filter(r => r.url);
 
       if(!validReleases.length){
         releaseList.innerHTML = '<p>No releases found.</p>';
@@ -230,7 +213,16 @@
 
       releaseList.innerHTML = '';
       validReleases.forEach(function(rel){
-        releaseList.appendChild(renderReleaseCard(rel));
+        // fallback jika renderReleaseCard somehow hilang
+        var card;
+        if(typeof renderReleaseCard === 'function'){
+          card = renderReleaseCard(rel);
+        } else {
+          card = document.createElement('div');
+          card.className = 'release-card card';
+          card.textContent = rel.version + ' — ' + (rel.date || '');
+        }
+        releaseList.appendChild(card);
       });
 
     } catch(error){
@@ -241,36 +233,33 @@
 
   /* ----------------------
      ADBLOCK OVERLAY (improved)
-     - bait lebih "visible" sehingga deteksi lebih konsisten
-     - logging detection result
   ---------------------- */
   window.initAdblockOverlay = function(){
-    var existingOverlay = document.querySelector('.full-lock-overlay');
+    var existingOverlay = document.querySelector('.full-lock-overlay') || document.querySelector('.adblock-overlay');
     var overlay = existingOverlay || document.createElement('div');
 
     if(!existingOverlay){
-      overlay.className = 'full-lock-overlay';
+      overlay.className = 'full-lock-overlay adblock-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
       overlay.style.position = 'fixed';
       overlay.style.inset = '0';
       overlay.style.zIndex = '999999';
-      overlay.style.background = 'rgba(0,0,0,0.95)';
-      overlay.style.display = 'none';
+      overlay.style.display = 'flex';
       overlay.style.alignItems = 'center';
       overlay.style.justifyContent = 'center';
       overlay.style.color = '#fff';
       overlay.style.textAlign = 'center';
       overlay.style.padding = '24px';
-      var msg = document.createElement('div');
-      msg.innerHTML = '<h2>AdBlock Detected</h2><p>Please disable AdBlock to access this website.</p>';
-      overlay.appendChild(msg);
+      var panel = document.createElement('div');
+      panel.className = 'adblock-panel';
+      panel.innerHTML = '<h2>AdBlock Detected</h2><p>Please disable AdBlock to access this website.</p>';
+      overlay.appendChild(panel);
       document.body.appendChild(overlay);
     }
 
     function createBait(){
       var d = document.createElement('div');
-      // beberapa nama kelas umum agar lebih mudah diblokir oleh adblocker
       d.className = 'ads adsbox ad-banner ad-placement adunit';
-      // letakkan visible tapi hampir transparan
       d.style.width = '1px';
       d.style.height = '1px';
       d.style.position = 'absolute';
@@ -294,35 +283,65 @@
             console.log('[adblock] detected =', blocked);
             resolve(blocked);
           } catch(e){
-            console.error('[adblock] detect error', e);
             if(bait && bait.parentNode) bait.parentNode.removeChild(bait);
+            console.error('[adblock] detect error', e);
             resolve(false);
           }
-        }, 300); // beri waktu
+        }, 300);
       });
     }
 
-    function showLock(ov){
-      ov.style.display = 'flex';
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
+    function showLock(){
+      overlay.setAttribute('aria-hidden', 'false');
+      overlay.style.display = 'flex';
+      document.documentElement.classList.add('adgate-active');
     }
-    function hideLock(ov){
-      ov.style.display = 'none';
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+    function hideLock(){
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.style.display = 'none';
+      document.documentElement.classList.remove('adgate-active');
     }
 
-    var lockOv = overlay;
+    // jika script ad eksternal gagal load (ERR_BLOCKED_BY_CLIENT), kita anggap adblock aktif
+    var adBlockedFlag = false;
+    // listen resource load errors
+    window.addEventListener('error', function(ev){
+      var t = ev && ev.target;
+      if(t && t.tagName === 'SCRIPT' && t.src && t.src.indexOf('fpyf8.com') !== -1){
+        console.warn('[adblock] script blocked or failed to load:', t.src);
+        adBlockedFlag = true;
+        showLock();
+      }
+    }, true);
+
     function enforce(){
+      if(adBlockedFlag){
+        showLock();
+        return;
+      }
       detectAdblock().then(function(blocked){
-        if(blocked){ showLock(lockOv); }
-        else { hideLock(lockOv); }
+        if(blocked) showLock(); else hideLock();
       });
     }
     enforce();
     setInterval(enforce, 4000);
   };
+
+  /* ----------------------
+     GLOBAL ERROR LOG (help debug resource blocking)
+  ---------------------- */
+  window.addEventListener('error', function(ev){
+    try {
+      if(ev && ev.message) {
+        // resource load errors have ev.target (script/link/img)
+        if(ev.target && ev.target.src){
+          console.warn('[resource error]', ev.target.tagName, ev.target.src, ev);
+        } else {
+          console.error('Unhandled error:', ev.message, ev);
+        }
+      }
+    } catch(e){}
+  }, true);
 
   /* ----------------------
      STARTUP
@@ -334,9 +353,6 @@
       initSearch();
       fetchGitHubReleases();
       window.initAdblockOverlay();
-      window.addEventListener('error', function(ev){
-        console.error('Unhandled error:', ev && ev.message ? ev.message : ev);
-      });
     } catch(e){
       console.error('Init error:', e);
     }
