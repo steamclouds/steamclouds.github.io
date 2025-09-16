@@ -174,7 +174,7 @@ h2::after {
 }
 
 .release-header {
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--bg-tertiary);
 }
@@ -203,6 +203,7 @@ h2::after {
   color: var(--text-secondary);
   max-height: 120px;
   overflow: hidden;
+  white-space: pre-line
 }
 
 .release-assets {
@@ -502,6 +503,7 @@ footer {
     min-width: 280px;
   }
 }
+
 
 
 
