@@ -75,26 +75,29 @@
 
     const releasesData = await response.json();
 
-    const validReleases = releasesData
-      .filter(rel => !rel.draft && !rel.prerelease)
-      .map(rel => {
-        const exeAsset = rel.assets.find(asset =>
-          asset.name.toLowerCase().endsWith(".exe") ||
-          asset.name.toLowerCase().includes("steamclouds")
-        );
+    // Ambil semua release (tidak peduli draft/prerelease)
+    const validReleases = releasesData.map(rel => {
+      const exeAsset = rel.assets.find(asset =>
+        asset.name.toLowerCase().endsWith(".exe") ||
+        asset.name.toLowerCase().includes("steamclouds")
+      );
 
-        const downloadUrl = exeAsset
-          ? exeAsset.browser_download_url
-          : rel.zipball_url; // fallback ke source zip
+      const downloadUrl = exeAsset
+        ? exeAsset.browser_download_url
+        : rel.zipball_url; // fallback ke source zip
 
-        return {
-          version: rel.tag_name,
-          date: new Date(rel.published_at).toLocaleDateString("en-US"),
-          notes: rel.body || "No release notes available",
-          url: downloadUrl
-        };
-      })
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
+      return {
+        version: rel.tag_name || rel.name,
+        date: new Date(rel.published_at).toLocaleDateString("en-US"),
+        notes: rel.body || "No release notes available",
+        url: downloadUrl
+      };
+    });
+
+    if (!validReleases.length) {
+      releaseList.innerHTML = "<p>No releases found.</p>";
+      return;
+    }
 
     releaseList.innerHTML = "";
     validReleases.forEach(rel => {
@@ -105,6 +108,7 @@
     releaseList.innerHTML = `<p>Error loading releases: ${error.message}</p>`;
   }
 }
+
 
 
   window.initAdblockOverlay=function(){
@@ -178,5 +182,6 @@
     window.addEventListener('error',function(ev){console.error('Error:',ev.message)})
   })
 })();
+
 
 
