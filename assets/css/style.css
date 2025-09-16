@@ -425,7 +425,12 @@ h2::after {
 
 .faq-answer[aria-hidden="false"] {
   max-height: 500px;
-  padding: 0.5rem;
+  padding: 0;
+}
+
+.faq-answer ol {
+  margin-top: 0; 
+  padding-left: 1.5rem; 
 }
 
 footer {
@@ -497,6 +502,7 @@ footer {
     min-width: 280px;
   }
 }
+
 
 
 
