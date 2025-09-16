@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', !isExpanded);
-    mainMenu.hidden = isExpanded; // Perubahan disini
+    mainMenu.hidden = !isExpanded; // Perubahan disini
   });
   
   // FAQ accordion - Diperbaiki untuk memastikan FAQ memiliki isi
@@ -189,6 +189,7 @@ function formatFileSize(bytes) {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 
