@@ -498,4 +498,26 @@ footer {
   }
 }
 
+.changelog-content {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.changelog-content h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.changelog-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.changelog-content p {
+  margin: 0.5rem 0;
+}
 
