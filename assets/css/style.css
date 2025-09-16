@@ -222,7 +222,7 @@ h2::after {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem; 
-  width: 100%;
+  width: 200%;
   box-sizing: border-box;
 }
 
@@ -537,6 +537,7 @@ footer {
 .changelog-content p {
   margin: 0.5rem 0;
 }
+
 
 
 
