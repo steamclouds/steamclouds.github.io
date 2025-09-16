@@ -129,10 +129,30 @@ h2::after {
   border-radius: 3px;
 }
 
+/* Perubahan untuk release menjadi scrollable horizontal */
 .release-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
   gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-tertiary) var(--bg-secondary);
+  margin: 0 -2rem;
+  padding: 0 2rem;
+}
+
+.release-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.release-grid::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+.release-grid::-webkit-scrollbar-thumb {
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
 }
 
 .release-card {
@@ -142,6 +162,8 @@ h2::after {
   box-shadow: var(--card-shadow);
   transition: var(--transition);
   border: 1px solid var(--bg-tertiary);
+  min-width: 350px;
+  flex: 0 0 auto;
 }
 
 .release-card:hover {
@@ -164,7 +186,8 @@ h2::after {
 
 .release-meta {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
@@ -177,6 +200,8 @@ h2::after {
   margin-bottom: 1.5rem;
   line-height: 1.7;
   color: var(--text-secondary);
+  max-height: 200px;
+  overflow: hidden;
 }
 
 .release-assets {
@@ -197,11 +222,17 @@ h2::after {
 .asset-name {
   font-weight: 500;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .asset-size {
   color: var(--text-secondary);
   font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .btn {
@@ -238,6 +269,10 @@ h2::after {
 .btn-outline:hover {
   background-color: var(--accent);
   color: white;
+}
+
+.btn-hidden {
+  display: none;
 }
 
 .support-section {
@@ -405,6 +440,7 @@ footer {
   justify-content: center;
   align-items: center;
   height: 200px;
+  width: 100%;
 }
 
 .spinner {
@@ -454,5 +490,9 @@ footer {
 
   .release-grid, .cards, .feature-grid, .safety-cards {
     grid-template-columns: 1fr;
+  }
+  
+  .release-card {
+    min-width: 280px;
   }
 }
