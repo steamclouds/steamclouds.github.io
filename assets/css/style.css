@@ -48,11 +48,9 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
 }
 
-.logo::before {
-  content: "☁️";
-}
 
 nav {
   display: flex;
@@ -578,6 +576,51 @@ h2::after {
     margin-bottom: 0.4rem;
     font-size: 0.9rem;
   }
+}
+
+
+#adblock-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 3, 3, 0.95);
+  color: #ffffff;
+  z-index: 999999;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  pointer-events: all;
+}
+#adblock-overlay[aria-hidden="true"] {
+  display: none;
+}
+#adblock-overlay > div {
+  max-width: 800px;
+  margin: 0 1rem;
+  padding: 2rem;
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.96);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  text-align: center;
+  line-height: 1.5;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+#adblock-overlay h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffdd57;
+}
+#adblock-overlay p {
+  color: #e6e6e6;
+  font-size: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  #adblock-overlay > div { padding: 1.25rem; }
+  #adblock-overlay h2 { font-size: 1.15rem; }
+  #adblock-overlay p { font-size: 0.95rem; }
 }
 
 footer {
