@@ -545,6 +545,41 @@ h2::after {
   margin-bottom: 0;
 }
 
+@media (max-width: 768px) {
+  .changelog-grid {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .changelog-card {
+    min-width: 260px;
+    max-width: 90vw;
+  }
+
+  .changelog-header {
+    padding: 0.8rem;
+  }
+
+  .changelog-title {
+    font-size: 1.25rem;
+  }
+
+  .changelog-body {
+    padding: 0.8rem;
+  }
+
+  .changelog-body ul {
+    padding-left: 1.2rem;
+  }
+
+  .changelog-body li {
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+  }
+}
+
 footer {
   background-color: var(--bg-secondary);
   padding: 2rem 0;
@@ -614,5 +649,4 @@ footer {
     min-width: 280px;
   }
 }
-
 
