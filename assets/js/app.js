@@ -1,32 +1,28 @@
-// Mobile menu toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menuToggle');
-    const mainMenu = document.getElementById('main-menu');
 
-    // Fungsi untuk menyesuaikan tampilan menu berdasarkan ukuran layar
-    function adjustMenu() {
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const mainMenu = document.getElementById('main-menu');
+
+      function adjustMenu() {
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
-
         if (isMobile) {
-            menuToggle.style.display = 'block';
-            mainMenu.hidden = true;
-            menuToggle.setAttribute('aria-expanded', 'false');
+          menuToggle.style.display = 'block';
+          mainMenu.hidden = true;
+          menuToggle.setAttribute('aria-expanded', 'false');
         } else {
-            menuToggle.style.display = 'none';
-            mainMenu.hidden = false;
-            menuToggle.setAttribute('aria-expanded', 'true');
+          menuToggle.style.display = 'none';
+          mainMenu.hidden = false;
+          menuToggle.setAttribute('aria-expanded', 'true');
         }
-    }
+      }
 
-    // Panggil fungsi saat halaman dimuat dan saat window di-resize
-    adjustMenu();
-    window.addEventListener('resize', adjustMenu);
+      adjustMenu();
+      window.addEventListener('resize', adjustMenu);
 
-    // Event listener untuk tombol menu
-    menuToggle.addEventListener('click', () => {
+      menuToggle.addEventListener('click', () => {
         const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
         menuToggle.setAttribute('aria-expanded', !isExpanded);
-        mainMenu.hidden = !isExpanded;
+        mainMenu.hidden = isExpanded;
     });
 
     // FAQ accordion
@@ -194,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-// helper
+
     function escapeHtml(str) {
         if (!str) return '';
         return String(str)
