@@ -73,6 +73,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize particles.js
+    particlesJS("particles-js", {
+        "particles": {
+            "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": "#00ffe1" },
+            "shape": { "type": "circle" },
+            "opacity": { "value": 0.5, "random": true },
+            "size": { "value": 3, "random": true },
+            "line_linked": {
+                "enable": true,
+                "distance": 120,
+                "color": "#00ffe1",
+                "opacity": 0.4,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 2,
+                "direction": "none",
+                "random": true,
+                "straight": false,
+                "out_mode": "out",
+                "bounce": false,
+                "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
+            }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+                "onhover": { "enable": true, "mode": "grab" },
+                "onclick": { "enable": true, "mode": "push" },
+                "resize": true
+            },
+            "modes": {
+                "grab": { "distance": 140, "line_linked": { "opacity": 0.7 } },
+                "push": { "particles_nb": 4 }
+            }
+        },
+        "retina_detect": true
+    });
+
+    // Custom cursor logic
+    const cursor = document.getElementById('custom-cursor');
+    if (cursor) {
+        let mouseX = 0, mouseY = 0;
+        let posX = 0, posY = 0;
+        const speed = 0.15;
+
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animate() {
+            posX += (mouseX - posX) * speed;
+            posY += (mouseY - posY) * speed;
+            cursor.style.transform = `translate(${posX}px, ${posY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.width = '36px';
+            cursor.style.height = '36px';
+            cursor.style.background = 'rgba(0, 255, 225, 1)';
+            setTimeout(() => {
+                cursor.style.width = '24px';
+                cursor.style.height = '24px';
+                cursor.style.background = 'rgba(0, 255, 225, 0.7)';
+            }, 150);
+        });
+    }
+});
+
 const REPOS = [
   { name: "Server 1", repo: "SteamAutoCracks/ManifestHub" },
   { name: "Server 2", repo: "ikun0014/ManifestHub" },
@@ -312,5 +387,6 @@ async function generateManifest() {
 
 // make global for onclick in HTML if you use onclick attribute
 window.generateManifest = generateManifest;
+
 
 
