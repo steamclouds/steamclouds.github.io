@@ -115,7 +115,7 @@ async function generateManifest() {
     for (const repo of repos) {
         try {
             resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
-            const githubApiUrl = `https://api.github.com/repos/    ${repo}/git/trees/${appid}?recursive=1`;
+            const githubApiUrl = `https://api.github.com/repos/${repo}/git/trees/${appid}?recursive=1`;
 
             const treeResponse = await fetch(githubApiUrl);
             if (!treeResponse.ok) {
@@ -154,7 +154,7 @@ async function generateManifest() {
             }
 
             // Unduh dan baca isi Key.vdf
-            const keyVdfUrl = `https://raw.githubusercontent.com/    ${repo}/${appid}/${keyVdfFile.path}`;
+            const keyVdfUrl = `https://raw.githubusercontent.com/${repo}/${appid}/${keyVdfFile.path}`;
             const keyVdfResponse = await fetch(keyVdfUrl);
             if (!keyVdfResponse.ok) {
                 console.warn(`Failed to download ${keyVdfFile.path}`, keyVdfResponse.status);
@@ -193,7 +193,7 @@ async function generateManifest() {
 
     try {
         for (const file of foundFiles) {
-            const fileUrl = `https://raw.githubusercontent.com/    ${foundInRepo}/${appid}/${file.path}`;
+            const fileUrl = `https://raw.githubusercontent.com/${foundInRepo}/${appid}/${file.path}`;
             resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
 
             const fileResponse = await fetch(fileUrl);
@@ -216,6 +216,7 @@ async function generateManifest() {
         resultDiv.innerHTML = `
             <h2>✅ Manifest Ready</h2>
             <p><strong>AppID:</strong> ${appid}</p>
+            <p><strong>Repository:</strong> ${foundInRepo}</p>
             <p><strong>Files Downloaded:</strong> ${foundFiles.length}</p>
             <p><strong>Total Size:</strong> ${(totalSize / 1024 / 1024).toFixed(2)} MB</p>
             <p><strong>Time Taken:</strong> ${elapsedTime} sec</p>
