@@ -130,7 +130,7 @@ SMART HUBS
             zip.file("README.txt", readmeContent);
 
             for (const file of foundFiles) {
-                const fileUrl = `https://raw.githubusercontent.com/${foundInRepo.replace("Server ", "")}/${appid}/${file.path}`;
+                const fileUrl = `https://raw.githubusercontent.com/${repos.find(r => r.name === foundInRepo).repo}/${appid}/${file.path}`;
                 resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
 
                 const fileResponse = await fetch(fileUrl);
