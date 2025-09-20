@@ -130,191 +130,189 @@ function cacheSet(key, value) {
     try { sessionStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
 }
 
-// --- Main manifest generation ---
+// Replace your generateManifest() with this improved function
 async function generateManifest() {
     const inputElement = document.getElementById('appidInput');
     const resultDiv = document.getElementById('result');
-    setControlsEnabled(false);
-    try {
-        if (!inputElement) {
-            resultDiv.innerHTML = `<p style="color:red;">❌ Error: Input field not found.</p>`;
-            return;
+    if (!inputElement) { resultDiv.innerHTML = `<p style="color:red;">❌ Error: Input field not found.</p>`; return; }
+
+    const raw = inputElement.value.trim();
+    if (!raw) { resultDiv.innerHTML = `<p style="color:red;">❌ Please enter an AppID or URL.</p>`; return; }
+
+    // extract numeric AppID
+    const storeMatch = raw.match(/\/app\/(\d+)/i);
+    const appid = storeMatch ? storeMatch[1] : (raw.match(/^\d+$/) || [])[0];
+    if (!appid) { resultDiv.innerHTML = `<p style="color:red;">❌ Could not extract AppID.</p>`; return; }
+
+    const repos = [
+        { name: "Server 1", repo: "SteamAutoCracks/ManifestHub" },
+        { name: "Server 2", repo: "ikun0014/ManifestHub" },
+        { name: "Server 3", repo: "Auiowu/ManifestAutoUpdate" },
+        { name: "Server 4", repo: "tymolu233/ManifestAutoUpdate-fix" }
+    ];
+
+    const GAS_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
+    const timeout = ms => new Promise((_, r) => setTimeout(r, ms));
+    const doFetchWithTimeout = (url, opts = {}) => {
+        const ctrl = new AbortController();
+        const id = setTimeout(() => ctrl.abort(), 30000);
+        return fetch(url, {...opts, signal: ctrl.signal}).finally(() => clearTimeout(id));
+    };
+
+    resultDiv.innerHTML = `⏳ Looking up AppID ${appid} (GitHub direct first)...`;
+
+    let foundFiles = null;
+    let foundRepoName = null;
+    let errors = [];
+
+    // 1) Try direct GitHub (best-case: public repos, no GAS needed)
+    for (const r of repos) {
+        resultDiv.innerHTML = `🔍 Checking ${r.name} via GitHub API...`;
+        try {
+            const treeUrl = `https://api.github.com/repos/${r.repo}/git/trees/${encodeURIComponent(appid)}?recursive=1`;
+            const resp = await doFetchWithTimeout(treeUrl, { headers: { 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'SteamClouds/1.0' } });
+            if (!resp.ok) {
+                errors.push(`[${r.name}] GitHub API returned ${resp.status} ${resp.statusText}`);
+                continue;
+            }
+            const tree = await resp.json();
+            if (!tree.tree || !Array.isArray(tree.tree)) {
+                errors.push(`[${r.name}] Unexpected tree response`);
+                continue;
+            }
+            const blobs = tree.tree.filter(t => t.type === 'blob');
+            if (blobs.length === 0) { errors.push(`[${r.name}] No files in branch ${appid}`); continue; }
+
+            // verify key.vdf if present
+            const keyFile = blobs.find(b => /key\.vdf|config\.vdf/i.test(b.path));
+            if (keyFile) {
+                const rawKeyUrl = `https://raw.githubusercontent.com/${r.repo}/${appid}/${keyFile.path}`;
+                const keyResp = await doFetchWithTimeout(rawKeyUrl);
+                if (!keyResp.ok) { errors.push(`[${r.name}] raw key fetch ${keyResp.status}`); continue; }
+                const keyText = await keyResp.text();
+                if (!new RegExp(`"${appid}"\\s*\\{`).test(keyText)) { errors.push(`[${r.name}] AppID verification failed in key.vdf`); continue; }
+            }
+
+            // success
+            foundFiles = blobs.filter(f => !f.path.toLowerCase().endsWith('.json') && !/key\.vdf|config\.vdf/i.test(f.path));
+            foundRepoName = r.name;
+            break;
+        } catch (err) {
+            errors.push(`[${r.name}] GitHub direct error: ${err && err.message ? err.message : String(err)}`);
         }
+    }
 
-        const rawInput = inputElement.value.trim();
-        if (!rawInput) {
-            resultDiv.innerHTML = `<p style="color:red;">❌ Please enter an AppID or URL.</p>`;
-            return;
-        }
-
-        // Extract numeric AppID from common Steam store URL or numeric input
-        let appid = null;
-        const storeMatch = rawInput.match(/\/app\/(\d+)/i);
-        if (storeMatch && storeMatch[1]) {
-            appid = storeMatch[1];
-        } else {
-            const digits = rawInput.match(/^(\d+)$/);
-            if (digits) appid = digits[1];
-        }
-        if (!appid) {
-            resultDiv.innerHTML = `<p style="color:red;">❌ Could not extract AppID. Enter a numeric AppID or full Steam store URL.</p>`;
-            return;
-        }
-
-        resultDiv.innerHTML = `⏳ Fetching files from repositories...`;
-        let foundFiles = [];
-        let foundInRepo = "";
-        let totalSize = 0;
-        let fetchErrors = [];
-
-        for (const { name, repo } of repos) {
-            resultDiv.innerHTML = `🔍 Searching in ${name}...`;
-
-            // try cache first (cache per repo+appid)
-            const cacheKey = `tree:${repo}:${appid}`;
-            const cached = cacheGet(cacheKey);
-            let treeData;
-            if (cached) {
-                treeData = cached;
-            } else {
-                const treeResp = await safeFetchJson(GAS_PROXY_URL, {
+    // 2) If not found by GitHub direct, fallback to GAS proxy (useful if repos are private or GitHub blocked)
+    if (!foundFiles) {
+        resultDiv.innerHTML = `⏳ GitHub direct failed — falling back to GAS proxy (this may hit CORS if GAS not deployed correctly)...`;
+        for (const r of repos) {
+            resultDiv.innerHTML = `🔍 Checking ${r.name} via GAS proxy...`;
+            try {
+                const treeResp = await doFetchWithTimeout(GAS_PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'tree', repo: repo, branch: appid, recursive: 1 })
+                    body: JSON.stringify({ type: 'tree', repo: r.repo, branch: appid, recursive: 1 })
                 });
                 if (!treeResp.ok) {
-                    const msg = treeResp.error ? treeResp.error : `Status ${treeResp.status} ${treeResp.statusText || ''} ${treeResp.text ? '- '+treeResp.text : ''}`;
-                    console.warn(`Could not fetch branch in ${name}:`, msg);
-                    fetchErrors.push(`[${name}] ${msg}`);
+                    errors.push(`[${r.name}] GAS proxy returned ${treeResp.status}`);
                     continue;
                 }
-                // assume treeResp.json in .json
-                treeData = treeResp.json || (treeResp.text ? JSON.parse(treeResp.text || '{}') : null);
-                if (!treeData) {
-                    fetchErrors.push(`[${name}] Invalid response for tree`);
-                    continue;
+                const treeData = await treeResp.json();
+                if (treeData.error) { errors.push(`[${r.name}] GAS/GitHub error: ${treeData.error}`); continue; }
+                if (!treeData.tree || !Array.isArray(treeData.tree)) { errors.push(`[${r.name}] Invalid tree from GAS`); continue; }
+                const blobs = treeData.tree.filter(t => t.type === 'blob');
+                if (blobs.length === 0) { errors.push(`[${r.name}] No files in branch`); continue; }
+
+                // try to fetch & verify key.vdf via GAS
+                const keyFile = blobs.find(b => /key\.vdf|config\.vdf/i.test(b.path));
+                if (keyFile) {
+                    const keyResp = await doFetchWithTimeout(GAS_PROXY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'file', repo: r.repo, branch: appid, path: keyFile.path })
+                    });
+                    if (!keyResp.ok) { errors.push(`[${r.name}] Failed to download key via GAS: ${keyResp.status}`); continue; }
+                    const keyText = await keyResp.text();
+                    if (!new RegExp(`"${appid}"\\s*\\{`).test(keyText)) { errors.push(`[${r.name}] AppID verification failed in key from GAS`); continue; }
                 }
-                cacheSet(cacheKey, treeData);
-            }
 
-            if (treeData.error) {
-                fetchErrors.push(`[${name}] GitHub error: ${treeData.error}`);
-                continue;
-            }
-            if (!treeData.tree || !Array.isArray(treeData.tree)) {
-                fetchErrors.push(`[${name}] Invalid structure from ${name}`);
-                continue;
-            }
-
-            const files = treeData.tree.filter(f => f.type === 'blob');
-            if (files.length === 0) {
-                fetchErrors.push(`[${name}] No files in branch '${appid}'`);
-                continue;
-            }
-
-            // cari key.vdf/config.vdf
-            const keyVdfFile = files.find(f => /key\.vdf|config\.vdf/i.test(f.path));
-            if (!keyVdfFile) {
-                // tidak ada key => masih gunakan tetapi saring json/key
-                foundFiles = files.filter(file =>
-                    !file.path.toLowerCase().endsWith('.json') &&
-                    !/key\.vdf|config\.vdf/i.test(file.path)
-                );
-                foundInRepo = name;
+                foundFiles = blobs.filter(f => !f.path.toLowerCase().endsWith('.json') && !/key\.vdf|config\.vdf/i.test(f.path));
+                foundRepoName = r.name;
                 break;
+            } catch (err) {
+                // often this is fetch aborted due to CORS in browser -> err.name === 'AbortError' or TypeError
+                errors.push(`[${r.name}] GAS proxy error: ${err && err.message ? err.message : String(err)}`);
             }
+        }
+    }
 
-            // download key via GAS proxy to verify
-            const keyResp = await safeFetchJson(GAS_PROXY_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: 'file', repo: repo, branch: appid, path: keyVdfFile.path })
-            });
+    // If still nothing — give full error details
+    if (!foundFiles || foundFiles.length === 0) {
+        const details = errors.length ? `<br><small>Details:<br>${errors.join('<br>')}</small>` : '';
+        resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any repository.${details}</p>`;
+        return;
+    }
 
-            if (!keyResp.ok) {
-                const msg = keyResp.error ? keyResp.error : `Status ${keyResp.status} ${keyResp.statusText || ''}`;
-                console.warn(`Failed to download ${keyVdfFile.path} from ${name}:`, msg);
-                fetchErrors.push(`[${name}] ${msg}`);
-                continue;
+    // Build ZIP (download files, using GitHub direct first, then GAS if needed)
+    resultDiv.innerHTML = `✅ Found in ${foundRepoName}. Downloading files...`;
+    const zip = new JSZip();
+    let totalSize = 0;
+    const start = performance.now();
+
+    for (const file of foundFiles) {
+        resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
+        let gotBlob = null;
+
+        // try raw.githubusercontent first
+        try {
+            const repoObj = repos.find(x => x.name === foundRepoName);
+            const rawUrl = `https://raw.githubusercontent.com/${repoObj.repo}/${appid}/${encodeURIComponent(file.path)}`;
+            const r = await doFetchWithTimeout(rawUrl);
+            if (r && r.ok) {
+                gotBlob = await r.blob();
             }
+        } catch (e) { /* ignore and fallback to GAS */ }
 
-            // keyResp.text expected (GAS returns raw text)
-            const keyText = keyResp.text || (typeof keyResp.json === 'string' ? keyResp.json : JSON.stringify(keyResp.json));
-            const appIdRegex = new RegExp(`"${appid}"\\s*\\{`);
-            if (!appIdRegex.test(keyText)) {
-                console.warn(`AppID ${appid} not found in ${keyVdfFile.path} from ${name}.`);
-                fetchErrors.push(`[${name}] AppID verification failed`);
-                continue;
+        // fallback to GAS proxy
+        if (!gotBlob) {
+            try {
+                const fresp = await doFetchWithTimeout(GAS_PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'file', repo: repos.find(rr=>rr.name===foundRepoName).repo, branch: appid, path: file.path })
+                });
+                if (fresp && fresp.ok) gotBlob = await fresp.blob();
+                else errors.push(`[download] could not fetch ${file.path} via GAS, status ${fresp ? fresp.status : 'no response'}`);
+            } catch (e) {
+                errors.push(`[download] error fetching ${file.path}: ${e && e.message ? e.message : String(e)}`);
             }
-
-            // verified
-            foundFiles = files.filter(file =>
-                !file.path.toLowerCase().endsWith('.json') &&
-                !/key\.vdf|config\.vdf/i.test(file.path)
-            );
-            foundInRepo = name;
-            resultDiv.innerHTML = `✅ Files found and verified in ${name}. Downloading...`;
-            break;
         }
 
-        if (!foundFiles || foundFiles.length === 0) {
-            const details = fetchErrors.length ? `<br><small>Details:<br>${fetchErrors.join('<br>')}</small>` : '';
-            resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any repository.${details}</p>`;
-            return;
+        if (!gotBlob) {
+            resultDiv.innerHTML += `<br><small style="color:orange;">Warning: failed to download ${file.path} — skipped.</small>`;
+            continue;
         }
 
-        // download files and zip
-        const startTime = performance.now();
-        const zip = new JSZip();
-        for (const file of foundFiles) {
-            resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
-            const fileResp = await timeoutFetch(GAS_PROXY_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    type: 'file',
-                    repo: repos.find(r => r.name === foundInRepo).repo,
-                    branch: appid,
-                    path: file.path
-                })
-            }, FETCH_TIMEOUT);
+        const arr = await gotBlob.arrayBuffer();
+        zip.file(file.path, arr);
+        totalSize += gotBlob.size || arr.byteLength || 0;
+    }
 
-            if (!fileResp || !fileResp.ok) {
-                const status = fileResp ? fileResp.status : 'no-response';
-                resultDiv.innerHTML += `<br><small style="color:orange;">Warning: Could not download ${file.path} (Status: ${status}). Skipping...</small>`;
-                continue;
-            }
+    // Add README and generate
+    zip.file("README.txt", "Credits & Support\n");
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const elapsed = ((performance.now() - start)/1000).toFixed(2);
 
-            const blob = await fileResp.blob();
-            const arrayBuffer = await blob.arrayBuffer();
-            zip.file(file.path, arrayBuffer);
-            totalSize += blob.size || arrayBuffer.byteLength || 0;
-        }
-
-        // README
-        const readmeContent = `
-# Credits & Support
-
-**Website:** https://steamclouds.online/      
-**Discord:** https://discord.gg/Qsp6Sbq6wy      
-
-SMART HUBS
-`;
-        zip.file("README.txt", readmeContent);
-
-        const finalZipBlob = await zip.generateAsync({ type: "blob" });
-        const downloadUrl = URL.createObjectURL(finalZipBlob);
-        const elapsedTime = ((performance.now() - startTime) / 1000).toFixed(2);
-
-        resultDiv.innerHTML = `
-            <h2>✅ Manifest Ready</h2>
-            <p><strong>AppID:</strong> ${appid}</p>
-            <p><strong>Server:</strong> ${foundInRepo}</p>
-            <p><strong>Files Downloaded:</strong> ${foundFiles.length}</p>
-            <p><strong>Total Size:</strong> ${(totalSize / 1024 / 1024).toFixed(2)} MB</p>
-            <p><strong>Time Taken:</strong> ${elapsedTime} sec</p>
-            <a href="${downloadUrl}" download="${appid}.zip" class="download-link">📥 Download ZIP</a>
-        `;
+    resultDiv.innerHTML = `
+      <h2>✅ Manifest Ready</h2>
+      <p><strong>AppID:</strong> ${appid}</p>
+      <p><strong>Server:</strong> ${foundRepoName}</p>
+      <p><strong>Files:</strong> ${foundFiles.length}</p>
+      <p><strong>Size:</strong> ${(totalSize/1024/1024).toFixed(2)} MB</p>
+      <p><strong>Time:</strong> ${elapsed} sec</p>
+      <a href="${url}" download="${appid}.zip" class="download-link">📥 Download ZIP</a>
+    `;
     } catch (err) {
         console.error("Error:", err);
         resultDiv.innerHTML = `<p style="color:red;">❌ An error occurred: ${err && err.message ? err.message : String(err)}</p>`;
@@ -322,3 +320,4 @@ SMART HUBS
         setControlsEnabled(true);
     }
 }
+
