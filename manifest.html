@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Clouds - Manifest Generator</title>
+    <link rel="stylesheet" href="assets/css/manifest.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="custom-cursor"></div>
+
+    <header class="header">
+        <a href="index.html" class="logo" aria-label="Home">Steam Clouds</a>
+        <nav>
+            <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="main-menu" aria-haspopup="true">
+                <span class="menu-icon" aria-hidden="true">☰</span>
+                <span class="menu-text">Menu</span>
+            </button>
+            <ul id="main-menu" class="main-menu" role="menu">
+                <li role="none"><a role="menuitem" href="index.html">Home</a></li>
+                <li role="none"><a role="menuitem" href="index.html#releases">Releases</a></li>
+                <li role="none"><a role="menuitem" href="index.html#features">Features</a></li>
+                <li role="none"><a role="menuitem" href="index.html#safety">Safety</a></li>
+                <li role="none"><a role="menuitem" href="index.html#faq">FAQ</a></li>
+                <li role="none"><a role="menuitem" href="changelog.html">Changelog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="manifest-main">
+        <section class="manifest-section">
+            <div class="container">
+                <h1>🎮 Steam Manifest Downloader</h1>
+                <input type="text" id="appidInput" placeholder="Enter Steam AppID or URL" required />
+                <button onclick="generateManifest()">Download Manifest</button>
+                <a href="https://discord.gg/GtkkjXpbfC" target="_blank" class="discord-btn">Join our Discord</a>
+                <div id="result"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Steam Clouds. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/js/manifest.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
