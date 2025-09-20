@@ -100,11 +100,12 @@ async function generateManifest() {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = "⏳ Fetching files from repositories...";
 
+    // Menggunakan nama "Server" yang lebih ramah pengguna
     const repos = [
-        "SteamAutoCracks/ManifestHub",
-        "ikun0014/ManifestHub",
-        "Auiowu/ManifestAutoUpdate",
-        "tymolu233/ManifestAutoUpdate-fix"
+        { name: "Server 1", repo: "SteamAutoCracks/ManifestHub" },
+        { name: "Server 2", repo: "ikun0014/ManifestHub" },
+        { name: "Server 3", repo: "Auiowu/ManifestAutoUpdate" },
+        { name: "Server 4", repo: "tymolu233/ManifestAutoUpdate-fix" }
     ];
 
     let foundFiles = [];
@@ -113,7 +114,7 @@ async function generateManifest() {
     let fetchErrors = [];
 
     // URL Google Apps Script proxy
-    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec';
+    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
 
     for (const { name, repo } of repos) {
         try {
@@ -123,7 +124,8 @@ async function generateManifest() {
             const treeResponse = await fetch(gasProxyUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     type: 'tree',
@@ -185,7 +187,8 @@ async function generateManifest() {
             const keyVdfResponse = await fetch(gasProxyUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     type: 'file',
@@ -243,7 +246,8 @@ async function generateManifest() {
             const fileResponse = await fetch(gasProxyUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     type: 'file',
@@ -303,6 +307,3 @@ SMART HUBS
         resultDiv.innerHTML = `<p style="color:red;">❌ An error occurred: ${err.message}</p>`;
     }
 }
-
-
-
