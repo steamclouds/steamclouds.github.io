@@ -101,10 +101,10 @@ async function generateManifest() {
     resultDiv.innerHTML = "⏳ Fetching files from repositories...";
 
     const repos = [
-        { name: "Server 1", repo: "SteamAutoCracks/ManifestHub" },
-        { name: "Server 2", repo: "ikun0014/ManifestHub" },
-        { name: "Server 3", repo: "Auiowu/ManifestAutoUpdate" },
-        { name: "Server 4", repo: "tymolu233/ManifestAutoUpdate-fix" }
+        "SteamAutoCracks/ManifestHub",
+        "ikun0014/ManifestHub",
+        "Auiowu/ManifestAutoUpdate",
+        "tymolu233/ManifestAutoUpdate-fix"
     ];
 
     let foundFiles = [];
@@ -303,5 +303,6 @@ SMART HUBS
         resultDiv.innerHTML = `<p style="color:red;">❌ An error occurred: ${err.message}</p>`;
     }
 }
+
 
 
