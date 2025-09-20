@@ -114,7 +114,7 @@ async function generateManifest() {
     let fetchErrors = [];
 
     // URL Google Apps Script proxy
-    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
+    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec';
 
     for (const { name, repo } of repos) {
         try {
@@ -307,3 +307,4 @@ SMART HUBS
         resultDiv.innerHTML = `<p style="color:red;">❌ An error occurred: ${err.message}</p>`;
     }
 }
+
