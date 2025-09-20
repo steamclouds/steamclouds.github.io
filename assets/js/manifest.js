@@ -79,7 +79,7 @@ const REPOS = [
   { name: "Server 3", repo: "Auiowu/ManifestAutoUpdate" },
   { name: "Server 4", repo: "tymolu233/ManifestAutoUpdate-fix" }
 ];
-const GAS_URL = 'https://script.google.com/macros/s/DEploy_ID/exec'; // <-- ganti dengan deploy URL GAS-mu
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec'; // <-- ganti dengan deploy URL GAS-mu
 const CACHE_TTL_SEC = 600; // 10 menit
 
 // --- Helpers: cache ---
@@ -312,4 +312,5 @@ async function generateManifest() {
 
 // make global for onclick in HTML if you use onclick attribute
 window.generateManifest = generateManifest;
+
 
