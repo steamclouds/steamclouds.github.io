@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const { name, repo } of repos) {
             try {
                 resultDiv.innerHTML = `🔍 Searching in ${name}...`;
-                const githubApiUrl = `https://api.github.com/repos/${repo}/git/trees/${appid}?recursive=1`;
+                const githubApiUrl = `https://api.github.com/repos/${repo.repo}/git/trees/${appid}?recursive=1`;
 
                 const treeResponse = await fetch(githubApiUrl);
                 if (!treeResponse.ok) {
@@ -168,3 +168,4 @@ SMART HUBS
 
     window.generateManifest = generateManifest;
 });
+
