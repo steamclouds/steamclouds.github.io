@@ -100,11 +100,12 @@ async function generateManifest() {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = "⏳ Fetching files from repositories...";
 
+    // Menggunakan nama "Server" yang lebih ramah pengguna
     const repos = [
-        "SteamAutoCracks/ManifestHub",
-        "ikun0014/ManifestHub",
-        "Auiowu/ManifestAutoUpdate",
-        "tymolu233/ManifestAutoUpdate-fix"
+        { name: "Server 1", repo: "SteamAutoCracks/ManifestHub" },
+        { name: "Server 2", repo: "ikun0014/ManifestHub" },
+        { name: "Server 3", repo: "Auiowu/ManifestAutoUpdate" },
+        { name: "Server 4", repo: "tymolu233/ManifestAutoUpdate-fix" }
     ];
 
     let foundFiles = [];
@@ -113,11 +114,11 @@ async function generateManifest() {
     let fetchErrors = [];
 
     // URL Google Apps Script proxy
-    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
+    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec';
 
-    for (const repo of repos) {
+    for (const { name, repo } of repos) {
         try {
-            resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
+            resultDiv.innerHTML = `🔍 Searching in ${name}...`;
             
             // Gunakan GAS proxy untuk mendapatkan tree
             const treeResponse = await fetch(gasProxyUrl, {
@@ -134,9 +135,9 @@ async function generateManifest() {
             });
 
             if (!treeResponse.ok) {
-                const errorMsg = `Status ${treeResponse.status} (${treeResponse.statusText}) for ${repo}`;
-                console.warn(`Could not fetch branch in ${repo}:`, errorMsg);
-                fetchErrors.push(`[${repo}] ${errorMsg}`);
+                const errorMsg = `Status ${treeResponse.status} (${treeResponse.statusText}) for ${name}`;
+                console.warn(`Could not fetch branch in ${name}:`, errorMsg);
+                fetchErrors.push(`[${name}] ${errorMsg}`);
                 continue;
             }
 
@@ -146,23 +147,23 @@ async function generateManifest() {
             if (treeData.error) {
                 const errorMsg = `GitHub API Error: ${treeData.error}`;
                 console.warn(errorMsg);
-                fetchErrors.push(`[${repo}] ${errorMsg}`);
+                fetchErrors.push(`[${name}] ${errorMsg}`);
                 continue;
             }
 
             if (!treeData.tree) {
-                const errorMsg = `Invalid response structure from ${repo}`;
+                const errorMsg = `Invalid response structure from ${name}`;
                 console.warn(errorMsg);
-                fetchErrors.push(`[${repo}] ${errorMsg}`);
+                fetchErrors.push(`[${name}] ${errorMsg}`);
                 continue;
             }
 
             const files = treeData.tree.filter(file => file.type === 'blob');
 
             if (files.length === 0) {
-                const errorMsg = `No files found in branch '${appid}' in ${repo}`;
+                const errorMsg = `No files found in branch '${appid}' in ${name}`;
                 console.warn(errorMsg);
-                fetchErrors.push(`[${repo}] ${errorMsg}`);
+                fetchErrors.push(`[${name}] ${errorMsg}`);
                 continue;
             }
 
@@ -177,7 +178,7 @@ async function generateManifest() {
                     !file.path.toLowerCase().includes('key.vdf') &&
                     !file.path.toLowerCase().includes('config.vdf')
                 );
-                foundInRepo = repo;
+                foundInRepo = name;
                 break;
             }
 
@@ -204,7 +205,7 @@ async function generateManifest() {
             // Gunakan regex sederhana untuk mencari AppID di teks VDF
             const appIdRegex = new RegExp(`"${appid}"\\s*\\{`);
             if (!appIdRegex.test(keyVdfText)) {
-                console.warn(`AppID ${appid} not found in ${keyVdfFile.path} from ${repo}. Likely incorrect branch.`);
+                console.warn(`AppID ${appid} not found in ${keyVdfFile.path} from ${name}. Likely incorrect branch.`);
                 continue;
             }
 
@@ -215,14 +216,14 @@ async function generateManifest() {
                 !file.path.toLowerCase().includes('key.vdf') &&
                 !file.path.toLowerCase().includes('config.vdf')
             );
-            foundInRepo = repo;
-            resultDiv.innerHTML = `✅ Files found and verified in ${repo}. Downloading...`;
+            foundInRepo = name;
+            resultDiv.innerHTML = `✅ Files found and verified in ${name}. Downloading...`;
             break; // Keluar dari loop
 
         } catch (err) {
-            const errorMsg = `Network or processing error for ${repo}: ${err.message}`;
+            const errorMsg = `Network or processing error for ${name}: ${err.message}`;
             console.error(errorMsg, err);
-            fetchErrors.push(`[${repo}] ${errorMsg}`);
+            fetchErrors.push(`[${name}] ${errorMsg}`);
         }
     }
 
@@ -247,7 +248,7 @@ async function generateManifest() {
                 },
                 body: JSON.stringify({
                     type: 'file',
-                    repo: foundInRepo,
+                    repo: repos.find(r => r.name === foundInRepo).repo,
                     branch: appid,
                     path: file.path
                 })
@@ -269,16 +270,16 @@ async function generateManifest() {
         const readmeContent = `
 # Credits & Support
 
-**Website:** https://steamclouds.online/    
-**Discord:** https://discord.gg/Qsp6Sbq6wy    
-**YouTube:** https://youtube.com/@smart_mods    
+**Website:** https://steamclouds.online/      
+**Discord:** https://discord.gg/Qsp6Sbq6wy      
+**YouTube:** https://youtube.com/@smart_mods      
 
 💖 Your support keeps innovation alive and helps me bring you even better tools. 💖
 
 **Donations:**  
-- Saweria: https://saweria.co/R3verseNinja    
-- Ko-Fi: https://ko-fi.com/r3verseninja    
-- PayPal: https://paypal.me/steamclouds    
+- Saweria: https://saweria.co/R3verseNinja      
+- Ko-Fi: https://ko-fi.com/r3verseninja      
+- PayPal: https://paypal.me/steamclouds      
 
 SMART HUBS
 `;
@@ -291,7 +292,7 @@ SMART HUBS
         resultDiv.innerHTML = `
             <h2>✅ Manifest Ready</h2>
             <p><strong>AppID:</strong> ${appid}</p>
-            <p><strong>Repository:</strong> ${foundInRepo}</p>
+            <p><strong>Server:</strong> ${foundInRepo}</p>
             <p><strong>Files Downloaded:</strong> ${foundFiles.length}</p>
             <p><strong>Total Size:</strong> ${(totalSize / 1024 / 1024).toFixed(2)} MB</p>
             <p><strong>Time Taken:</strong> ${elapsedTime} sec</p>
