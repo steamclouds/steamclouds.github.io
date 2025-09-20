@@ -182,7 +182,7 @@ async function generateManifest() {
 
     if (foundFiles.length === 0) {
         const errorDetails = fetchErrors.length > 0 ? `<br><small>Details:<br>${fetchErrors.join('<br>')}</small>` : '';
-        resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any repository.${errorDetails}</p>`;
+        resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any database</p>`;
         return;
     }
 
