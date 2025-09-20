@@ -162,7 +162,11 @@ async function generateManifest() {
                 fetchErrors.push(`[${repo}] ${errorMsg}`);
                 continue;
             }
-
+            
+            foundFiles = files.filter(file => 
+                !file.path.toLowerCase().endsWith('.json') && 
+                !file.path.toLowerCase().includes('key.vdf')
+            );
 
             foundFiles = files;
             foundInRepo = repo;
