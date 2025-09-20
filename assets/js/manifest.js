@@ -112,12 +112,27 @@ async function generateManifest() {
     let totalSize = 0;
     let fetchErrors = [];
 
+    // URL Google Apps Script proxy
+    const gasProxyUrl = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
+
     for (const repo of repos) {
         try {
             resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
-            const githubApiUrl = `https://api.github.com/repos/${repo}/git/trees/${appid}?recursive=1`;
+            
+            // Gunakan GAS proxy untuk mendapatkan tree
+            const treeResponse = await fetch(gasProxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'tree',
+                    repo: repo,
+                    branch: appid,
+                    recursive: 1
+                })
+            });
 
-            const treeResponse = await fetch(githubApiUrl);
             if (!treeResponse.ok) {
                 const errorMsg = `Status ${treeResponse.status} (${treeResponse.statusText}) for ${repo}`;
                 console.warn(`Could not fetch branch in ${repo}:`, errorMsg);
@@ -126,6 +141,15 @@ async function generateManifest() {
             }
 
             const treeData = await treeResponse.json();
+            
+            // Handle jika GAS mengembalikan error dari GitHub
+            if (treeData.error) {
+                const errorMsg = `GitHub API Error: ${treeData.error}`;
+                console.warn(errorMsg);
+                fetchErrors.push(`[${repo}] ${errorMsg}`);
+                continue;
+            }
+
             if (!treeData.tree) {
                 const errorMsg = `Invalid response structure from ${repo}`;
                 console.warn(errorMsg);
@@ -147,18 +171,33 @@ async function generateManifest() {
             
             if (!keyVdfFile) {
                 console.warn(`No Key.vdf or config.vdf found in ${repo}/${appid}. Skipping verification.`);
-                // Jika tidak ada file kunci, asumsikan branch valid (fallback)
-                foundFiles = files;
+                // TAPI tetap filter file yang tidak diinginkan
+                foundFiles = files.filter(file => 
+                    !file.path.toLowerCase().endsWith('.json') && 
+                    !file.path.toLowerCase().includes('key.vdf') &&
+                    !file.path.toLowerCase().includes('config.vdf')
+                );
                 foundInRepo = repo;
                 break;
             }
 
-            // Unduh dan baca isi Key.vdf
-            const keyVdfUrl = `https://raw.githubusercontent.com/${repo}/${appid}/${keyVdfFile.path}`;
-            const keyVdfResponse = await fetch(keyVdfUrl);
+            // Unduh dan baca isi Key.vdf melalui GAS proxy
+            const keyVdfResponse = await fetch(gasProxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'file',
+                    repo: repo,
+                    branch: appid,
+                    path: keyVdfFile.path
+                })
+            });
+
             if (!keyVdfResponse.ok) {
                 console.warn(`Failed to download ${keyVdfFile.path}`, keyVdfResponse.status);
-                continue; // Lanjut ke repo lain jika gagal unduh Key.vdf
+                continue;
             }
 
             const keyVdfText = await keyVdfResponse.text();
@@ -166,11 +205,16 @@ async function generateManifest() {
             const appIdRegex = new RegExp(`"${appid}"\\s*\\{`);
             if (!appIdRegex.test(keyVdfText)) {
                 console.warn(`AppID ${appid} not found in ${keyVdfFile.path} from ${repo}. Likely incorrect branch.`);
-                continue; // Branch salah, coba repo berikutnya
+                continue;
             }
 
             // Jika lolos verifikasi, gunakan file dari branch ini
-            foundFiles = files;
+            // TAPI filter file yang tidak diinginkan
+            foundFiles = files.filter(file => 
+                !file.path.toLowerCase().endsWith('.json') && 
+                !file.path.toLowerCase().includes('key.vdf') &&
+                !file.path.toLowerCase().includes('config.vdf')
+            );
             foundInRepo = repo;
             resultDiv.innerHTML = `✅ Files found and verified in ${repo}. Downloading...`;
             break; // Keluar dari loop
@@ -193,10 +237,22 @@ async function generateManifest() {
 
     try {
         for (const file of foundFiles) {
-            const fileUrl = `https://raw.githubusercontent.com/${foundInRepo}/${appid}/${file.path}`;
             resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
+            
+            // Unduh file melalui GAS proxy
+            const fileResponse = await fetch(gasProxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'file',
+                    repo: foundInRepo,
+                    branch: appid,
+                    path: file.path
+                })
+            });
 
-            const fileResponse = await fetch(fileUrl);
             if (!fileResponse.ok) {
                 console.error(`Failed to download ${file.path}`, fileResponse.status, fileResponse.statusText);
                 resultDiv.innerHTML += `<br><small style="color:orange;">Warning: Could not download ${file.path} (Status: ${fileResponse.status}). Skipping...</small>`;
@@ -208,6 +264,25 @@ async function generateManifest() {
             zip.file(file.path, arrayBuffer);
             totalSize += contentBlob.size;
         }
+
+        // Tambahkan README.txt dengan informasi kredit
+        const readmeContent = `
+# Credits & Support
+
+**Website:** https://steamclouds.online/    
+**Discord:** https://discord.gg/Qsp6Sbq6wy    
+**YouTube:** https://youtube.com/@smart_mods    
+
+💖 Your support keeps innovation alive and helps me bring you even better tools. 💖
+
+**Donations:**  
+- Saweria: https://saweria.co/R3verseNinja    
+- Ko-Fi: https://ko-fi.com/r3verseninja    
+- PayPal: https://paypal.me/steamclouds    
+
+SMART HUBS
+`;
+        zip.file("README.txt", readmeContent);
 
         const finalZipBlob = await zip.generateAsync({ type: "blob" });
         const downloadUrl = URL.createObjectURL(finalZipBlob);
