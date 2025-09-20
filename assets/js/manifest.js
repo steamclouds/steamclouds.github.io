@@ -115,7 +115,7 @@ async function generateManifest() {
     for (const repo of repos) {
         try {
             resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
-            const githubApiUrl = `https://api.github.com/repos/${repo}/git/trees/${appid}?recursive=1`;
+            const githubApiUrl = `https://api.github.com/repos/    ${repo}/git/trees/${appid}?recursive=1`;
 
             const treeResponse = await fetch(githubApiUrl);
             if (!treeResponse.ok) {
@@ -148,18 +148,13 @@ async function generateManifest() {
             if (!keyVdfFile) {
                 console.warn(`No Key.vdf or config.vdf found in ${repo}/${appid}. Skipping verification.`);
                 // Jika tidak ada file kunci, asumsikan branch valid (fallback)
-                // TAPI tetap filter file yang tidak diinginkan
-                foundFiles = files.filter(file => 
-                    !file.path.toLowerCase().endsWith('.json') && 
-                    !file.path.toLowerCase().includes('key.vdf') &&
-                    !file.path.toLowerCase().includes('config.vdf')
-                );
+                foundFiles = files;
                 foundInRepo = repo;
                 break;
             }
 
             // Unduh dan baca isi Key.vdf
-            const keyVdfUrl = `https://raw.githubusercontent.com/${repo}/${appid}/${keyVdfFile.path}`;
+            const keyVdfUrl = `https://raw.githubusercontent.com/    ${repo}/${appid}/${keyVdfFile.path}`;
             const keyVdfResponse = await fetch(keyVdfUrl);
             if (!keyVdfResponse.ok) {
                 console.warn(`Failed to download ${keyVdfFile.path}`, keyVdfResponse.status);
@@ -175,12 +170,7 @@ async function generateManifest() {
             }
 
             // Jika lolos verifikasi, gunakan file dari branch ini
-            // TAPI filter file yang tidak diinginkan
-            foundFiles = files.filter(file => 
-                !file.path.toLowerCase().endsWith('.json') && 
-                !file.path.toLowerCase().includes('key.vdf') &&
-                !file.path.toLowerCase().includes('config.vdf')
-            );
+            foundFiles = files;
             foundInRepo = repo;
             resultDiv.innerHTML = `✅ Files found and verified in ${repo}. Downloading...`;
             break; // Keluar dari loop
@@ -203,7 +193,7 @@ async function generateManifest() {
 
     try {
         for (const file of foundFiles) {
-            const fileUrl = `https://raw.githubusercontent.com/${foundInRepo}/${appid}/${file.path}`;
+            const fileUrl = `https://raw.githubusercontent.com/    ${foundInRepo}/${appid}/${file.path}`;
             resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
 
             const fileResponse = await fetch(fileUrl);
@@ -219,25 +209,6 @@ async function generateManifest() {
             totalSize += contentBlob.size;
         }
 
-        // Tambahkan README.txt dengan informasi kredit
-        const readmeContent = `
-# Credits & Support
-
-**Website:** https://steamclouds.online/  
-**Discord:** https://discord.gg/Qsp6Sbq6wy  
-**YouTube:** https://youtube.com/@smart_mods  
-
-💖 Your support keeps innovation alive and helps me bring you even better tools. 💖
-
-**Donations:**  
-- Saweria: https://saweria.co/R3verseNinja  
-- Ko-Fi: https://ko-fi.com/r3verseninja  
-- PayPal: https://paypal.me/steamclouds  
-
-SMART HUBS
-`;
-        zip.file("README.txt", readmeContent);
-
         const finalZipBlob = await zip.generateAsync({ type: "blob" });
         const downloadUrl = URL.createObjectURL(finalZipBlob);
         const elapsedTime = ((performance.now() - startTime) / 1000).toFixed(2);
@@ -245,7 +216,6 @@ SMART HUBS
         resultDiv.innerHTML = `
             <h2>✅ Manifest Ready</h2>
             <p><strong>AppID:</strong> ${appid}</p>
-            <p><strong>Repository:</strong> ${foundInRepo}</p>
             <p><strong>Files Downloaded:</strong> ${foundFiles.length}</p>
             <p><strong>Total Size:</strong> ${(totalSize / 1024 / 1024).toFixed(2)} MB</p>
             <p><strong>Time Taken:</strong> ${elapsedTime} sec</p>
