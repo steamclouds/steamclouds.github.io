@@ -1,5 +1,6 @@
 // --- Particles.js Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize particles.js
     particlesJS("particles-js", {
         "particles": {
             "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "retina_detect": true
     });
 
+    // Custom cursor logic
     const cursor = document.getElementById('custom-cursor');
     if (cursor) {
         let mouseX = 0, mouseY = 0;
@@ -72,7 +74,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+const GAS_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec'; // <-- Ganti dengan URL Anda
+
+async function fetchViaProxy(url, options = {}) {
+    const proxyPayload = {
+        url: url,
+        method: options.method || 'GET',
+        headers: options.headers || {},
+        ...(options.body && { payload: options.body })
+    };
+
+    const proxyResponse = await fetch(GAS_PROXY_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+           
+        },
+        body: JSON.stringify(proxyPayload)
+    });
+
+    if (!proxyResponse.ok) {
+        throw new Error(`Proxy request failed: ${proxyResponse.status} ${proxyResponse.statusText}`);
+    }
+
+    const proxyData = await proxyResponse.json();
+
+    if (proxyData.error) {
+        throw new Error(`Proxy error: ${proxyData.error}`);
+    }
+
+    return {
+        ok: proxyData.status >= 200 && proxyData.status < 300,
+        status: proxyData.status,
+        statusText: '', 
+        headers: {
+            get: (name) => {
+                
+                const lowerName = name.toLowerCase();
+                for (const [key, value] of Object.entries(proxyData.headers || {})) {
+                    if (key.toLowerCase() === lowerName) {
+                        return value;
+                    }
+                }
+                return null;
+            }
+        },
+        json: () => Promise.resolve(JSON.parse(proxyData.body)),
+        text: () => Promise.resolve(proxyData.body)
+    };
+}
+
+
 async function generateManifest() {
+    // Use the ID from the new HTML structure
     let inputElement = document.getElementById('appidInput');
     if (!inputElement) {
         console.error("AppID input field not found!");
@@ -86,7 +141,7 @@ async function generateManifest() {
         return;
     }
 
-
+    // Extract AppID from URL if necessary
     const steamAppUrlPattern = /https?:\/\/store\.steampowered\.com\/app\/(\d+)/i;
     const match = input.match(steamAppUrlPattern);
     let appid = input;
@@ -98,6 +153,7 @@ async function generateManifest() {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = "⏳ Fetching files from repositories...";
 
+    // Define the list of repositories to search
     const repos = [
         "SteamAutoCracks/ManifestHub",
         "ikun0014/ManifestHub",
@@ -130,20 +186,21 @@ async function generateManifest() {
     let foundFiles = [];
     let foundInRepo = "";
     let totalSize = 0;
-    let fetchErrors = [];
+    let fetchErrors = []; // To collect errors from different repos
 
-    
-     for (const repo of repos) {
+    // Try to find the manifest in any of the repositories
+    for (const repo of repos) {
         try {
-            resultDiv.innerHTML = `🔍 Searching in database...`;
+            resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
             const githubApiUrl = `https://api.github.com/repos/  ${repo}/git/trees/${appid}?recursive=1`;
 
-            const treeResponse = await fetch(githubApiUrl);
+            //const treeResponse = await fetch(githubApiUrl);
+            const treeResponse = await fetchViaProxy(githubApiUrl);
             if (!treeResponse.ok) {
                 const errorMsg = `Status ${treeResponse.status} (${treeResponse.statusText}) for ${repo}`;
                 console.warn(`Could not fetch branch in ${repo}:`, errorMsg);
                 fetchErrors.push(`[${repo}] ${errorMsg}`);
-                continue;
+                continue; // Try next repo
             }
 
             const treeData = await treeResponse.json();
@@ -151,7 +208,7 @@ async function generateManifest() {
                  const errorMsg = `Invalid response structure from ${repo}`;
                  console.warn(errorMsg);
                  fetchErrors.push(`[${repo}] ${errorMsg}`);
-                 continue; 
+                 continue; // Try next repo
             }
 
             const files = treeData.tree.filter(file => file.type === 'blob');
@@ -160,29 +217,26 @@ async function generateManifest() {
                 const errorMsg = `No files found in branch '${appid}' in ${repo}`;
                 console.warn(errorMsg);
                 fetchErrors.push(`[${repo}] ${errorMsg}`);
-                continue;
+                continue; // Try next repo
             }
-            
-            foundFiles = files.filter(file => 
-                !file.path.toLowerCase().endsWith('.json') && 
-                !file.path.toLowerCase().includes('key.vdf')
-            );
 
+            // Found files in this repo
             foundFiles = files;
             foundInRepo = repo;
             resultDiv.innerHTML = `✅ Files found in ${repo}. Downloading...`;
-            break; 
+            break; // Exit the loop as we found it
         } catch (err) {
             const errorMsg = `Network or processing error for ${repo}: ${err.message}`;
             console.error(errorMsg, err);
             fetchErrors.push(`[${repo}] ${errorMsg}`);
-
+            // Continue to the next repo
         }
     }
 
+    // If no files were found in any repo
     if (foundFiles.length === 0) {
         const errorDetails = fetchErrors.length > 0 ? `<br><small>Details:<br>${fetchErrors.join('<br>')}</small>` : '';
-        resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any database</p>`;
+        resultDiv.innerHTML = `<p style="color:red;">❌ Manifest not found for AppID ${appid} in any repository.${errorDetails}</p>`;
         return;
     }
 
@@ -196,7 +250,8 @@ async function generateManifest() {
             const fileUrl = `https://raw.githubusercontent.com/  ${foundInRepo}/${appid}/${file.path}`;
             resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
 
-            const fileResponse = await fetch(fileUrl);
+            //const fileResponse = await fetch(fileUrl);
+            const fileResponse = await fetchViaProxy(fileUrl);
             if (!fileResponse.ok) {
                 // Log error but continue with other files
                 console.error(`Failed to download ${file.path}`, fileResponse.status, fileResponse.statusText);
@@ -217,6 +272,7 @@ async function generateManifest() {
         resultDiv.innerHTML = `
             <h2>✅ Manifest Ready</h2>
             <p><strong>AppID:</strong> ${appid}</p>
+            <p><strong>Repository:</strong> ${foundInRepo}</p>
             <p><strong>Files Downloaded:</strong> ${foundFiles.length}</p>
             <p><strong>Total Size:</strong> ${(totalSize / 1024 / 1024).toFixed(2)} MB</p>
             <p><strong>Time Taken:</strong> ${elapsedTime} sec</p>
