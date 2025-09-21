@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-const GAS_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec'; // <-- Ganti dengan URL Anda
+const GAS_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwbpNydmN18Iw5K5rRgiM8t2InELIs1qla4vAovESftAgO6DnBFY4D_KWeH662eadzfPw/exec';
 
 async function fetchViaProxy(url, options = {}) {
     const proxyPayload = {
@@ -192,7 +192,7 @@ async function generateManifest() {
     for (const repo of repos) {
         try {
             resultDiv.innerHTML = `🔍 Searching in repository: ${repo}...`;
-            const githubApiUrl = `https://api.github.com/repos/  ${repo}/git/trees/${appid}?recursive=1`;
+            const githubApiUrl = `https://api.github.com/repos/${repo}/git/trees/${appid}?recursive=1`;
 
             //const treeResponse = await fetch(githubApiUrl);
             const treeResponse = await fetchViaProxy(githubApiUrl);
@@ -247,7 +247,7 @@ async function generateManifest() {
     try {
         // Download each file found in the repository
         for (const file of foundFiles) {
-            const fileUrl = `https://raw.githubusercontent.com/  ${foundInRepo}/${appid}/${file.path}`;
+            const fileUrl = `https://raw.githubusercontent.com/${foundInRepo}/${appid}/${file.path}`;
             resultDiv.innerHTML = `🔄 Downloading ${file.path}...`;
 
             //const fileResponse = await fetch(fileUrl);
