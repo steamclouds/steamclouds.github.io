@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Report a Bug</title>
+  <link rel="icon" href="assets/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="assets/css/bug.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="./">Steam Clouds</a>
+    <nav class="nav">
+      <button id="refreshBtn" class="btn btn-outline" title="Refresh issues">Refresh</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- Sidebar: Issues list -->
+    <aside class="sidebar" aria-label="Issue list">
+      <div class="side-top">
+        <h2 class="side-title">Issues</h2>
+        <div class="filters">
+          <button data-state="open" class="chip chip-active" aria-pressed="true">Open</button>
+          <button data-state="closed" class="chip" aria-pressed="false">Closed</button>
+        </div>
+      </div>
+
+      <div id="issueList" class="issue-list" role="list">
+        <!-- populated by bug.js -->
+      </div>
+
+      <div class="side-bottom">
+        <div class="rate-info" id="rateInfo" aria-live="polite"></div>
+      </div>
+    </aside>
+
+    <!-- Main: Submit form -->
+    <section class="panel" aria-labelledby="form-title">
+      <h1 id="form-title">Submit a Bug</h1>
+
+      <form id="issueForm" novalidate>
+        <!-- Auth (optional for listing, REQUIRED for submit) -->
+        <div class="group">
+          <label for="token">GitHub Token (required to submit)</label>
+          <input id="token" type="password" placeholder="Paste your GitHub token (classic). Not stored." autocomplete="off" />
+          <small class="hint">
+            Your token is used only in this browser session via GitHub API. It is not sent anywhere else.
+          </small>
+        </div>
+
+        <div class="group">
+          <label for="title">Title <span class="req">*</span></label>
+          <input id="title" type="text" required maxlength="120" placeholder="Short, clear summary (e.g., 'Crash when pressing Start')" />
+          <div class="err" id="titleErr" role="alert"></div>
+        </div>
+
+        <div class="group">
+          <label for="body">Description <span class="req">*</span></label>
+          <textarea id="body" rows="10" required placeholder="Describe the bug. Include what happened, what you expected, and any helpful context (OS, app version, steps)."></textarea>
+          <div class="err" id="bodyErr" role="alert"></div>
+        </div>
+
+        <!-- Optional labels (kept very simple) -->
+        <div class="group">
+          <label for="labels">Labels (optional)</label>
+          <select id="labels" multiple>
+            <option>bug</option>
+            <option>regression</option>
+            <option>performance</option>
+            <option>ui/ux</option>
+            <option>docs</option>
+            <option>question</option>
+            <option>feature</option>
+            <option>critical</option>
+            <option>high</option>
+            <option>medium</option>
+            <option>low</option>
+          </select>
+          <small class="hint">Hold Ctrl (Windows) or ⌘ (Mac) to select multiple labels.</small>
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn" type="submit" class="btn">Submit Issue</button>
+          <span id="submitStatus" class="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <template id="issueItemTpl">
+    <a class="issue-item" target="_blank" rel="noopener" role="listitem">
+      <div class="issue-head">
+        <span class="state-dot" aria-hidden="true"></span>
+        <span class="issue-title"></span>
+      </div>
+      <div class="issue-meta">
+        <span class="issue-number"></span>
+        <span class="issue-author"></span>
+        <span class="issue-time"></span>
+      </div>
+      <div class="issue-labels"></div>
+    </a>
+  </template>
+
+  <script src="assets/js/bug.js"></script>
+</body>
+</html>
