@@ -22,11 +22,18 @@ let currentState = "open";
 
 // ====== Helpers ======
 function ghHeaders(token) {
-  const h = {
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-  if (token && token.trim()) h.Authorization = `token ${token.trim()}`;
+  const sanitizeToken = (s) =>
+    (s || "")
+      .replace(/[\u0000-\u001F\u007F-\u00A0\u2000-\u200D\u2060\uFEFF]/g, "") 
+      .replace(/[^\x20-\x7E]/g, "")
+      .trim();
+
+  const clean = sanitizeToken(token);
+
+  const h = new Headers();
+  h.set("Accept", "application/vnd.github+json");
+  h.set("X-GitHub-Api-Version", "2022-11-28");
+  if (clean) h.set("Authorization", `token ${clean}`);
   return h;
 }
 
@@ -232,3 +239,4 @@ formEl.addEventListener("submit", async (e) => {
 
 // ====== Init ======
 fetchIssues(currentState);
+
