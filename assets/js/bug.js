@@ -1,5 +1,5 @@
 // ====== CONFIG ======
-const GH_OWNER = "steamcloud";
+const GH_OWNER = "steamclouds";
 const GH_REPO  = "steamclouds.github.io";
 
 // ====== DOM ======
@@ -220,3 +220,4 @@ formEl.addEventListener("submit", async (e) => {
 
 // ====== Init ======
 fetchIssues(currentState);
+
