@@ -698,48 +698,49 @@ footer {
 }
 
 
+:root{
+  --release-card-max: 560px;
+  --releases-max: 1160px;
+}
+
 .releases-layout{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, var(--release-card-max)));
   gap: 1.25rem;
   align-items: start;
-
-
-  max-width: 1100px;
+  max-width: var(--releases-max);
   margin: 0 auto;
   padding: 0 1rem;
   justify-content: center;
 }
 
 
-.release-grid{
-  display: block !important;
-  overflow: visible !important;
-  margin: 0 !important;
-  padding: 0 !important;
+.releases-layout .release-grid{
+  display: block;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
 }
 
-:root{
-  --release-card-max: 200px;
-}
 
-.release-grid .release-card{
+.releases-layout .release-card{
   width: 100%;
-  max-width: 360px;
+  min-width: 0;
+  max-width: var(--release-card-max);
   margin: 0 auto;
 }
 
 
 @media (max-width: 1024px){
   .releases-layout{
-    grid-template-columns: repeat(2, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, minmax(300px, var(--release-card-max)));
   }
 }
 
 
 @media (max-width: 900px){
   .releases-layout{
-    grid-template-columns: minmax(300px, 700px);
+    grid-template-columns: minmax(300px, var(--release-card-max));
     justify-content: center;
   }
 }
@@ -750,7 +751,9 @@ footer {
     grid-template-columns: 1fr;
     padding: 0 .75rem;
   }
-  .release-grid .release-card{
+  .releases-layout .release-card{
     max-width: none;
   }
 }
+
+
