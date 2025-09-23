@@ -22,8 +22,11 @@ let currentState = "open";
 
 // ====== Helpers ======
 function ghHeaders(token) {
-  const h = { "Accept": "application/vnd.github+json" };
-  if (token) h.Authorization = `token ${token.trim()}`;
+  const h = {
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  if (token && token.trim()) h.Authorization = `token ${token.trim()}`;
   return h;
 }
 
@@ -101,7 +104,7 @@ async function fetchIssues(state = "open") {
   issueListEl.innerHTML = "";
   const placeholder = document.createElement("div");
   placeholder.className = "issue-item";
-  placeholder.innerHTML = "Loading issues…";
+  placeholder.textContent = "Loading issues…";
   issueListEl.appendChild(placeholder);
 
   try {
@@ -111,19 +114,32 @@ async function fetchIssues(state = "open") {
       sort: "created",
       direction: "desc"
     });
-    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/issues?${qs}`, {
-      headers: ghHeaders() // unauthenticated for listing is fine, but rate-limited
-    });
+
+    // ✅ gunakan token jika diisi agar tidak rate-limited / bisa akses private repo
+    const headers = ghHeaders(tokenEl.value || "");
+
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/issues?${qs}`,
+      { headers }
+    );
 
     showRateInfo(res.headers);
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch issues: ${res.status}`);
+      let msg = `Failed to fetch issues: ${res.status}`;
+      try {
+        const j = await res.json();
+        if (j?.message) msg += ` — ${j.message}`;
+        if (j?.documentation_url) msg += ` (${j.documentation_url})`;
+      } catch {}
+      throw new Error(msg);
     }
 
     const data = await res.json();
     issueListEl.innerHTML = "";
-    if (!Array.isArray(data) || data.length === 0) {
+    const items = (Array.isArray(data) ? data : []).filter(i => !i.pull_request);
+
+    if (!items.length) {
       const empty = document.createElement("div");
       empty.className = "issue-item";
       empty.textContent = `No ${state} issues.`;
@@ -131,9 +147,7 @@ async function fetchIssues(state = "open") {
       return;
     }
 
-    data
-      .filter(i => !i.pull_request) // exclude PRs
-      .forEach(i => issueListEl.appendChild(renderIssue(i)));
+    items.forEach(i => issueListEl.appendChild(renderIssue(i)));
 
   } catch (err) {
     issueListEl.innerHTML = "";
@@ -200,14 +214,12 @@ formEl.addEventListener("submit", async (e) => {
       labels: selectedLabels()
     });
 
-    // success UI
     submitStatus.className = "status ok";
     submitStatus.textContent = `Submitted! #${result.number}`;
     titleEl.value = "";
     bodyEl.value = "";
     labelsEl.selectedIndex = -1;
 
-    // refresh open list
     if (currentState === "open") fetchIssues("open");
 
   } catch (err) {
@@ -220,4 +232,3 @@ formEl.addEventListener("submit", async (e) => {
 
 // ====== Init ======
 fetchIssues(currentState);
-
