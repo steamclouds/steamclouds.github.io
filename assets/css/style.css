@@ -724,7 +724,7 @@ footer {
 
 
 .releases-layout .release-card{
-  width: 100%;
+  width: 63%;
   min-width: 0;
   max-width: var(--release-card-max);
   margin: 0 auto;
@@ -755,5 +755,6 @@ footer {
     max-width: none;
   }
 }
+
 
 
