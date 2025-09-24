@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page Not Found</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    :root{
+      --bg:#0b0f12; --card:#121821; --text:#e6eef6; --muted:#94a3b8;
+      --accent:#3b82f6; --ok:#22c55e; --shadow:0 20px 60px rgba(2,6,23,.5);
+      --radius:16px;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background: radial-gradient(1000px 600px at 20% -10%, #0f172a 0%, transparent 60%),
+                  radial-gradient(1000px 600px at 120% 110%, #0f172a 0%, transparent 60%),
+                  var(--bg); color:var(--text); display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .card{
+      width:min(760px, 100%); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 20%) , var(--card);
+      border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06);
+      padding:40px 36px; position:relative;
+    }
+    .icon{
+      width:96px; height:96px; border-radius:50%; margin:0 auto 20px; display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #2563eb 60%, #1e293b 100%);
+      filter: drop-shadow(0 12px 24px rgba(37,99,235,.45));
+    }
+    h1{font-size:40px; line-height:1.1; margin:6px 0 14px; text-align:center; color:#ff5858}
+    p{color:var(--muted); margin:0 0 10px; text-align:center}
+    .path{color:#cbd5e1; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+    .actions{display:flex; gap:14px; justify-content:center; margin:22px 0 8px; flex-wrap:wrap}
+    .btn{
+      appearance:none; border:none; border-radius:12px; padding:12px 18px; font-weight:600; cursor:pointer;
+      background:#1f6f2b; color:white; box-shadow:0 10px 24px rgba(34,197,94,.25); transition:.2s transform,.2s opacity;
+      display:inline-flex; align-items:center; gap:10px; text-decoration:none
+    }
+    .btn:hover{transform:translateY(-1px); opacity:.95}
+    .btn.secondary{background:#0f172a; box-shadow:inset 0 0 0 1px rgba(148,163,184,.25)}
+    .panel{
+      margin-top:22px; background:rgba(2,6,23,.35); border:1px solid rgba(148,163,184,.15);
+      border-radius:12px; padding:18px 18px 6px;
+    }
+    .panel h2{font-size:18px; margin:0 0 10px}
+    ul{margin:0; padding:0 0 0 20px; color:#cbd5e1}
+    li{margin:8px 0}
+    .footer{margin-top:16px; text-align:center; font-size:13px; color:#64748b}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <div class="icon" aria-hidden="true">
+      <!-- magnifier glyph -->
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="white" stroke-opacity=".9" stroke-width="2"/>
+        <path d="M20 20L16.65 16.65" stroke="white" stroke-opacity=".9" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1 id="title">Page Not Found</h1>
+    <p>The page you’re looking for doesn’t exist or has been moved.</p>
+    <p class="path" id="bad-path"></p>
+
+    <div class="actions">
+      <a class="btn" href="index.html">🏠 Go Home</a>
+      <button class="btn secondary" onclick="history.back()">↩️ Go Back</button>
+    </div>
+
+    <div class="panel" role="region" aria-labelledby="tips">
+      <h2 id="tips">What you can do:</h2>
+      <ul>
+        <li>Check the URL for typos</li>
+        <li>Refresh the browser</li>
+        <li>Return to the homepage</li>
+      </ul>
+    </div>
+
+    <div class="footer">Error code: 404</div>
+  </main>
+
+  <script>
+    // Tampilkan path yang diminta, mis. /FILES/845070.zip
+    (function(){
+      var path = location.pathname + (location.search || "");
+      document.getElementById('bad-path').textContent = 'Requested: ' + path;
+    })();
+  </script>
+</body>
+</html>
