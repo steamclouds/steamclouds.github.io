@@ -1,91 +1,186 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Page Not Found</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="assets/icons/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.png">
+  <title>404 — Page Not Found</title>
+  <meta name="robots" content="noindex" />
   <style>
     :root{
-      --bg:#0b0f12; --card:#121821; --text:#e6eef6; --muted:#94a3b8;
-      --accent:#3b82f6; --ok:#22c55e; --shadow:0 20px 60px rgba(2,6,23,.5);
-      --radius:16px;
+      --bg:#0c0f13; --card:#11161c; --card-2:#0f141a; --surface:#121821;
+      --text:#e6edf3; --muted:#9aa8b4; --brand:#ff3333; --brand-2:#ff5757;
+      --ring:rgba(255,51,51,.5); --border:rgba(255,255,255,.06);
+      --shadow:0 20px 50px rgba(0,0,0,.45);
+      --radius:14px; --radius-lg:20px; --gap:20px; --container:960px;
+      --transition:200ms ease;
     }
-    *{box-sizing:border-box} html,body{height:100%}
+
+    /* ====== Base ====== */
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background: radial-gradient(1000px 600px at 20% -10%, #0f172a 0%, transparent 60%),
-                  radial-gradient(1000px 600px at 120% 110%, #0f172a 0%, transparent 60%),
-                  var(--bg); color:var(--text); display:flex; align-items:center; justify-content:center; padding:24px;
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 1000px at 20% -10%, rgba(255,51,51,.08), transparent 50%),
+        radial-gradient(900px 700px at 120% 10%, rgba(255,51,51,.06), transparent 60%),
+        var(--bg);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:grid; place-items:center;
     }
+    img,svg{ display:block; max-width:100% }
+
+    .container{ width:100%; max-width:var(--container); padding:24px }
+
+    /* ====== Header mini ====== */
+    .logo{
+      display:flex; align-items:center; gap:10px; font-weight:800;
+      letter-spacing:.2px; margin:0 auto 20px; width:max-content;
+      color:#fff; text-decoration:none;
+    }
+    .logo__dot{
+      width:14px; height:14px; border-radius:999px;
+      background:
+        radial-gradient(circle at 30% 30%, #fff 0 10%, transparent 11%),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,.2) 0 20%, transparent 21%),
+        var(--brand);
+      box-shadow:0 0 18px rgba(255,51,51,.6);
+    }
+    .logo__text{ font-size:clamp(18px,2.2vw,26px) }
+
+    /* ====== Card ====== */
     .card{
-      width:min(760px, 100%); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 20%) , var(--card);
-      border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06);
-      padding:40px 36px; position:relative;
+      position:relative;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, var(--card), var(--card-2));
+      border-radius:var(--radius-lg);
+      padding:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      text-align:center;
     }
-    .icon{
-      width:96px; height:96px; border-radius:50%; margin:0 auto 20px; display:grid; place-items:center;
-      background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #2563eb 60%, #1e293b 100%);
-      filter: drop-shadow(0 12px 24px rgba(37,99,235,.45));
+    .card::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background:linear-gradient(120deg, transparent 0 30%, rgba(255,51,51,.12) 45%, transparent 60% 100%);
+      pointer-events:none;
     }
-    h1{font-size:40px; line-height:1.1; margin:6px 0 14px; text-align:center; color:#ff5858}
-    p{color:var(--muted); margin:0 0 10px; text-align:center}
-    .path{color:#cbd5e1; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
-    .actions{display:flex; gap:14px; justify-content:center; margin:22px 0 8px; flex-wrap:wrap}
+
+    .title{ margin:6px 0 10px; font-size:clamp(24px,3vw,34px) }
+    .muted{ color:var(--muted) }
+
+    /* Big 404 */
+    .code{
+      font-size:clamp(68px, 12vw, 160px);
+      line-height:1;
+      margin:6px 0 8px;
+      letter-spacing:2px;
+      background:linear-gradient(180deg, #fff, #c9d2da 60%, #7f8a95);
+      color:transparent; -webkit-background-clip:text; background-clip:text;
+      filter: drop-shadow(0 8px 26px rgba(0,0,0,.45));
+    }
+
+    /* Illustration */
+    .art{
+      width:min(420px, 90%);
+      margin:0 auto 10px;
+      opacity:.95;
+    }
+
+    /* Actions */
+    .actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px }
     .btn{
-      appearance:none; border:none; border-radius:12px; padding:12px 18px; font-weight:600; cursor:pointer;
-      background:#1f6f2b; color:white; box-shadow:0 10px 24px rgba(34,197,94,.25); transition:.2s transform,.2s opacity;
-      display:inline-flex; align-items:center; gap:10px; text-decoration:none
+      display:inline-flex; align-items:center; gap:10px;
+      height:44px; padding:0 16px; border-radius:12px;
+      border:1px solid var(--border); background:var(--surface); color:var(--text);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      font-weight:600; text-decoration:none; cursor:pointer;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition);
     }
-    .btn:hover{transform:translateY(-1px); opacity:.95}
-    .btn.secondary{background:#0f172a; box-shadow:inset 0 0 0 1px rgba(148,163,184,.25)}
-    .panel{
-      margin-top:22px; background:rgba(2,6,23,.35); border:1px solid rgba(148,163,184,.15);
-      border-radius:12px; padding:18px 18px 6px;
+    .btn:hover{ transform:translateY(-1px); border-color:rgba(255,255,255,.12) }
+    .btn--primary{ background:linear-gradient(180deg, var(--brand), var(--brand-2)); border-color:transparent; color:#fff }
+    .btn--ghost{ background:transparent }
+    .btn--discord{ background:#5865F2; color:#fff; border-color:transparent }
+    .btn--discord:hover{ filter:brightness(1.06); transform:translateY(-1.5px) }
+
+    /* Search (opsional) */
+    .search{
+      display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:12px 0 0;
     }
-    .panel h2{font-size:18px; margin:0 0 10px}
-    ul{margin:0; padding:0 0 0 20px; color:#cbd5e1}
-    li{margin:8px 0}
-    .footer{margin-top:16px; text-align:center; font-size:13px; color:#64748b}
+    .input{
+      height:44px; min-width:min(420px, 90%); max-width:520px;
+      padding:0 14px; border-radius:12px; border:1px solid var(--border);
+      background:var(--card); color:var(--text);
+    }
+    .input::placeholder{ color:#93a0ab }
+    .input:focus{ outline:2px solid var(--ring); outline-offset:2px }
+
+    /* Footer tiny */
+    .foot-note{ text-align:center; margin-top:18px; color:var(--muted); font-size:13px }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; animation:none !important }
+    }
   </style>
 </head>
 <body>
-  <main class="card" role="main" aria-labelledby="title">
-    <div class="icon" aria-hidden="true">
-      <!-- magnifier glyph -->
-      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="11" cy="11" r="7" stroke="white" stroke-opacity=".9" stroke-width="2"/>
-        <path d="M20 20L16.65 16.65" stroke="white" stroke-opacity=".9" stroke-width="2" stroke-linecap="round"/>
+  <main class="container">
+      <a class="logo" href="https://steamclouds.online" aria-label="Steam Clouds Home">
+        <img src="assets/icons/favicon.png" alt="Steam Clouds" class="logo__img" width="46" height="46" decoding="async"/>
+        <span class="logo__text">Steam Clouds</span>
+      </a>
+
+    <section class="card" aria-labelledby="nf-title">
+      <!-- Simple inline illustration -->
+      <svg class="art" viewBox="0 0 620 220" role="img" aria-label="Disconnected cable illustration">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop stop-color="#26303a" offset="0"/>
+            <stop stop-color="#141a21" offset="1"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="620" height="220" rx="16" fill="url(#g)"/>
+        <g transform="translate(40,55)">
+          <rect x="0" y="0" width="280" height="110" rx="12" fill="#0e141b" stroke="rgba(255,255,255,.06)"/>
+          <circle cx="36" cy="55" r="14" fill="#ff5757"/>
+          <circle cx="74" cy="55" r="14" fill="#2ecc71"/>
+          <rect x="116" y="42" width="144" height="26" rx="6" fill="#17202a"/>
+        </g>
+        <g transform="translate(338,85)">
+          <path d="M0,20 C60,-10 120,-10 180,20" stroke="#6c7a86" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <rect x="176" y="12" width="68" height="16" rx="8" fill="#ff5757"/>
+          <rect x="238" y="8" width="16" height="24" rx="4" fill="#cfd8e3"/>
+        </g>
       </svg>
-    </div>
 
-    <h1 id="title">Page Not Found</h1>
-    <p>The page you’re looking for doesn’t exist or has been moved.</p>
-    <p class="path" id="bad-path"></p>
+      <div class="code" aria-hidden="true">404</div>
+      <h1 id="nf-title" class="title">Page not found</h1>
+      <p class="muted">The page you’re looking for doesn’t exist or may have moved.</p>
 
-    <div class="actions">
-      <a class="btn" href="https://steamclouds.online">🏠 Go Home</a>
-      <button class="btn secondary" onclick="history.back()">↩️ Go Back</button>
-    </div>
 
-    <div class="panel" role="region" aria-labelledby="tips">
-      <h2 id="tips">What you can do:</h2>
-      <ul>
-        <li>Check the URL for typos</li>
-        <li>Refresh the browser</li>
-        <li>Return to the homepage</li>
-      </ul>
-    </div>
+      <div class="actions">
+        <a class="btn btn--primary" href="https://steamclouds.online" id="goHome">Go Home</a>
+        <button class="btn btn--ghost" id="goBack" type="button">Back</button>
+        <a class="btn btn--discord" href="https://discord.gg/G89gC8wJg4" target="_blank" rel="noopener">Join Discord</a>
+      </div>
 
-    <div class="footer">Error code: 404</div>
+      <p class="foot-note">If you believe this is an error, please <a href="https://discord.gg/3Vb9nWeRjt">report the broken link</a>.</p>
+    </section>
   </main>
 
   <script>
-    // Tampilkan path yang diminta, mis. /FILES/845070.zip
-    (function(){
-      var path = location.pathname + (location.search || "");
-      document.getElementById('bad-path').textContent = 'Requested: ' + path;
-    })();
+    document.getElementById('goBack').addEventListener('click', () => {
+      if (history.length > 1) history.back(); else window.location.href = '/';
+    });
+    document.getElementById('searchForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = (document.getElementById('q').value || '').trim();
+      const url = q ? '/?q=' + encodeURIComponent(q) : '/';
+      window.location.href = url;
+    });
   </script>
 </body>
 </html>
