@@ -285,3 +285,42 @@ svg{ display:block; }
 
 
 .tool__badge{ cursor:pointer; }
+
+@media (max-width: 768px) {
+
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+
+  .container { padding-inline: 14px; }
+  .hero { padding: 24px 0 16px; }
+  .hero__card { padding: 22px 16px; }
+  .section__title { font-size: 18px; }
+  .tool__body { padding: 12px; }
+  .tool__title { font-size: 16px; }
+  .tool__desc { font-size: 13px; }
+
+
+  .tool__media {
+    height: 170px;
+    aspect-ratio: auto;
+    overflow: hidden;
+  }
+
+
+  .ads--mobile iframe,
+  .card--ads iframe {
+    width: 100% !important;
+    height: 90px;
+  }
+}
+
+
+@media (max-width: 400px) {
+  .tool__media { height: 150px; }
+  .tool__title { font-size: 15px; }
+  .tool__desc  { font-size: 12.5px; }
+}
+
