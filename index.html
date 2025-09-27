@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Steam Clouds help you to install Steam games with a single click, no admin rights, 100% safe and private.">
-  <link rel="icon" href="assets/images/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <meta name="description" content="Steam Clouds lets you install Steam games easily, without admin access, 100% secure and private.">
+  <link rel="icon" href="assets/icons/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.png">
   <meta property="og:title" content="Steam Clouds">
-  <meta property="og:description" content="Steam Clouds help you to install Steam games with a single click, no admin rights, 100% safe and private.">
+  <meta property="og:description" content="Steam Clouds lets you install Steam games easily, without admin access, 100% secure and private.">
   <meta property="og:image" content="https://steamclouds.online/assets/images/preview.png">
   <meta property="og:url" content="https://steamclouds.online">
   <meta name="twitter:card" content="summary_large_image">
+
   <title>Steam Clouds - Made with Love</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
   <script src="https://fpyf8.com/88/tag.min.js" data-zone="170766" async data-cfasync="false"></script>
+  <script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(1202082, {whitelist: [], blacklist: ["steamclouds.online", "www.steamclouds.online"]});</script>
   <script>
     (function(){
       var AD_SRC_SUBSTR = 'fpyf8.com/88/tag.min.js';
@@ -149,200 +153,138 @@
     })();
     </script>
 </head>
-
 <body>
-    <header class="header">
-      <a href="index.html" class="logo" aria-label="Home">
-        Steam Clouds
+
+<a id="lv-proxy" class="linkvertise" href="#" target="_blank" rel="noopener" style="position:fixed;left:-9999px;top:-9999px">.</a>
+
+  <!-- Header -->
+  <header class="header" data-elevate>
+    <div class="container header__inner">
+      <a class="logo" href="https://steamclouds.online" aria-label="Steam Clouds Home">
+        <img src="assets/icons/favicon.png" alt="Steam Clouds" class="logo__img" width="46" height="46" decoding="async"/>
+        <span class="logo__text">Steam Clouds</span>
       </a>
 
-    <nav>
-      <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="main-menu" aria-haspopup="true">
-        <span class="menu-icon" aria-hidden="true">☰</span>
-        <span class="menu-text">Menu</span>
-      </button>
-
-      <ul id="main-menu" class="main-menu" role="menu">
-        <li role="none"><a role="menuitem" href="#releases">Releases</a></li>
-        <li role="none"><a role="menuitem" href="#features">Features</a></li>
-        <li role="none"><a role="menuitem" href="#safety">Safety</a></li>
-        <li role="none"><a role="menuitem" href="#faq">FAQ</a></li>
-		<li role="none"><a role="menuitem" href="changelog.html">Changelog</a></li>
-      </ul>
-    </nav>
+      <nav class="nav" aria-label="Main">
+        <ul id="menu" class="menu" data-collapsible hidden>
+          <li><a href="#" class="menu__link is-active">Home</a></li>
+          <li><a href="#community" class="menu__link">Discord</a></li>
+          <li><a href="#donate" class="menu__link">Donate</a></li>
+        </ul>
+        <button id="menuToggle" class="btn btn--ghost sm:hidden" aria-expanded="false" aria-controls="menu">
+          <span class="icon" aria-hidden="true">☰</span>
+          <span class="sr-only">Toggle menu</span>
+        </button>
+      </nav>
+    </div>
   </header>
 
-  <section id="releases" class="section-box" aria-labelledby="releases-title">
-  <h2 id="releases-title">Latest Release</h2>
-
-  <div class="releases-layout">
-    <div id="release-main" class="release-grid">
-      <div class="loader"><div class="spinner"></div></div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__card">
+        <h1 class="hero__title">Welcome to Steam Clouds</h1>
+        <p class="hero__subtitle">Unlock Everything, No Cost, Pure Play.</p>
+        <div class="hero__actions">
+          <a href="#tools" class="btn btn--primary">Explore Tools</a>
+          <a href="#community" class="btn btn--ghost">Join & Donate</a>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div id="release-alt" class="release-grid">
-      <div class="loader"><div class="spinner"></div></div>
-    </div>
-  </div>
-</section>
+  <!-- Page Layout (3 kolom) -->
+  <main class="page container">
+    <!-- Left Ads -->
+    <aside class="ads" aria-label="Advertisement left">
+      <div class="card card--ads">
+        <small>
+          <div style="position:relative">
+            <iframe src="https://publisher.linkvertise.com/cdn/ads/LV-160x600/index.html" frameborder="0" height="600" width="160"></iframe>
+            <a href="https://publisher.linkvertise.com/ac/1202082" target="_blank" style="position:absolute;inset:0"></a>
+          </div>
+        </small>
+      </div>
+    </aside>
 
+    <!-- Kolom tengah -->
+    <section class="content">
 
-    <section id="support" class="support-section section-box" aria-labelledby="support-title">
-      <h2 id="support-title">❤️ Support Steam Clouds</h2>
+      <!-- Inline mobile ad -->
+      <div class="card card--ads ads--mobile" aria-label="Advertisement (mobile)">
+        <small>
+          <div style="position:relative">
+            <iframe src="https://publisher.linkvertise.com/cdn/ads/LV-728x90/index.html" frameborder="0" height="90" width="728"></iframe>
+            <a href="https://publisher.linkvertise.com/ac/1202082" target="_blank" style="position:absolute;inset:0"></a>
+          </div>
+        </small>
+      </div>
 
-      <div class="cards">
-        <div class="card">
-          <h3>Support Steam Clouds</h3>
-          <p>Want to keep the project free and updated? Consider donating - every contribution helps pay for hosting, development tools, and maintenance time.</p>
-          <div class="donate-buttons">
-            <a href="https://paypal.me/steamclouds" class="btn" target="_blank" rel="noopener noreferrer">PayPal</a>
-            <a href="https://ko-fi.com/r3verseninja" class="btn" target="_blank" rel="noopener noreferrer">Ko-fi</a>
-            <a href="https://saweria.co/R3verseNinja" class="btn" target="_blank" rel="noopener noreferrer">Saweria</a>
+      <!-- Tools -->
+      <section id="tools" class="section">
+        <div class="section__head">
+          <h2 class="section__title">Tools</h2>
+          <div class="section__actions">
+          <!--  <input id="searchInput" class="input" type="search" placeholder="Search tools…" aria-label="Search tools"/> -->
           </div>
         </div>
+        <div id="toolsGrid" class="grid" data-grid>
+          <noscript><p class="muted">Enable JavaScript to see the tools grid.</p></noscript>
+        </div>
+      </section>
 
-        <div class="card">
-          <h3>📌 Stay Connected</h3>
-          <p>Follow us for updates, community support, and the latest news about Steam Clouds.</p>
-          <div class="social-links">
-            <a href="https://discord.gg/G89gC8wJg4" class="btn" target="_blank" rel="noopener noreferrer">Discord</a>
-            <a href="https://youtube.com/@smart_mods" class="btn" target="_blank" rel="noopener noreferrer">YouTube</a>
+      <section id="community" class="section section--center">
+        <h3 class="section__title">Join the Community</h3>
+        <p class="muted">Follow updates, get help, and hang out with others.</p>
+        <div class="cta-row">
+          <a class="btn btn--ghost" href="https://discord.gg/G89gC8wJg4" target="_blank" rel="noopener">
+            <img class="btn__icon" src="assets/icons/discord_icon.png" alt=""> Join Discord
+          </a>
+          <a class="btn btn--ghost" href="https://youtube.com/@smart_mods" target="_blank" rel="noopener">
+            <img class="btn__icon" src="assets/icons/youtube_logo.png" alt=""> Subscribe on YouTube
+          </a>
+        </div>
+      </section>
+
+      <section id="donate" class="section section--center">
+        <h3 class="section__title">Support the Project</h3>
+        <p class="muted">Your support keeps Steam Clouds free and improving.</p>
+        <div class="donate-row">
+          <a class="btn btn--ghost" href="https://paypal.me/steamclouds" target="_blank" rel="noopener">
+            <img class="btn__icon" src="assets/icons/paypal_icon.png" alt=""> PayPal
+          </a>
+          <a class="btn btn--ghost" href="https://ko-fi.com/r3verseninja" target="_blank" rel="noopener">
+            <img class="btn__icon" src="assets/icons/kofi_symbol.png" alt=""> Ko-fi
+          </a>
+          <a class="btn btn--ghost" href="https://saweria.co/R3verseNinja" target="_blank" rel="noopener">
+            <img class="btn__icon" src="assets/icons/saweria_icon.png" alt=""> Saweria
+          </a>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- Right Ads -->
+    <aside class="ads" aria-label="Advertisement right">
+      <div class="card card--ads">
+        <small>
+          <div style="position:relative">
+            <iframe src="https://publisher.linkvertise.com/cdn/ads/LV-160x600/index.html" frameborder="0" height="600" width="160"></iframe>
+            <a href="https://publisher.linkvertise.com/ac/1202082" target="_blank" style="position:absolute;inset:0"></a>
           </div>
-        </div>
+        </small>
       </div>
-    </section>
-
-    <section id="features" class="features section-box" aria-labelledby="features-title">
-      <h2 id="features-title">✨ Core Features</h2>
-      <div class="feature-grid" role="list">
-        <article class="feature-card" role="listitem">
-          <h3>➕ Super Easy to Add Games</h3>
-          <p>Click <strong>Add Games</strong> once, restart Steam, and your library will be populated automatically.</p>
-        </article>
-
-        <article class="feature-card" role="listitem">
-          <h3>➕ Super Easy to Manage Library</h3>
-          <p>Head to <strong>Manage Library</strong> to see all the games you've added with this tool. You can easily remove any game from your library right here.</p>
-        </article>
-
-        <article class="feature-card" role="listitem">
-          <h3>🔄 Up-to-Date Tools</h3>
-          <p>Regular updates to keep compatibility with new Steam changes and improve stability.</p>
-        </article> 
-
-        <article class="feature-card" role="listitem">
-          <h3>📂 Import Lua & Manifest</h3>
-          <p>Drag & drop Lua or manifest files (your own or shared by others) directly into the app to add games instantly.</p>
-        </article>
-        
-        <article class="feature-card" role="listitem">
-        <h3>💡 Easy Start Guide</h3>
-          <p>First time here? Just head to the <strong>Dashboard</strong> for a quick tutorial on how to install and get started.</p>
-        </article>
-
-        <article class="feature-card" role="listitem">
-          <h3>🎨 Simple & Minimalist Design</h3>
-          <p>A lightweight, focused launcher with a clean UI — no clutter, just the tools you need.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="safety" class="safety section-box" aria-labelledby="safety-title">
-      <h2 id="safety-title">🛡️ Safety Statement</h2>
-      <div class="safety-cards">
-        <p class="safety-card">
-          Steam Clouds is a pure local green tool — it runs without administrator permission and works exclusively on your machine. We do not collect personal information because we do not operate servers (except for an optional Steam Clouds Discord bot that helps manage manifests on a dedicated server).
-        </p>
-        <p class="safety-card">
-          There is no user login required. Some antivirus software may show false positives (Unknown Publisher). This is a common false positive for unsigned local apps — rest assured the tool itself is local and safe to use.
-        </p>
-      </div>
-    </section>
-
-    <section id="faq" class="faq section-box" aria-labelledby="faq-title">
-      <h2 id="faq-title">❓ Frequently Asked Questions</h2>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">📥 How do I download Steam Clouds?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Visit the official website <a href="https://steamclouds.online/" target="_blank" rel="noopener">steamclouds.online</a></li>
-            <li>Click the <strong>Download</strong> button on the latest version.</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">⚙️ How to install Steam Clouds?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Download the latest version from our website</li>
-            <li>Run <code>SteamClouds.exe</code></li>
-            <li>Go to <strong>Install SteamClouds</strong> in the app</li>
-            <li>Follow the installation steps until finished</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">🎮 How to add games directly in the Steam app?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Run <code>SteamClouds.exe</code></li>
-            <li>Click <strong>Install SteamClouds</strong> on the left panel of the application.</li>
-            <li>Check the log to make sure the program status shows as Installed.</li>
-            <li>If the status is Installed, open the Steam app and click on the game you want to play.</li>
-            <li>Click the Add Games button and wait until it finishes.</li>
-            <li>Once the status shows Added to Library, click Restart Steam.</li>
-            <li>Enjoy your games! 🎮</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">❓ Why the Add Games button doesn't appear after installing SteamClouds and the status is installed?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Run <code>Steam.exe</code></li>
-            <li>Click <strong>Steam</strong> in the top left corner.</li>
-            <li>Click the Millennium button.</li>
-            <li>Click the <strong>Plugins</strong>.</li>
-            <li>Enable the toggle button on SteamClouds and then click the <strong>Save</strong> button.</li>
-            <li>After that, restart your Steam.</li>
-            <li>After restarting Steam, please check the button again.</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">❓ Why is the Add Games button missing after updating the SteamClouds.exe application?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Run <code>SteamClouds.exe</code></li>
-            <li>Click <strong>Install SteamClouds</strong> on the left panel of the application.</li>
-            <li>Click the <strong>Reinstall</strong> button.</li>
-            <li>Wait for the installation process to finish.</li>
-            <li>If the status is <strong>installed</strong>, click the <strong>Restart Steam</strong> or <strong>Open Steam</strong> button.</li>
-            <li>After restarting Steam, please check the button again.</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">🛡️ Is Steam Clouds safe?</button>
-        <div class="faq-answer" aria-hidden="true">
-          <ol class="faq-list">
-            <li>Yes! It's a local-only tool with no hidden fees and no automatic data collection — free to use for everyone.</li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <p>© 2025 Steam Clouds. All rights reserved.</p>
-    </footer>
+    </aside>
   </main>
 
-  <script src="assets/js/app.js"></script>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="muted">© 2025 Steam Clouds. All rights reserved.</p>
+      <a id="contact" class="muted" href="https://youtube.com/@smart_mods" target="_blank" rel="noopener">Subscribe on YouTube</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js" defer></script>
 </body>
 </html>
