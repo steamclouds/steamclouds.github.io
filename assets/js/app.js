@@ -226,8 +226,8 @@ const toolsData = [
     source: 'primary'
   },
   {
-    title: 'Steam Manifest Gen',
-    desc: 'Steam Manifest Gen is a utility that generates .lua and .manifest files to enable free access to Steam games, powered by SteamClouds.',
+    title: 'Steam Clouds Ultimate',
+    desc: 'Steam Clouds Ultimate is your all-in-one toolkit for unlocking Steam games with ease. It auto generates .lua and .manifest files, adds games directly to your library, and manages everything with a sleek, intuitive interface, no manual setup required.',
     href: '#',
     img: 'assets/images/Steammanifestgen.png',
     source: 'other'
@@ -253,7 +253,8 @@ const logsData = {
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }
   ],
   1: [
-    { title: 'v1.0', desc: '- Initial public release', href: '#' }
+    { title: 'v1.0', desc: '- Initial public release', href: '#' },
+    { title: 'v1.1', desc: '- Renamed to Steam Clouds Ultimate\n- Added Library Manager\n- Enabled Drag & Drop or Browse to Add Games\n- Enhanced Tool Performance', href: '#' }
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -621,3 +622,4 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
