@@ -53,8 +53,10 @@ const PRIMARY_URL = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6
 
 const OTHER_URLS = [
   'https://script.google.com/macros/s/AKfycbz3AzDmxMJTCXTY4RAwfVDcgnl8l8QAhfeL_ROsAQDAun30eV40GQxuMuz_fKhQjrbKkA/exec', // other1
-  'https://script.google.com/macros/s/AKfycbxL8m4Wtf4PG1_bocjroOyUcq66rucKFKccZvex6aERBwLUZ3V5Y9RH_rlmAOhRZOgvhA/exec'
+  'https://script.google.com/macros/s/AKfycbxL8m4Wtf4PG1_bocjroOyUcq66rucKFKccZvex6aERBwLUZ3V5Y9RH_rlmAOhRZOgvhA/exec',
+  'https://script.google.com/macros/s/AKfycbx8lTj5CHrnTPgTXY3tYKNAoRdC-FEsOaRtLwIbcpiISNPnPn7JBVOP-Col0gJrqogp/exec'
 ].filter(Boolean);
+
 
 const OTHER_LIST = Array.isArray(OTHER_URLS)
   ? OTHER_URLS.filter(u => typeof u === 'string' && u.trim())
@@ -238,6 +240,13 @@ const toolsData = [
     href: '#',
     img: 'assets/images/Spotifyplus.png',
     source: 'other2'
+  },
+  {
+    title: 'All In One Downloader',
+    desc: 'Download videos and audio from top platforms like YouTube, TikTok, X, and Spotify.',
+    href: '#',
+    img: 'assets/images/downloader.png',
+    source: 'other3'
   }
 ];
 
@@ -263,6 +272,9 @@ const logsData = {
     { title: 'v1.3', desc: '- Resolving tools issues', href: '#' },
     { title: 'v1.4', desc: '- Resolving tools issues\n- Removed Spotify, Youtube & Tiktok Downloader\n- Improving the UI and optimizing the program\n- Optimizing Spotify Premium features and performance\n- Added Multi Language feature (ID, EN, DE, ES)', href: '#' },
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }
+  ],
+  3: [
+    { title: 'v1.0', desc: '- Initial public release', href: '#' }
   ]
 };
 
@@ -623,5 +635,4 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
-
 
