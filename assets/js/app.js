@@ -252,32 +252,105 @@ const toolsData = [
 
 const state = { mode: 'tools', currentToolIndex: null };
 
+// --- GANTI BAGIAN logsData DENGAN INI ---
 const logsData = {
   0: [
-    { title: 'v1.0', desc: '- Initial public release\n- Core functionality for import lua files\n- Core fungtionality for manage library\n - Core functionality for steamclouds tools', href: '#' },
-    { title: 'v1.1', desc: '- Improve Add Games button\n- Removed Install SteamTools\n- Always Unlock Automatically\n- The dashboard tutorial has been updated.\n- Improving stability by fixing bugs and errors.', href: '#' },
-    { title: 'v1.2', desc: '- Resolving tools issues\n- Added .manifest support\n- Added Link Manifest to App\n- Code optimized for better performance', href: '#' },
-    { title: 'v1.3', desc: '- Improve the program\n- Resolving tools issues\n- Removed Install Steamclouds Plugins Feature', href: '#' },
+    {
+      title: 'v1.0',
+      desc: [
+        'Initial public release',
+        'Core functionality for import lua files',
+        'Core functionality for manage library',
+        'Core functionality for steamclouds tools',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
+    {
+      title: 'v1.1',
+      desc: [
+        'Improve Add Games button',
+        'Removed Install SteamTools',
+        'Always Unlock Automatically',
+        'The dashboard tutorial has been updated.',
+        'Improving stability by fixing bugs and errors.',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
+    {
+      title: 'v1.2',
+      desc: [
+        'Resolving tools issues',
+        'Added .manifest support',
+        'Added Link Manifest to App',
+        'Code optimized for better performance',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
+    {
+      title: 'v1.3',
+      desc: [
+        'Improve the program',
+        'Resolving tools issues',
+        'Removed Install Steamclouds Plugins Feature',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
     { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }
+    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
   ],
+
   1: [
     { title: 'v1.0', desc: '- Initial public release', href: '#' },
-    { title: 'v1.1', desc: '- Rebranded as Steam Clouds Ultimate\n- Introduced “Add to Library” toggle\n- Added “Always Unlock” toggle for persistent access\n- Launched Library Manager for streamlined organization\n- Enabled Drag & Drop and File Browser for effortless game import\n- Upgraded tool performance for a smoother experience', href: '#'},
+    {
+      title: 'v1.1',
+      // Pakai array+join agar aman dari kutip “pintar”
+      desc: [
+        'Rebranded as Steam Clouds Ultimate',
+        'Introduced "Add to Library" toggle',
+        'Added "Always Unlock" toggle for persistent access',
+        'Launched Library Manager for streamlined organization',
+        'Enabled Drag & Drop and File Browser for effortless game import',
+        'Upgraded tool performance for a smoother experience',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
     { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
-    { title: 'v1.3', desc: '- Fixed bug where Always Unlocked couldnt be disabled.', href: '#' }
+    { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
   ],
+
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
-    { title: 'v1.2', desc: '- Added Auto Check Update\n- Added Spotify Downloader\n- Added Youtube Downloader\n- Added Tiktok Downloader\n- Resolving tools issues', href: '#' },
+    {
+      title: 'v1.2',
+      desc: [
+        'Added Auto Check Update',
+        'Added Spotify Downloader',
+        'Added Youtube Downloader',
+        'Added Tiktok Downloader',
+        'Resolving tools issues',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
     { title: 'v1.3', desc: '- Resolving tools issues', href: '#' },
-    { title: 'v1.4', desc: '- Resolving tools issues\n- Removed Spotify, Youtube & Tiktok Downloader\n- Improving the UI and optimizing the program\n- Optimizing Spotify Premium features and performance\n- Added Multi Language feature (ID, EN, DE, ES)', href: '#' },
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }
+    {
+      title: 'v1.4',
+      desc: [
+        'Resolving tools issues',
+        'Removed Spotify, Youtube & Tiktok Downloader',
+        'Improving the UI and optimizing the program',
+        'Optimizing Spotify Premium features and performance',
+        'Added Multi Language feature (ID, EN, DE, ES)',
+      ].map(s => `- ${s}`).join('\n'),
+      href: '#',
+    },
+    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
   ],
+
   3: [
-    { title: 'v1.0', desc: '- Initial public release', href: '#' }
-  ]
+    { title: 'v1.0', desc: '- Initial public release', href: '#' },
+  ],
 };
+
 
 function cardToolbar(sourceTag) {
   const srcAttr = Array.isArray(sourceTag) ? sourceTag.join(',') : (sourceTag || '');
@@ -636,6 +709,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
