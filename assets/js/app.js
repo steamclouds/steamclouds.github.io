@@ -264,7 +264,8 @@ const logsData = {
   1: [
     { title: 'v1.0', desc: '- Initial public release', href: '#' },
     { title: 'v1.1', desc: '- Rebranded as Steam Clouds Ultimate\n- Introduced “Add to Library” toggle\n- Added “Always Unlock” toggle for persistent access\n- Launched Library Manager for streamlined organization\n- Enabled Drag & Drop and File Browser for effortless game import\n- Upgraded tool performance for a smoother experience', href: '#'},
-    { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' }
+    { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
+    { title: 'v1.3', desc: '- Fixed bug where 'Always Unlocked' couldn't be disabled.', href: '#' }
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -635,6 +636,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
