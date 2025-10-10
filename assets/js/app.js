@@ -223,7 +223,7 @@ const toolsData = [
     title: 'SteamClouds Lite',
     desc: 'SteamClouds Lite is a lightweight tool that auto-generates .lua and .manifest files and adds games to your Steam library, no manual setup needed. Simple, fast, and user friendly.',
     href: '#',
-    img: 'assets/images/Steamclouds1.png',
+    img: 'assets/images/Steamclouds2.png',
     source: 'primary'
   },
   {
@@ -705,3 +705,4 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
