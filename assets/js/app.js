@@ -253,8 +253,7 @@ const toolsData = [
 const state = { mode: 'tools', currentToolIndex: null };
 
 // --- GANTI BAGIAN logsData DENGAN INI ---
-const logsData = {
-  0: [
+0: [
     {
       title: 'v1.0',
       desc: [
@@ -297,6 +296,24 @@ const logsData = {
     },
     { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
+
+    // ⬇️ Tambahan v1.6 (letakkan paling akhir supaya terbaca sebagai "latest")
+    {
+      title: 'v1.6',
+      desc: [
+        "What's New in This Version",
+        '', // pemisah baris
+        'Brand-new UI for a smoother experience',
+        'Improved overall performance',
+        'Bug fixes and stability enhancements',
+        'Resolved false positive issues with VirusTotal',
+        'Added "Add to Library" feature',
+        'Renamed from SteamClouds to SteamClouds Lite',
+      ]
+      .map((s, i) => (i === 0 || s === '' ? s : `- ${s}`))
+      .join('\n'),
+      href: '#',
+    },
   ],
 
   1: [
@@ -709,6 +726,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
