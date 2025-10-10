@@ -295,25 +295,8 @@ const state = { mode: 'tools', currentToolIndex: null };
       href: '#',
     },
     { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
-
-    // ⬇️ Tambahan v1.6 (letakkan paling akhir supaya terbaca sebagai "latest")
-    {
-      title: 'v1.6',
-      desc: [
-        "What's New in This Version",
-        '', // pemisah baris
-        'Brand-new UI for a smoother experience',
-        'Improved overall performance',
-        'Bug fixes and stability enhancements',
-        'Resolved false positive issues with VirusTotal',
-        'Added "Add to Library" feature',
-        'Renamed from SteamClouds to SteamClouds Lite',
-      ]
-      .map((s, i) => (i === 0 || s === '' ? s : `- ${s}`))
-      .join('\n'),
-      href: '#',
-    },
+    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }, 
+    { title: 'v1.6', desc: '- Brand-new UI for a smoother experience\n- Improved overall performance\n- Bug fixes and stability enhancements\n- Resolved false positive issues with VirusTotal\n- Added Add to Library feature\n- Renamed from SteamClouds to SteamClouds Lite', href: '#' },
   ],
 
   1: [
@@ -726,6 +709,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
