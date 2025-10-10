@@ -221,8 +221,8 @@ populateReleasePanels().catch(console.error);
 // Data Tools (judul, href, img tetap; deskripsi sudah disesuaikan)
 const toolsData = [
   {
-    title: 'SteamClouds',
-    desc: 'SteamClouds is a utility designed to manage libraries for Steam Manifest Gen.',
+    title: 'SteamClouds Lite',
+    desc: 'SteamClouds Lite is a lightweight tool that auto-generates .lua and .manifest files and adds games to your Steam library, no manual setup needed. Simple, fast, and user friendly.',
     href: '#',
     img: 'assets/images/Steamclouds.png',
     source: 'primary'
@@ -726,6 +726,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
