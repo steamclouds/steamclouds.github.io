@@ -294,13 +294,22 @@ const logsData = {
     },
     { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
-    { title: 'v1.6', desc: '- Brand-new UI for a smoother experience\n- Improved overall performance\n- Bug fixes and stability enhancements\n- Resolved false positive issues with VirusTotal\n- Added Add to Library feature\n- Renamed from SteamClouds to SteamClouds Lite', href: '#'},
-  ], 
+    {
+      title: 'v1.6',
+      desc:
+        '- Brand-new UI for a smoother experience\n' +
+        '- Improved overall performance\n' +
+        '- Bug fixes and stability enhancements\n' +
+        '- Resolved false positive issues with VirusTotal\n' +
+        '- Added "Add to Library" feature\n' +
+        '- Renamed from SteamClouds to SteamClouds Lite',
+      href: '#',
+    },
+  ],
   1: [
     { title: 'v1.0', desc: '- Initial public release', href: '#' },
     {
       title: 'v1.1',
-      // Pakai array+join agar aman dari kutip “pintar”
       desc: [
         'Rebranded as Steam Clouds Ultimate',
         'Introduced "Add to Library" toggle',
@@ -314,7 +323,6 @@ const logsData = {
     { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
     { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
   ],
-
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
     {
@@ -342,11 +350,11 @@ const logsData = {
     },
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
   ],
-
   3: [
     { title: 'v1.0', desc: '- Initial public release', href: '#' },
   ],
 };
+
 
 
 function cardToolbar(sourceTag) {
@@ -706,6 +714,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
