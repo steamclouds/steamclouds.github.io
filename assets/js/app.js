@@ -339,8 +339,7 @@ const logsData = {
       href: '#'
     },
     { title: 'v1.3', desc: '- Resolving tools issues', href: '#' },
-    {
-      title: 'v1.4',
+    {title: 'v1.4',
       desc: [
         'Resolving tools issues',
         'Removed Spotify, Youtube & Tiktok Downloader',
@@ -348,9 +347,16 @@ const logsData = {
         'Optimizing Spotify Premium features and performance',
         'Added Multi Language feature (ID, EN, DE, ES)'
       ].map(function(s){ return '- ' + s; }).join('\n'),
-      href: '#'
-    },
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' }
+      href: '#'},
+    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
+    {title: 'v1.6',
+      desc: [
+        'New Simple UI',
+        'Resolving tools issues',
+        'Optimizing the program',
+        'Resolving false positive issues with VirusTotal'
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   3: [
     { title: 'v1.0', desc: '- Initial public release', href: '#' }
@@ -705,5 +711,6 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
