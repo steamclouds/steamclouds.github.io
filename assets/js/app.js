@@ -237,7 +237,7 @@ const toolsData = [
     title: 'SpotifyPlus',
     desc: 'SpotifyPlus lets you enjoy Spotify the way it should be no ads, no limits, just music.',
     href: '#',
-    img: 'assets/images/Spotifyplus.png',
+    img: 'assets/images/splus_new_ver.png',
     source: 'other2'
   },
   {
@@ -711,6 +711,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
