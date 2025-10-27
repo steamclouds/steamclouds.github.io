@@ -230,7 +230,7 @@ const toolsData = [
     title: 'Steam Clouds Ultimate',
     desc: 'Steam Clouds Ultimate is your all-in-one toolkit for unlocking Steam games with ease. It auto generates .lua and .manifest files, adds games directly to your library, and manages everything with a sleek, intuitive interface, no manual setup required.',
     href: '#',
-    img: 'assets/images/Steammanifestgen.png',
+    img: 'assets/images/sc_ultimate.png',
     source: 'other1'
   },
   {
@@ -718,6 +718,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
