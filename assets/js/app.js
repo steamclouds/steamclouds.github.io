@@ -320,10 +320,17 @@ const logsData = {
         'Enabled Drag & Drop and File Browser for effortless game import',
         'Upgraded tool performance for a smoother experience'
       ].map(function(s){ return '- ' + s; }).join('\n'),
-      href: '#'
-    },
+      href: '#'},
     { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
-    { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' }
+    { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
+    {
+      title: 'v1.4',
+      desc: [
+        'New Fresh UI',
+        'Added New Database',
+        'False positive issues resolved',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -711,6 +718,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
