@@ -331,6 +331,16 @@ const logsData = {
         'False positive issues resolved',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
+    {
+      title: 'v1.5',
+      desc: [
+        'Added drop link feature',
+        'Added Release Info',
+        'Added About button',
+        'Fixed several bugs',
+        'Fixed several display issues',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -718,6 +728,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
