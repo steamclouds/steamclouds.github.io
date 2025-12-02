@@ -323,22 +323,26 @@ const logsData = {
       href: '#'},
     { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
     { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
-    {
-      title: 'v1.4',
+    { title: 'v1.4',
       desc: [
         'New Fresh UI',
         'Added New Database',
         'False positive issues resolved',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-    {
-      title: 'v1.5',
+    { title: 'v1.5',
       desc: [
         'Added drop link feature',
         'Added Release Info',
         'Added About button',
         'Fixed several bugs',
         'Fixed several display issues',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
+   { title: 'v1.6',
+      desc: [
+        'Patch: Fixed 403 Forbidden error',
+        'Fixed several bugs',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
   ],
@@ -728,6 +732,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
