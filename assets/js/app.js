@@ -341,6 +341,19 @@ const logsData = {
       href: '#'},
    { title: 'v1.6',
       desc: [
+        'Massive bug fixes across the program for smoother performance',
+        'UI Library updated, more modern visuals & better responsiveness',
+        'UI Discover improved → easier, faster navigation',
+        'New “Check Limits” button added in Settings',
+        'Token status display now available in Settings',
+        'Auto database check removed, now it only checks when you click Download button',
+        'Stronger detection for Denuvo & 3rd party launchers',
+        'Tools no longer locked when updates are released, now you’ll just get an update notification',
+        'Optimized “Add Games” for stable performance with detailed process logs',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
+   { title: 'v1.7',
+      desc: [
         'Patch: Fixed 403 Forbidden error',
         'Fixed several bugs',
       ].map(function(s){ return '- ' + s; }).join('\n'),
@@ -732,6 +745,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
