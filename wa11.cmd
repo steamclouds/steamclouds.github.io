@@ -8,7 +8,7 @@ if %errorLevel% GTR 0 (
 )
 
 echo =====================================================================================
-echo #Project: Windows 11 Activator
+echo Windows 11 Activator
 echo =====================================================================================
 echo.
 echo #Supported products:
@@ -118,4 +118,5 @@ goto halt
 
 :halt
 cd %~dp0 & del %0 >nul & pause >nul
+
 
