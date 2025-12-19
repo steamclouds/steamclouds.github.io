@@ -358,6 +358,16 @@ const logsData = {
         'Optimized “Add Games” for stable performance with detailed process logs',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
+   { title: 'v1.8',
+      desc: [
+        'Fixed various minor bugs',
+        'Introduced a new Home section',
+        'Added integrated Guide within Home',
+        'Library now includes Update buttons',
+        'Optimized tools for better efficiency',
+        'Enhanced code stability and performance',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -745,6 +755,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
