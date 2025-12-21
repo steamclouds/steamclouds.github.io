@@ -368,6 +368,11 @@ const logsData = {
         'Enhanced code stability and performance',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
+   { title: 'v1.9',
+      desc: [
+        'Added Quick Fix Feature',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -755,6 +760,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
