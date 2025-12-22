@@ -373,6 +373,11 @@ const logsData = {
         'Added Quick Fix Feature',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
+  { title: 'v2.0',
+      desc: [
+        'Fixed the "Purchase" button problem, everything should now work smoothly!',
+      ].map(function(s){ return '- ' + s; }).join('\n'),
+      href: '#'},
   ],
   2: [
     { title: 'v1.1', desc: '- Initial public release', href: '#' },
@@ -760,6 +765,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
