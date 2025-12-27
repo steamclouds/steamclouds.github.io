@@ -305,6 +305,14 @@ const logsData = {
         '- Resolved false positive issues with VirusTotal\n' +
         '- Added "Add to Library" feature\n' +
         '- Renamed from SteamClouds to SteamClouds Lite',
+      href: '#'},
+   {title: 'v1.7',
+      desc:
+        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client\n' +
+        '- Enhanced Restart System for improved stability.\n' +
+        '- One new database has been added.\n' +
+        '- Patched Minor bugs for smoother performance.\n' +
+        '- Improved File generation system for greater efficiency.\n',
       href: '#'
     }
   ],
@@ -772,6 +780,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
