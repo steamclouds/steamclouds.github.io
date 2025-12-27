@@ -308,11 +308,12 @@ const logsData = {
       href: '#'},
    {title: 'v1.7',
       desc:
-        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client\n' +
-        '- Enhanced Restart System for improved stability.\n' +
         '- One new database has been added.\n' +
+        '- Now App no longer locks during updates.\n' +
         '- Patched Minor bugs for smoother performance.\n' +
-        '- Improved File generation system for greater efficiency.\n',
+        '- Enhanced Restart System for improved stability.\n' +
+        '- Improved File generation system for greater efficiency.\n' +
+        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client.\n' +,
       href: '#'
     }
   ],
@@ -780,6 +781,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
