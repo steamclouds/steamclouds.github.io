@@ -313,7 +313,7 @@ const logsData = {
         '- Patched Minor bugs for smoother performance.\n' +
         '- Enhanced Restart System for improved stability.\n' +
         '- Improved File generation system for greater efficiency.\n' +
-        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client.\n' +,
+        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client.\n',
       href: '#'
     }
   ],
@@ -781,6 +781,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
