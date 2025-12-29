@@ -299,22 +299,22 @@ const logsData = {
     {
       title: 'v1.6',
       desc: [
-        '- Brand-new UI for a smoother experience\n',
-        '- Improved overall performance\n',
-        '- Bug fixes and stability enhancements\n',
-        '- Resolved false positive issues with VirusTotal\n',
-        '- Added "Add to Library" feature\n',
-        '- Renamed from SteamClouds to SteamClouds Lite'
+        'Brand-new UI for a smoother experience.',
+        'Improved overall performance.',
+        'Bug fixes and stability enhancements.',
+        'Resolved false positive issues with VirusTotal.',
+        'Added "Add to Library" feature.',
+        'Renamed from SteamClouds to SteamClouds Lite'
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#' },
    {title: 'v1.7',
       desc: [
-        '- One new database has been added.\n',
-        '- Now App no longer locks during updates.\n',
-        '- Patched Minor bugs for smoother performance.\n',
-        '- Enhanced Restart System for improved stability.\n',
-        '- Improved File generation system for greater efficiency.\n',
-        '- Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client.\n'
+        'One new database has been added.',
+        'Now App no longer locks during updates.',
+        'Patched Minor bugs for smoother performance.',
+        'Enhanced Restart System for improved stability.',
+        'Improved File generation system for greater efficiency.',
+        'Fixed The "Purchase" button issue has been fully resolved for the latest Steam Client.\n'
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'
     }
@@ -783,6 +783,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
