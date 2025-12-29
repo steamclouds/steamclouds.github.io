@@ -297,9 +297,12 @@ const logsData = {
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'
     },
-    { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
-    {title: 'v1.6',
+    { 
+       title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
+    { 
+       title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
+    {
+      title: 'v1.6',
       desc: [
         'Brand-new UI for a smoother experience.',
         'Improved overall performance.',
@@ -309,7 +312,8 @@ const logsData = {
         'Renamed from SteamClouds to SteamClouds Lite'
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#' },
-   {title: 'v1.7',
+   {
+      title: 'v1.7',
       desc: [
         'One new database has been added.',
         'Now App no longer locks during updates.',
@@ -322,7 +326,8 @@ const logsData = {
     }
   ],
   1: [
-    { title: 'v1.0', desc: '- Initial public release', href: '#' },
+    { 
+       title: 'v1.0', desc: '- Initial public release', href: '#' },
     {
       title: 'v1.1',
       desc: [
@@ -334,16 +339,20 @@ const logsData = {
         'Upgraded tool performance for a smoother experience'
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-    { title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
-    { title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
-    { title: 'v1.4',
+    { 
+       title: 'v1.2', desc: '- Added Custom Steam Path', href: '#' },
+    { 
+       title: 'v1.3', desc: '- Fixed bug where Always Unlock could not be disabled.', href: '#' },
+    { 
+       title: 'v1.4',
       desc: [
         'New Fresh UI',
         'Added New Database',
         'False positive issues resolved',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-    { title: 'v1.5',
+    { 
+       title: 'v1.5',
       desc: [
         'Added drop link feature',
         'Added Release Info',
@@ -352,13 +361,15 @@ const logsData = {
         'Fixed several display issues',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-   { title: 'v1.6',
+   { 
+      title: 'v1.6',
       desc: [
         'Patch: Fixed 403 Forbidden error',
         'Fixed several bugs',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-     { title: 'v1.7',
+     { 
+      title: 'v1.7',
       desc: [
         'Massive bug fixes across the program for smoother performance',
         'UI Library updated, more modern visuals & better responsiveness',
@@ -371,7 +382,8 @@ const logsData = {
         'Optimized “Add Games” for stable performance with detailed process logs',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-   { title: 'v1.8',
+   { 
+      title: 'v1.8',
       desc: [
         'Fixed various minor bugs',
         'Introduced a new Home section',
@@ -381,26 +393,30 @@ const logsData = {
         'Enhanced code stability and performance',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-   { title: 'v1.9',
+   { 
+      title: 'v1.9',
       desc: [
         'Added Quick Fix Feature',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-  { title: 'v2.0',
+  { 
+     title: 'v2.0',
       desc: [
         'Fixed the "Purchase" button problem, everything should now work smoothly!',
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
- { title: 'v2.1',
+ { 
+    title: 'v2.1',
       desc: [
        'Resolved issue with missing entries in the manifest database.',
        'Patched HTTPS client error.',
        'Enhanced logs with more detailed information.',
       ].map(function(s){ return '- ' + s; }).join('\n'),
-      href: '#'},
+      href: '#'}
   ],
   2: [
-    { title: 'v1.1', desc: '- Initial public release', href: '#' },
+    { 
+       title: 'v1.1', desc: '- Initial public release', href: '#' },
     {
       title: 'v1.2',
       desc: [
@@ -412,8 +428,10 @@ const logsData = {
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'
     },
-    { title: 'v1.3', desc: '- Resolving tools issues', href: '#' },
-    {title: 'v1.4',
+    { 
+      title: 'v1.3', desc: '- Resolving tools issues', href: '#' },
+    {
+      title: 'v1.4',
       desc: [
         'Resolving tools issues',
         'Removed Spotify, Youtube & Tiktok Downloader',
@@ -422,18 +440,21 @@ const logsData = {
         'Added Multi Language feature (ID, EN, DE, ES)'
       ].map(function(s){ return '- ' + s; }).join('\n'),
       href: '#'},
-    { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
-    {title: 'v1.6',
+    { 
+      title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
+    {
+      title: 'v1.6',
       desc: [
         'New Simple UI',
         'Resolving tools issues',
         'Optimizing the program',
         'Resolving false positive issues with VirusTotal'
       ].map(function(s){ return '- ' + s; }).join('\n'),
-      href: '#'},
+      href: '#'}
   ],
   3: [
-    { title: 'v1.0', desc: '- Initial public release', href: '#' }
+    { 
+      title: 'v1.0', desc: '- Initial public release', href: '#' }
   ]
 };
 
@@ -483,7 +504,7 @@ function getLatestLog(toolIndex) {
 
 function renderTools() {
   var grid = $('#toolsGrid');
-   if (!grid) return;
+  if (!grid) return;
 
   grid.innerHTML = toolsData.map(function(t, i){
     var latestLog = getLatestLog(i);
