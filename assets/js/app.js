@@ -13,10 +13,7 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
   const header = $('[data-elevate]');
   if (!header) return;
 
-  const onScroll = () => {
-    header.setAttribute('data-elevated', window.scrollY > 4);
-  };
-
+  const onScroll = () => header.setAttribute('data-elevated', window.scrollY > 4);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 })();
@@ -35,20 +32,12 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
 
     if (menu.hasAttribute('hidden')) menu.removeAttribute('hidden');
     menu.toggleAttribute('data-open');
-
-    if (!menu.hasAttribute('data-open')) {
-      menu.setAttribute('hidden', '');
-    }
+    if (!menu.hasAttribute('data-open')) menu.setAttribute('hidden', '');
   });
 
   document.addEventListener('click', (e) => {
     if (window.innerWidth > 640) return;
-
-    if (
-      !menu.contains(e.target) &&
-      !btn.contains(e.target) &&
-      !menu.hasAttribute('hidden')
-    ) {
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
       menu.setAttribute('hidden', '');
       btn.setAttribute('aria-expanded', 'false');
     }
@@ -58,9 +47,7 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
 /* =====================================================
    RELEASES (Google Apps Script)
 ===================================================== */
-const releaseLayout = $('.releases-layout');
 const mainBox = $('#release-main');
-const altBox  = $('#release-alt');
 
 const PRIMARY_URL = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
 
@@ -70,145 +57,64 @@ const OTHER_URLS = [
   'https://script.google.com/macros/s/AKfycbx8lTj5CHrnTPgTXY3tYKNAoRdC-FEsOaRtLwIbcpiISNPnPn7JBVOP-Col0gJrqogp/exec'
 ];
 
-const OTHER_LIST = OTHER_URLS.filter(Boolean);
 const TIMEOUT_MS = 10000;
 
 /* =====================================================
-   Release helpers
+   Helpers
 ===================================================== */
-function isZip(a) {
-  return /\.zip$/i.test(a?.name || '');
-}
+const isExe = a => /\.exe$/i.test(a?.name || '');
+const isZip = a => /\.zip$/i.test(a?.name || '');
 
-function isExe(a) {
-  return /\.exe$/i.test(a?.name || '');
-}
+const bestMainAsset = assets =>
+  assets?.find(isExe) || assets?.find(isZip) || assets?.[0] || null;
 
-function bestMainAsset(assets) {
-  if (!Array.isArray(assets) || !assets.length) return null;
-  return assets.find(isExe) || assets.find(isZip) || assets[0];
-}
+const escapeHtml = s =>
+  String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 
-function escapeHtml(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+const withTimeout = (fn, ms) => {
+  const c = new AbortController();
+  const t = setTimeout(() => c.abort(), ms);
+  return fn(c.signal).finally(() => clearTimeout(t));
+};
 
-function formatFileSize(bytes) {
-  if (!bytes) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
-}
-
-function toLocalDateStr(iso) {
-  if (!iso) return 'Unknown date';
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-}
-
-/* =====================================================
-   Fetch helpers
-===================================================== */
-function withTimeout(fn, ms) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
-
-  return fn(controller.signal).finally(() => clearTimeout(timer));
-}
-
-function fetchReleaseOnce(url) {
-  return withTimeout(signal =>
-    fetch(url, { signal })
-      .then(r => r.text())
-      .then(text => JSON.parse(text))
-      .catch(err => {
-        console.error('[fetchReleaseOnce]', url, err);
-        return null;
-      }),
+async function fetchReleaseOnce(url) {
+  return withTimeout(
+    s => fetch(url,{signal:s}).then(r=>r.json()).catch(()=>null),
     TIMEOUT_MS
   );
 }
 
-/* =====================================================
-   Normalize release
-===================================================== */
 function normalizeRelease(raw) {
   if (!raw) return null;
-
-  if (Array.isArray(raw)) raw = raw[0];
-  if (raw.release) raw = raw.release;
-  if (raw.data) raw = raw.data;
-
-  if (!raw || typeof raw !== 'object') return null;
-
-  const assets = Object.values(raw.assets || {}).map(a => ({
-    name: a.name || '',
-    size: a.size || 0,
-    browser_download_url: a.browser_download_url || a.url || '#'
-  }));
-
+  raw = raw.release || raw.data || raw;
+  const assets = Object.values(raw.assets || {});
   return {
     name: raw.name || raw.tag_name || '',
-    tag: raw.tag_name || '',
-    published_at: raw.published_at || new Date().toISOString(),
+    published_at: raw.published_at || '',
     assets
   };
 }
 
-/* =====================================================
-   Cache & fetch all
-===================================================== */
-const releaseCache = { latest: null, ts: 0 };
-
-async function fetchAllReleases() {
-  if (Date.now() - releaseCache.ts < 60000) {
-    return releaseCache.latest;
-  }
-
-  const raws = await Promise.all(
-    [PRIMARY_URL, ...OTHER_LIST].map(fetchReleaseOnce)
-  );
-
-  const releases = raws
-    .map(normalizeRelease)
-    .filter(Boolean)
-    .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-
-  releaseCache.latest = releases[0] || null;
-  releaseCache.ts = Date.now();
-  return releaseCache.latest;
-}
-
-/* =====================================================
-   Populate release panel
-===================================================== */
-(async function populateReleasePanels() {
+(async function populateRelease() {
   if (!mainBox) return;
 
-  const latest = await fetchAllReleases();
-  if (!latest) return;
+  const raws = await Promise.all([PRIMARY_URL, ...OTHER_URLS].map(fetchReleaseOnce));
+  const releases = raws.map(normalizeRelease).filter(Boolean);
+  if (!releases.length) return;
 
+  releases.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  const latest = releases[0];
   const asset = bestMainAsset(latest.assets);
   if (!asset) return;
 
   mainBox.innerHTML = `
     <div class="card">
       <h4>${escapeHtml(latest.name)}</h4>
-      <p class="muted">${toLocalDateStr(latest.published_at)}</p>
-      <a class="btn btn--primary"
-         href="${asset.browser_download_url}"
-         target="_blank"
-         rel="noopener">
-        Download ${escapeHtml(asset.name)} (${formatFileSize(asset.size)})
+      <a class="btn btn--primary" href="${asset.browser_download_url}" target="_blank" rel="noopener">
+        Download ${escapeHtml(asset.name)}
       </a>
     </div>
   `;
@@ -218,31 +124,31 @@ async function fetchAllReleases() {
    TOOLS DATA
 ===================================================== */
 const toolsData = [
-  {
-    title: 'SteamClouds Lite',
-    desc: 'SteamClouds Lite is a lightweight tool that auto-generates .lua and .manifest files and adds games to your Steam library.',
-    img: 'assets/images/scloudslite.png',
-    source: 'primary'
-  },
-  {
-    title: 'Steam Clouds Ultimate',
-    desc: 'All-in-one toolkit for effortless Steam game unlocking.',
-    img: 'assets/images/sc_ultimate.png',
-    source: 'other1'
-  },
-  {
-    title: 'SpotifyPlus',
-    desc: 'Enjoy Spotify with no ads, no limits.',
-    img: 'assets/images/splus_new_ver.png',
-    source: 'other2'
-  },
-  {
-    title: 'All In One Downloader',
-    desc: 'Download videos and audio from top platforms.',
-    img: 'assets/images/downloader.png',
-    source: 'other3'
-  }
+  { title:'SteamClouds Lite', desc:'Auto-generate .lua & .manifest and add games to Steam.', img:'assets/images/scloudslite.png' },
+  { title:'Steam Clouds Ultimate', desc:'All-in-one Steam unlocking toolkit.', img:'assets/images/sc_ultimate.png' },
+  { title:'SpotifyPlus', desc:'Enjoy Spotify with no ads.', img:'assets/images/splus_new_ver.png' },
+  { title:'All In One Downloader', desc:'Download media from popular platforms.', img:'assets/images/downloader.png' }
 ];
+
+/* =====================================================
+   CHANGELOG (JSON)
+===================================================== */
+let logsData = {};
+
+async function loadChangelogs() {
+  try {
+    const res = await fetch('assets/data/changelog.json');
+    logsData = await res.json();
+  } catch (e) {
+    console.error('[changelog]', e);
+    logsData = {};
+  }
+}
+
+function getLatestLog(toolIndex) {
+  const logs = logsData[String(toolIndex)] || [];
+  return logs[logs.length - 1] || null;
+}
 
 /* =====================================================
    Render tools
@@ -251,23 +157,23 @@ function renderTools() {
   const grid = $('#toolsGrid');
   if (!grid) return;
 
-  grid.innerHTML = toolsData.map((t, i) => `
-    <article class="tool" data-tool-index="${i}">
-      <div class="tool__media">
-        <img class="tool__img" src="${t.img}" alt="${escapeHtml(t.title)}">
-      </div>
-      <div class="tool__body">
-        <h3 class="tool__title">${escapeHtml(t.title)}</h3>
-        <p class="tool__desc">${escapeHtml(t.desc)}</p>
-        <div class="tool__row">
-          <button class="btn btn--primary" data-action="download">Download</button>
-        </div>
-      </div>
-    </article>
-  `).join('');
+  grid.innerHTML = toolsData.map((t,i)=>{
+    const latest = getLatestLog(i);
+    return `
+      <article class="tool">
+        ${latest ? `<span class="tool__badge">${latest.title}</span>` : ''}
+        <img src="${t.img}" class="tool__img">
+        <h3>${escapeHtml(t.title)}</h3>
+        <p>${escapeHtml(t.desc)}</p>
+      </article>
+    `;
+  }).join('');
 }
 
 /* =====================================================
-   Boot
+   BOOT
 ===================================================== */
-document.addEventListener('DOMContentLoaded', renderTools);
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadChangelogs();
+  renderTools();
+});
