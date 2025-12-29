@@ -306,7 +306,7 @@ const logsData = {
         '- Added "Add to Library" feature\n',
         '- Renamed from SteamClouds to SteamClouds Lite'
       ].map(function(s){ return '- ' + s; }).join('\n'),
-      href: '#'
+      href: '#' },
    {title: 'v1.7',
       desc: [
         '- One new database has been added.\n',
@@ -783,6 +783,7 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
 
 
 
