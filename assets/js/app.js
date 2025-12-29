@@ -145,10 +145,15 @@ async function loadChangelogs() {
   }
 }
 
-function getLatestLog(toolIndex) {
-  const logs = logsData[String(toolIndex)] || [];
-  return logs[logs.length - 1] || null;
+function getLogsForTool(toolIndex) {
+  return logsData[String(toolIndex)] || [];
 }
+
+function getLatestLog(toolIndex) {
+  const logs = getLogsForTool(toolIndex);
+  return logs.length ? logs[logs.length - 1] : null;
+}
+
 
 /* =====================================================
    Render tools
@@ -157,18 +162,64 @@ function renderTools() {
   const grid = $('#toolsGrid');
   if (!grid) return;
 
-  grid.innerHTML = toolsData.map((t,i)=>{
+  grid.innerHTML = toolsData.map((t, i) => {
     const latest = getLatestLog(i);
+
     return `
-      <article class="tool">
-        ${latest ? `<span class="tool__badge">${latest.title}</span>` : ''}
-        <img src="${t.img}" class="tool__img">
-        <h3>${escapeHtml(t.title)}</h3>
-        <p>${escapeHtml(t.desc)}</p>
+      <article class="tool" data-tool-index="${i}">
+        
+        ${latest ? `
+          <button class="tool__badge" data-action="show-changelogs">
+            ${escapeHtml(latest.title)}
+          </button>
+        ` : ''}
+
+        <div class="tool__media">
+          <img class="tool__img" src="${t.img}" alt="${escapeHtml(t.title)}">
+        </div>
+
+        <div class="tool__body">
+          <h3 class="tool__title">${escapeHtml(t.title)}</h3>
+          <p class="tool__desc">${escapeHtml(t.desc)}</p>
+
+          <div class="tool__row">
+            <button class="btn btn--primary" data-action="download">
+              Download
+            </button>
+
+            <button class="btn btn--ghost" data-action="show-changelogs">
+              View Changelogs
+            </button>
+          </div>
+        </div>
       </article>
     `;
   }).join('');
 }
+
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action="show-changelogs"]');
+  if (!btn) return;
+
+  const card = btn.closest('.tool');
+  if (!card) return;
+
+  const index = card.dataset.toolIndex;
+  const logs = getLogsForTool(index);
+
+  if (!logs.length) {
+    alert('No changelog available.');
+    return;
+  }
+
+  alert(
+    logs.map(l =>
+      `${l.title}\n${(l.items || []).map(i => '• ' + i).join('\n')}`
+    ).join('\n\n')
+  );
+});
+
 
 /* =====================================================
    BOOT
@@ -177,3 +228,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadChangelogs();
   renderTools();
 });
+
