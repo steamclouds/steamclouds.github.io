@@ -483,6 +483,7 @@ function getLatestLog(toolIndex) {
 
 function renderTools() {
   var grid = $('#toolsGrid');
+   if (!grid) return;
 
   grid.innerHTML = toolsData.map(function(t, i){
     var latestLog = getLatestLog(i);
@@ -784,3 +785,4 @@ if (gridRoot) {
    Boot
 ===================================================== */
 renderTools();
+
