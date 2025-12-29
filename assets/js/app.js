@@ -7,8 +7,10 @@ const $  = (s, r=document)=>r.querySelector(s);
 const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
 
 const escapeHtml = s => String(s||'')
-  .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+  .replace(/&/g,'&amp;')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;')
   .replace(/'/g,'&#39;');
 
 /* =======================
@@ -73,14 +75,14 @@ async function fetchRelease(url){
 
 function normalizeRelease(raw){
   if(!raw) return null;
-  raw=raw.release||raw.data||raw;
+  raw = raw.release || raw.data || raw;
   return {
-    published_at: raw.published_at||raw.created_at||null
+    published_at: raw.published_at || raw.created_at || null
   };
 }
 
 /* =======================
-   NEW BADGE LOGIC (🔥)
+   NEW BADGE LOGIC (AUTO)
 ======================= */
 const releaseCache = new Map();
 
@@ -92,10 +94,12 @@ async function isNewRelease(source){
   else if(/^other\d+$/.test(source)){
     const i=parseInt(source.replace('other',''),10)-1;
     if(OTHER_URLS[i]) urls=[OTHER_URLS[i]];
-  } else urls=[PRIMARY_URL,...OTHER_URLS];
+  } else {
+    urls=[PRIMARY_URL,...OTHER_URLS];
+  }
 
-  const raws=await Promise.all(urls.map(fetchRelease));
-  const releases=raws.map(normalizeRelease).filter(r=>r?.published_at);
+  const raws = await Promise.all(urls.map(fetchRelease));
+  const releases = raws.map(normalizeRelease).filter(r=>r?.published_at);
 
   if(!releases.length){
     releaseCache.set(source,false);
@@ -103,8 +107,8 @@ async function isNewRelease(source){
   }
 
   releases.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const age=(Date.now()-new Date(releases[0].published_at))/86400000;
-  const isNew=age<=NEW_DAYS;
+  const ageDays = (Date.now()-new Date(releases[0].published_at))/86400000;
+  const isNew = ageDays <= NEW_DAYS;
 
   releaseCache.set(source,isNew);
   return isNew;
@@ -113,41 +117,51 @@ async function isNewRelease(source){
 /* =======================
    CHANGELOG
 ======================= */
-let logsData={};
+let logsData = {};
 
 async function loadChangelogs(){
   try{
-    const r=await fetch('assets/data/changelog.json');
-    logsData=await r.json();
+    const r = await fetch('assets/data/changelog.json');
+    logsData = await r.json();
   }catch{
-    logsData={};
+    logsData = {};
   }
 }
 
-const getLatestLog=i=>{
-  const l=logsData[String(i)];
-  return l&&l.length?l[l.length-1]:null;
+const getLogsForTool = i => logsData[String(i)] || [];
+const getLatestLog  = i => {
+  const l = getLogsForTool(i);
+  return l.length ? l[l.length-1] : null;
 };
 
 /* =======================
-   IMAGE FALLBACK (🔥)
+   CHANGELOG PAGINATION
+======================= */
+const changelogState = {
+  toolIndex: null,
+  page: 1,
+  perPage: window.innerWidth < 768 ? 4 : 6
+};
+
+/* =======================
+   IMAGE FALLBACK
 ======================= */
 function prepareImages(root){
   $$('img',root).forEach(img=>{
-    img.onerror=()=>{
-      img.src='https://via.placeholder.com/800x450?text=Image+Missing';
+    img.onerror = () => {
+      img.src = 'https://via.placeholder.com/800x450?text=Image+Missing';
     };
   });
 }
 
 /* =======================
-   RENDER TOOLS
+   RENDER TOOLS GRID
 ======================= */
 async function renderTools(){
-  const grid=$('#toolsGrid');
+  const grid = $('#toolsGrid');
   if(!grid) return;
 
-  grid.innerHTML=toolsData.map((t,i)=>`
+  grid.innerHTML = toolsData.map((t,i)=>`
     <article class="tool" data-tool-index="${i}">
       <div class="tool__media">
         <img class="tool__img" src="${t.img}" alt="${escapeHtml(t.title)}">
@@ -159,7 +173,9 @@ async function renderTools(){
 
         <div class="tool__row">
           <button class="btn btn--primary">Download</button>
-          <button class="btn btn--ghost" data-action="show-changelogs">View Changelogs</button>
+          <button class="btn btn--ghost" data-action="show-changelogs">
+            View Changelogs
+          </button>
         </div>
       </div>
     </article>
@@ -167,34 +183,126 @@ async function renderTools(){
 
   prepareImages(grid);
 
-  /* Version badge */
+  /* VERSION BADGE */
   toolsData.forEach((_,i)=>{
-    const log=getLatestLog(i);
+    const log = getLatestLog(i);
     if(!log) return;
-    const card=$(`.tool[data-tool-index="${i}"]`);
-    const b=document.createElement('span');
-    b.className='tool__badge';
-    b.textContent=log.title;
+    const card = $(`.tool[data-tool-index="${i}"]`);
+    const b = document.createElement('span');
+    b.className = 'tool__badge';
+    b.textContent = log.title;
     card.appendChild(b);
   });
 
-  /* NEW badge (🔥 auto dari GitHub) */
+  /* NEW BADGE (AUTO) */
   await Promise.all(toolsData.map(async (t,i)=>{
     if(await isNewRelease(t.source)){
-      const card=$(`.tool[data-tool-index="${i}"]`);
+      const card = $(`.tool[data-tool-index="${i}"]`);
       if(!card) return;
-      const b=document.createElement('span');
-      b.className='tool__badge tool__badge--new';
-      b.textContent='NEW';
+      const b = document.createElement('span');
+      b.className = 'tool__badge tool__badge--new';
+      b.textContent = 'NEW';
       card.appendChild(b);
     }
   }));
 }
 
 /* =======================
+   RENDER CHANGELOG VIEW
+======================= */
+function renderChangelogs(toolIndex){
+  const grid = $('#toolsGrid');
+  if(!grid) return;
+
+  changelogState.toolIndex = toolIndex;
+
+  const tool = toolsData[toolIndex];
+  const logs = getLogsForTool(toolIndex).slice().reverse(); // terbaru dulu
+  const totalPages = Math.ceil(logs.length / changelogState.perPage);
+
+  if(changelogState.page < 1) changelogState.page = 1;
+  if(changelogState.page > totalPages) changelogState.page = totalPages;
+
+  const start = (changelogState.page - 1) * changelogState.perPage;
+  const items = logs.slice(start, start + changelogState.perPage);
+
+  grid.innerHTML = `
+    <div class="grid-span-all" style="display:flex;justify-content:space-between;align-items:center">
+      <h3 class="section__title">
+        Changelogs — ${escapeHtml(tool.title)}
+      </h3>
+      <button class="btn btn--ghost" data-action="back-tools">Back</button>
+    </div>
+
+    ${items.map(l=>`
+      <article class="tool">
+        <div class="tool__body">
+          <h3 class="tool__title">${escapeHtml(l.title)}</h3>
+          <p class="tool__desc">
+            ${(l.items||[]).map(i=>'• '+escapeHtml(i)).join('<br>')}
+          </p>
+        </div>
+      </article>
+    `).join('')}
+
+    ${renderPagination(totalPages)}
+  `;
+}
+
+function renderPagination(totalPages){
+  if(totalPages <= 1) return '';
+
+  return `
+    <div class="grid-span-all" style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn--ghost" data-page="prev"
+        ${changelogState.page===1?'disabled':''}>
+        ◀ Prev
+      </button>
+
+      <span style="opacity:.7">
+        Page ${changelogState.page} / ${totalPages}
+      </span>
+
+      <button class="btn btn--ghost" data-page="next"
+        ${changelogState.page===totalPages?'disabled':''}>
+        Next ▶
+      </button>
+    </div>
+  `;
+}
+
+/* =======================
+   GLOBAL CLICK HANDLER
+======================= */
+document.addEventListener('click', e=>{
+  const actionBtn = e.target.closest('[data-action]');
+  if(actionBtn){
+    const action = actionBtn.dataset.action;
+    const card = actionBtn.closest('.tool');
+    const index = card?.dataset.toolIndex;
+
+    if(action==='show-changelogs'){
+      changelogState.page = 1;
+      renderChangelogs(Number(index));
+    }
+
+    if(action==='back-tools'){
+      renderTools();
+    }
+  }
+
+  const pageBtn = e.target.closest('[data-page]');
+  if(pageBtn){
+    if(pageBtn.dataset.page==='prev') changelogState.page--;
+    if(pageBtn.dataset.page==='next') changelogState.page++;
+    renderChangelogs(changelogState.toolIndex);
+  }
+});
+
+/* =======================
    BOOT
 ======================= */
-document.addEventListener('DOMContentLoaded',async()=>{
+document.addEventListener('DOMContentLoaded', async()=>{
   await loadChangelogs();
   await renderTools();
 });
