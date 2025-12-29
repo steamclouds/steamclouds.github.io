@@ -1,51 +1,21 @@
-/* =====================================================
-   Tiny helpers
-===================================================== */
 'use strict';
 
-const $  = (s, root = document) => root.querySelector(s);
-const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelectorAll(s));
+/* =======================
+   Helpers
+======================= */
+const $  = (s, r=document)=>r.querySelector(s);
+const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
 
-/* =====================================================
-   Header elevate
-===================================================== */
-(function elevateHeader() {
-  const header = $('[data-elevate]');
-  if (!header) return;
-  const onScroll = () => header.setAttribute('data-elevated', window.scrollY > 4);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-})();
+const escapeHtml = s => String(s||'')
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+  .replace(/'/g,'&#39;');
 
-/* =====================================================
-   Collapsible mobile menu
-===================================================== */
-(function mobileMenu() {
-  const btn  = $('#menuToggle');
-  const menu = $('#menu');
-  if (!btn || !menu) return;
-
-  btn.addEventListener('click', () => {
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
-    if (menu.hasAttribute('hidden')) menu.removeAttribute('hidden');
-    menu.toggleAttribute('data-open');
-    if (!menu.hasAttribute('data-open')) menu.setAttribute('hidden', '');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (window.innerWidth > 640) return;
-    if (!menu.contains(e.target) && !btn.contains(e.target)) {
-      menu.setAttribute('hidden', '');
-      btn.setAttribute('aria-expanded', 'false');
-    }
-  });
-})();
-
-/* =====================================================
-   RELEASES
-===================================================== */
-const mainBox = $('#release-main');
+/* =======================
+   CONFIG
+======================= */
+const NEW_DAYS = 10;
+const TIMEOUT_MS = 10000;
 
 const PRIMARY_URL = 'https://script.google.com/macros/s/AKfycbwMrZyPoDtn768Emld6tfsoldJQjd8aj40vMi7l7dcFb01Y41mk1zlUR_jpw8cnbCiS/exec';
 
@@ -55,189 +25,176 @@ const OTHER_URLS = [
   'https://script.google.com/macros/s/AKfycbx8lTj5CHrnTPgTXY3tYKNAoRdC-FEsOaRtLwIbcpiISNPnPn7JBVOP-Col0gJrqogp/exec'
 ];
 
-const TIMEOUT_MS = 10000;
-const NEW_DAYS = 10;
-const releaseCache = new Map();
+/* =======================
+   TOOLS
+======================= */
+const toolsData = [
+  {
+    title:'SteamClouds Lite',
+    desc:'Auto-generate .lua & .manifest and add games to Steam.',
+    img:'assets/images/scloudslite.png',
+    source:'primary'
+  },
+  {
+    title:'Steam Clouds Ultimate',
+    desc:'All-in-one Steam unlocking toolkit.',
+    img:'assets/images/sc_ultimate.png',
+    source:'other1'
+  },
+  {
+    title:'SpotifyPlus',
+    desc:'Enjoy Spotify with no ads.',
+    img:'assets/images/splus_new_ver.png',
+    source:'other2'
+  },
+  {
+    title:'All In One Downloader',
+    desc:'Download media from popular platforms.',
+    img:'assets/images/downloader.png',
+    source:'other3'
+  }
+];
 
-/* =====================================================
-   Helpers
-===================================================== */
-const isExe = a => /\.exe$/i.test(a?.name || '');
-const isZip = a => /\.zip$/i.test(a?.name || '');
-
-const bestMainAsset = assets =>
-  assets?.find(isExe) || assets?.find(isZip) || assets?.[0] || null;
-
-const escapeHtml = s =>
-  String(s || '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-
-const withTimeout = (fn, ms) => {
-  const c = new AbortController();
-  const t = setTimeout(() => c.abort(), ms);
-  return fn(c.signal).finally(() => clearTimeout(t));
+/* =======================
+   FETCH HELPERS
+======================= */
+const withTimeout = (fn,ms)=>{
+  const c=new AbortController();
+  const t=setTimeout(()=>c.abort(),ms);
+  return fn(c.signal).finally(()=>clearTimeout(t));
 };
 
-async function fetchReleaseOnce(url) {
+async function fetchRelease(url){
   return withTimeout(
-    s => fetch(url,{signal:s}).then(r=>r.json()).catch(()=>null),
+    s=>fetch(url,{signal:s}).then(r=>r.json()).catch(()=>null),
     TIMEOUT_MS
   );
 }
 
-function normalizeRelease(raw) {
-  if (!raw) return null;
-  raw = raw.release || raw.data || raw;
+function normalizeRelease(raw){
+  if(!raw) return null;
+  raw=raw.release||raw.data||raw;
   return {
-    name: raw.name || raw.tag_name || '',
-    published_at: raw.published_at || '',
-    assets: Object.values(raw.assets || {})
+    published_at: raw.published_at||raw.created_at||null
   };
 }
 
-/* =====================================================
-   NEW badge logic
-===================================================== */
-async function getLatestReleaseForTool(toolIndex) {
-  if (releaseCache.has(toolIndex)) return releaseCache.get(toolIndex);
+/* =======================
+   NEW BADGE LOGIC (🔥)
+======================= */
+const releaseCache = new Map();
 
-  const urls = toolIndex === 0
-    ? [PRIMARY_URL]
-    : OTHER_URLS[toolIndex - 1]
-      ? [OTHER_URLS[toolIndex - 1]]
-      : [];
+async function isNewRelease(source){
+  if(releaseCache.has(source)) return releaseCache.get(source);
 
-  if (!urls.length) return null;
+  let urls=[];
+  if(source==='primary') urls=[PRIMARY_URL];
+  else if(/^other\d+$/.test(source)){
+    const i=parseInt(source.replace('other',''),10)-1;
+    if(OTHER_URLS[i]) urls=[OTHER_URLS[i]];
+  } else urls=[PRIMARY_URL,...OTHER_URLS];
 
-  const raws = await Promise.all(urls.map(fetchReleaseOnce));
-  const releases = raws.map(normalizeRelease).filter(Boolean);
+  const raws=await Promise.all(urls.map(fetchRelease));
+  const releases=raws.map(normalizeRelease).filter(r=>r?.published_at);
 
-  releases.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const latest = releases[0] || null;
-
-  releaseCache.set(toolIndex, latest);
-  return latest;
-}
-
-function isNewRelease(release) {
-  if (!release || !release.published_at) return false;
-  const ageDays = (Date.now() - new Date(release.published_at)) / 86400000;
-  return ageDays <= NEW_DAYS;
-}
-
-/* =====================================================
-   Populate release panel
-===================================================== */
-(async function populateRelease() {
-  if (!mainBox) return;
-  const raws = await Promise.all([PRIMARY_URL, ...OTHER_URLS].map(fetchReleaseOnce));
-  const releases = raws.map(normalizeRelease).filter(Boolean);
-  if (!releases.length) return;
+  if(!releases.length){
+    releaseCache.set(source,false);
+    return false;
+  }
 
   releases.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const latest = releases[0];
-  const asset = bestMainAsset(latest.assets);
-  if (!asset) return;
+  const age=(Date.now()-new Date(releases[0].published_at))/86400000;
+  const isNew=age<=NEW_DAYS;
 
-  mainBox.innerHTML = `
-    <div class="card">
-      <h4>${escapeHtml(latest.name)}</h4>
-      <a class="btn btn--primary" href="${asset.browser_download_url}" target="_blank" rel="noopener">
-        Download ${escapeHtml(asset.name)}
-      </a>
-    </div>
-  `;
-})();
+  releaseCache.set(source,isNew);
+  return isNew;
+}
 
-/* =====================================================
-   TOOLS DATA
-===================================================== */
-const toolsData = [
-  { title:'SteamClouds Lite', desc:'Auto-generate .lua & .manifest and add games to Steam.', img:'assets/images/scloudslite.png' },
-  { title:'Steam Clouds Ultimate', desc:'All-in-one Steam unlocking toolkit.', img:'assets/images/sc_ultimate.png' },
-  { title:'SpotifyPlus', desc:'Enjoy Spotify with no ads.', img:'assets/images/splus_new_ver.png' },
-  { title:'All In One Downloader', desc:'Download media from popular platforms.', img:'assets/images/downloader.png' }
-];
+/* =======================
+   CHANGELOG
+======================= */
+let logsData={};
 
-/* =====================================================
-   CHANGELOG (JSON)
-===================================================== */
-let logsData = {};
-
-async function loadChangelogs() {
-  try {
-    const res = await fetch('assets/data/changelog.json');
-    logsData = await res.json();
-  } catch {
-    logsData = {};
+async function loadChangelogs(){
+  try{
+    const r=await fetch('assets/data/changelog.json');
+    logsData=await r.json();
+  }catch{
+    logsData={};
   }
 }
 
-const getLogsForTool = i => logsData[String(i)] || [];
-const getLatestLog  = i => getLogsForTool(i).slice(-1)[0] || null;
+const getLatestLog=i=>{
+  const l=logsData[String(i)];
+  return l&&l.length?l[l.length-1]:null;
+};
 
-/* =====================================================
-   Render tools 
-===================================================== */
-async function renderTools() {
-  const grid = $('#toolsGrid');
-  if (!grid) return;
-
-  const cards = await Promise.all(
-    toolsData.map(async (t, i) => {
-      const latestLog = getLatestLog(i);
-      const release   = await getLatestReleaseForTool(i);
-      const isNew     = isNewRelease(release);
-
-      return `
-        <article class="tool" data-tool-index="${i}">
-          <div class="tool__badges">
-            ${isNew ? `<span class="tool__badge tool__badge--new">NEW</span>` : ''}
-            ${latestLog ? `<button class="tool__badge" data-action="show-changelogs">${escapeHtml(latestLog.title)}</button>` : ''}
-          </div>
-
-          <div class="tool__media">
-            <img class="tool__img" src="${t.img}">
-          </div>
-
-          <div class="tool__body">
-            <h3 class="tool__title">${escapeHtml(t.title)}</h3>
-            <p class="tool__desc">${escapeHtml(t.desc)}</p>
-            <div class="tool__row">
-              <button class="btn btn--primary" data-action="download">Download</button>
-              <button class="btn btn--ghost" data-action="show-changelogs">View Changelogs</button>
-            </div>
-          </div>
-        </article>
-      `;
-    })
-  );
-
-  grid.innerHTML = cards.join('');
+/* =======================
+   IMAGE FALLBACK (🔥)
+======================= */
+function prepareImages(root){
+  $$('img',root).forEach(img=>{
+    img.onerror=()=>{
+      img.src='https://via.placeholder.com/800x450?text=Image+Missing';
+    };
+  });
 }
 
-/* =====================================================
-   Changelog click
-===================================================== */
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-action="show-changelogs"]');
-  if (!btn) return;
+/* =======================
+   RENDER TOOLS
+======================= */
+async function renderTools(){
+  const grid=$('#toolsGrid');
+  if(!grid) return;
 
-  const card = btn.closest('.tool');
-  const logs = getLogsForTool(card.dataset.toolIndex);
-  if (!logs.length) return alert('No changelog available');
+  grid.innerHTML=toolsData.map((t,i)=>`
+    <article class="tool" data-tool-index="${i}">
+      <div class="tool__media">
+        <img class="tool__img" src="${t.img}" alt="${escapeHtml(t.title)}">
+      </div>
 
-  alert(logs.map(l =>
-    `${l.title}\n${(l.items||[]).map(i=>'• '+i).join('\n')}`
-  ).join('\n\n'));
-});
+      <div class="tool__body">
+        <h3 class="tool__title">${escapeHtml(t.title)}</h3>
+        <p class="tool__desc">${escapeHtml(t.desc)}</p>
 
-/* =====================================================
+        <div class="tool__row">
+          <button class="btn btn--primary">Download</button>
+          <button class="btn btn--ghost" data-action="show-changelogs">View Changelogs</button>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  prepareImages(grid);
+
+  /* Version badge */
+  toolsData.forEach((_,i)=>{
+    const log=getLatestLog(i);
+    if(!log) return;
+    const card=$(`.tool[data-tool-index="${i}"]`);
+    const b=document.createElement('span');
+    b.className='tool__badge';
+    b.textContent=log.title;
+    card.appendChild(b);
+  });
+
+  /* NEW badge (🔥 auto dari GitHub) */
+  await Promise.all(toolsData.map(async (t,i)=>{
+    if(await isNewRelease(t.source)){
+      const card=$(`.tool[data-tool-index="${i}"]`);
+      if(!card) return;
+      const b=document.createElement('span');
+      b.className='tool__badge tool__badge--new';
+      b.textContent='NEW';
+      card.appendChild(b);
+    }
+  }));
+}
+
+/* =======================
    BOOT
-===================================================== */
-document.addEventListener('DOMContentLoaded', async () => {
+======================= */
+document.addEventListener('DOMContentLoaded',async()=>{
   await loadChangelogs();
   await renderTools();
 });
