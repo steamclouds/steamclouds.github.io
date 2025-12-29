@@ -1,3 +1,6 @@
+boleh bantu pisahkan ke changelog.json aja  apa bisa?
+
+
 /* =====================================================
    Tiny helpers
 ===================================================== */
@@ -296,8 +299,7 @@ const logsData = {
     },
     { title: 'v1.4', desc: '- Improve the program\n- Resolving tools issues', href: '#' },
     { title: 'v1.5', desc: '- Resolving tools issues', href: '#' },
-    {
-      title: 'v1.6',
+    {title: 'v1.6',
       desc: [
         'Brand-new UI for a smoother experience.',
         'Improved overall performance.',
@@ -481,7 +483,6 @@ function getLatestLog(toolIndex) {
 
 function renderTools() {
   var grid = $('#toolsGrid');
-  if (!grid) return;
 
   grid.innerHTML = toolsData.map(function(t, i){
     var latestLog = getLatestLog(i);
