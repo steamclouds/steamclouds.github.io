@@ -12,7 +12,6 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
 (function elevateHeader() {
   const header = $('[data-elevate]');
   if (!header) return;
-
   const onScroll = () => header.setAttribute('data-elevated', window.scrollY > 4);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -29,7 +28,6 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
   btn.addEventListener('click', () => {
     const expanded = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', String(!expanded));
-
     if (menu.hasAttribute('hidden')) menu.removeAttribute('hidden');
     menu.toggleAttribute('data-open');
     if (!menu.hasAttribute('data-open')) menu.setAttribute('hidden', '');
@@ -45,7 +43,7 @@ const $$ = (s, root = document) => Array.prototype.slice.call(root.querySelector
 })();
 
 /* =====================================================
-   RELEASES (Google Apps Script)
+   RELEASES
 ===================================================== */
 const mainBox = $('#release-main');
 
@@ -58,6 +56,8 @@ const OTHER_URLS = [
 ];
 
 const TIMEOUT_MS = 10000;
+const NEW_DAYS = 10;
+const releaseCache = new Map();
 
 /* =====================================================
    Helpers
@@ -90,17 +90,48 @@ async function fetchReleaseOnce(url) {
 function normalizeRelease(raw) {
   if (!raw) return null;
   raw = raw.release || raw.data || raw;
-  const assets = Object.values(raw.assets || {});
   return {
     name: raw.name || raw.tag_name || '',
     published_at: raw.published_at || '',
-    assets
+    assets: Object.values(raw.assets || {})
   };
 }
 
+/* =====================================================
+   NEW badge logic
+===================================================== */
+async function getLatestReleaseForTool(toolIndex) {
+  if (releaseCache.has(toolIndex)) return releaseCache.get(toolIndex);
+
+  const urls = toolIndex === 0
+    ? [PRIMARY_URL]
+    : OTHER_URLS[toolIndex - 1]
+      ? [OTHER_URLS[toolIndex - 1]]
+      : [];
+
+  if (!urls.length) return null;
+
+  const raws = await Promise.all(urls.map(fetchReleaseOnce));
+  const releases = raws.map(normalizeRelease).filter(Boolean);
+
+  releases.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  const latest = releases[0] || null;
+
+  releaseCache.set(toolIndex, latest);
+  return latest;
+}
+
+function isNewRelease(release) {
+  if (!release || !release.published_at) return false;
+  const ageDays = (Date.now() - new Date(release.published_at)) / 86400000;
+  return ageDays <= NEW_DAYS;
+}
+
+/* =====================================================
+   Populate release panel
+===================================================== */
 (async function populateRelease() {
   if (!mainBox) return;
-
   const raws = await Promise.all([PRIMARY_URL, ...OTHER_URLS].map(fetchReleaseOnce));
   const releases = raws.map(normalizeRelease).filter(Boolean);
   if (!releases.length) return;
@@ -139,93 +170,74 @@ async function loadChangelogs() {
   try {
     const res = await fetch('assets/data/changelog.json');
     logsData = await res.json();
-  } catch (e) {
-    console.error('[changelog]', e);
+  } catch {
     logsData = {};
   }
 }
 
-function getLogsForTool(toolIndex) {
-  return logsData[String(toolIndex)] || [];
-}
-
-function getLatestLog(toolIndex) {
-  const logs = getLogsForTool(toolIndex);
-  return logs.length ? logs[logs.length - 1] : null;
-}
-
+const getLogsForTool = i => logsData[String(i)] || [];
+const getLatestLog  = i => getLogsForTool(i).slice(-1)[0] || null;
 
 /* =====================================================
-   Render tools
+   Render tools 
 ===================================================== */
-function renderTools() {
+async function renderTools() {
   const grid = $('#toolsGrid');
   if (!grid) return;
 
-  grid.innerHTML = toolsData.map((t, i) => {
-    const latest = getLatestLog(i);
+  const cards = await Promise.all(
+    toolsData.map(async (t, i) => {
+      const latestLog = getLatestLog(i);
+      const release   = await getLatestReleaseForTool(i);
+      const isNew     = isNewRelease(release);
 
-    return `
-      <article class="tool" data-tool-index="${i}">
-        
-        ${latest ? `
-          <button class="tool__badge" data-action="show-changelogs">
-            ${escapeHtml(latest.title)}
-          </button>
-        ` : ''}
-
-        <div class="tool__media">
-          <img class="tool__img" src="${t.img}" alt="${escapeHtml(t.title)}">
-        </div>
-
-        <div class="tool__body">
-          <h3 class="tool__title">${escapeHtml(t.title)}</h3>
-          <p class="tool__desc">${escapeHtml(t.desc)}</p>
-
-          <div class="tool__row">
-            <button class="btn btn--primary" data-action="download">
-              Download
-            </button>
-
-            <button class="btn btn--ghost" data-action="show-changelogs">
-              View Changelogs
-            </button>
+      return `
+        <article class="tool" data-tool-index="${i}">
+          <div class="tool__badges">
+            ${isNew ? `<span class="tool__badge tool__badge--new">NEW</span>` : ''}
+            ${latestLog ? `<button class="tool__badge" data-action="show-changelogs">${escapeHtml(latestLog.title)}</button>` : ''}
           </div>
-        </div>
-      </article>
-    `;
-  }).join('');
+
+          <div class="tool__media">
+            <img class="tool__img" src="${t.img}">
+          </div>
+
+          <div class="tool__body">
+            <h3 class="tool__title">${escapeHtml(t.title)}</h3>
+            <p class="tool__desc">${escapeHtml(t.desc)}</p>
+            <div class="tool__row">
+              <button class="btn btn--primary" data-action="download">Download</button>
+              <button class="btn btn--ghost" data-action="show-changelogs">View Changelogs</button>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+  );
+
+  grid.innerHTML = cards.join('');
 }
 
-
+/* =====================================================
+   Changelog click
+===================================================== */
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-action="show-changelogs"]');
   if (!btn) return;
 
   const card = btn.closest('.tool');
-  if (!card) return;
+  const logs = getLogsForTool(card.dataset.toolIndex);
+  if (!logs.length) return alert('No changelog available');
 
-  const index = card.dataset.toolIndex;
-  const logs = getLogsForTool(index);
-
-  if (!logs.length) {
-    alert('No changelog available.');
-    return;
-  }
-
-  alert(
-    logs.map(l =>
-      `${l.title}\n${(l.items || []).map(i => '• ' + i).join('\n')}`
-    ).join('\n\n')
-  );
+  alert(logs.map(l =>
+    `${l.title}\n${(l.items||[]).map(i=>'• '+i).join('\n')}`
+  ).join('\n\n'));
 });
-
 
 /* =====================================================
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
   await loadChangelogs();
-  renderTools();
+  await renderTools();
 });
-
