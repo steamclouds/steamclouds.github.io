@@ -346,3 +346,11 @@ svg{ display:block; }
   flex-wrap: nowrap;  
 }
 
+.changelog-pagination{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  white-space: nowrap;
+}
+
+
