@@ -372,10 +372,23 @@ async function isNewRelease(source){
    IMAGE FALLBACK
 ===================================================== */
 function prepareImages(root){
-  $$('img',root).forEach(img=>{
-    img.onerror=()=>img.src='https://via.placeholder.com/800x450?text=Image+Missing';
+  $$('img', root).forEach(img => {
+
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('is-loaded');
+    }
+
+    img.addEventListener('load', () => {
+      img.classList.add('is-loaded');
+    }, { once: true });
+
+    img.addEventListener('error', () => {
+      img.src = 'https://via.placeholder.com/800x450?text=Image+Missing';
+      img.classList.add('is-loaded');
+    }, { once: true });
   });
 }
+
 
 /* =====================================================
    RENDER TOOLS
@@ -540,6 +553,7 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
 
 
 
