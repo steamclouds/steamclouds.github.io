@@ -31,30 +31,31 @@ const OTHER_URLS = [
 ===================================================== */
 const toolsData = [
   {
-    title:'SteamClouds Lite',
-    desc:'Auto-generate .lua & .manifest and add games to Steam.',
-    img:'assets/images/scloudslite.png',
-    source:'primary'
+    title: 'SteamClouds Lite',
+    desc: 'Auto-generate .lua & .manifest and add games to Steam.',
+    img: 'assets/images/scloudslite.png',
+    source: 'primary'
   },
   {
-    title:'Steam Clouds Ultimate',
-    desc:'All-in-one Steam unlocking toolkit.',
-    img:'assets/images/sc_ultimate.png',
-    source:'other1'
+    title: 'Steam Clouds Ultimate',
+    desc: 'All-in-one Steam unlocking toolkit.',
+    img: 'assets/images/sc_ultimate.png',
+    source: 'other1'
   },
   {
-    title:'SpotifyPlus',
-    desc:'Enjoy Spotify with no ads.',
-    img:'assets/images/splus_new_ver.png',
-    source:'other2'
+    title: 'SpotifyPlus',
+    desc: 'Enjoy Spotify with no ads.',
+    img: 'assets/images/splus_new_ver.png',
+    source: 'other2'
   },
   {
-    title:'All In One Downloader',
-    desc:'Download media from popular platforms.',
-    img:'assets/images/downloader.png',
-    source:'other3'
+    title: 'All In One Downloader',
+    desc: 'Download media from popular platforms.',
+    img: 'assets/images/downloader.png',
+    source: 'other3'
   }
 ];
+
 
 
 /* =====================================================
@@ -521,4 +522,5 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
 
