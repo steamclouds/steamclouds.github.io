@@ -459,7 +459,7 @@ function prepareImages(root){
 /* =====================================================
    CHANGELOG VIEW + PAGINATION (KODE LAMA)
 ===================================================== */
-const changelogState={ tool:null,page:1,perPage:6 };
+const changelogState={ tool:null,page:1,perPage:3 };
 
 function renderChangelogs(index){
   const grid=$('#toolsGrid');
@@ -472,27 +472,27 @@ function renderChangelogs(index){
   const start=(changelogState.page-1)*changelogState.perPage;
   const items=[...logs].reverse().slice(start,start+changelogState.perPage);
 
-  grid.innerHTML=`
-    <div class="grid-span-all">
-      <h3>Changelogs — ${escapeHtml(toolsData[index].title)}</h3>
-      <button class="btn btn--ghost" data-action="back-tools">Back</button>
-    </div>
-
-    ${items.map(l=>`
-      <article class="tool">
-        <div class="tool__body">
-          <h3>${l.title}</h3>
-          <ul>${l.items.map(i=>`<li>${escapeHtml(i)}</li>`).join('')}</ul>
-        </div>
-      </article>
-    `).join('')}
-
-    <div class="grid-span-all">
+  grid.innerHTML = `
+  <div class="grid-span-all changelog-topbar">
+    <div class="changelog-pagination">
       <button class="btn btn--ghost" data-page="prev" ${changelogState.page<=1?'disabled':''}>Prev</button>
       <span>${changelogState.page}/${total}</span>
       <button class="btn btn--ghost" data-page="next" ${changelogState.page>=total?'disabled':''}>Next</button>
     </div>
-  `;
+
+    <button class="btn btn--ghost" data-action="back-tools">Back</button>
+  </div>
+
+  ${items.map(l=>`
+    <article class="tool">
+      <div class="tool__body">
+        <h3>${l.title}</h3>
+        <ul>${l.items.map(i=>`<li>${escapeHtml(i)}</li>`).join('')}</ul>
+      </div>
+    </article>
+  `).join('')}
+`;
+
 }
 
 /* =====================================================
@@ -553,6 +553,7 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
 
 
 
