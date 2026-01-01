@@ -338,3 +338,11 @@ svg{ display:block; }
   display: block;
 }
 
+.changelog-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap: nowrap;  
+}
+
