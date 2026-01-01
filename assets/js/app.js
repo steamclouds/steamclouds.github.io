@@ -435,7 +435,7 @@ function renderChangelogs(index){
   if(!grid) return;
 
   changelogState.tool=index;
-  const logs=getLogsForTool(index);
+  const logs=[...getLogsForTool(index)];
   const total=Math.ceil(logs.length/changelogState.perPage);
 
   const start=(changelogState.page-1)*changelogState.perPage;
@@ -522,5 +522,6 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
 
 
