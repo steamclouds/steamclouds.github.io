@@ -30,52 +30,279 @@ const OTHER_URLS = [
    TOOLS DATA
 ===================================================== */
 const toolsData = [
-  { title:'SteamClouds Lite', desc:'Auto-generate .lua & .manifest and add games to Steam.', img:'assets/images/scloudslite.png', source:'primary' },
-  { title:'Steam Clouds Ultimate', desc:'All-in-one Steam unlocking toolkit.', img:'assets/images/sc_ultimate.png', source:'other1' },
-  { title:'SpotifyPlus', desc:'Enjoy Spotify with no ads.', img:'assets/images/splus_new_ver.png', source:'other2' },
-  { title:'All In One Downloader', desc:'Download media from popular platforms.', img:'assets/images/downloader.png', source:'other3' }
+  {
+    title:'SteamClouds Lite',
+    desc:'Auto-generate .lua & .manifest and add games to Steam.',
+    img:'assets/images/scloudslite.png',
+    source:'primary'
+  },
+  {
+    title:'Steam Clouds Ultimate',
+    desc:'All-in-one Steam unlocking toolkit.',
+    img:'assets/images/sc_ultimate.png',
+    source:'other1'
+  },
+  {
+    title:'SpotifyPlus',
+    desc:'Enjoy Spotify with no ads.',
+    img:'assets/images/splus_new_ver.png',
+    source:'other2'
+  },
+  {
+    title:'All In One Downloader',
+    desc:'Download media from popular platforms.',
+    img:'assets/images/downloader.png',
+    source:'other3'
+  }
 ];
+
 
 /* =====================================================
    CHANGELOGS (INLINE – KODE LAMA)
 ===================================================== */
 const logsData = {
+  /* =====================================================
+     SteamClouds Lite (index 0)
+  ===================================================== */
   0: [
-    { title:'v1.6', items:[
-      'Brand-new UI for a smoother experience',
-      'Improved overall performance',
-      'Bug fixes and stability enhancements',
-      'Resolved false positive issues with VirusTotal',
-      'Added "Add to Library" feature',
-      'Renamed from SteamClouds to SteamClouds Lite'
-    ]},
-    { title:'v1.7', items:[
-      'One new database has been added',
-      'Now App no longer locks during updates',
-      'Patched minor bugs for smoother performance',
-      'Enhanced Restart System',
-      'Improved File generation system',
-      'Purchase button issue fully resolved'
-    ]}
+    {
+      title: 'v1.0',
+      items: [
+        'Initial public release',
+        'Core functionality for import lua files',
+        'Core functionality for manage library',
+        'Core functionality for SteamClouds tools'
+      ]
+    },
+    {
+      title: 'v1.1',
+      items: [
+        'Improve Add Games button',
+        'Removed Install SteamTools',
+        'Always Unlock automatically enabled',
+        'Dashboard tutorial updated',
+        'Improved stability and bug fixes'
+      ]
+    },
+    {
+      title: 'v1.2',
+      items: [
+        'Resolving tools issues',
+        'Added .manifest support',
+        'Added Link Manifest to App',
+        'Code optimized for better performance'
+      ]
+    },
+    {
+      title: 'v1.3',
+      items: [
+        'Improve the program',
+        'Resolving tools issues',
+        'Removed Install SteamClouds Plugins feature'
+      ]
+    },
+    {
+      title: 'v1.4',
+      items: [
+        'Improve the program',
+        'Resolving tools issues'
+      ]
+    },
+    {
+      title: 'v1.5',
+      items: [
+        'Resolving tools issues'
+      ]
+    },
+    {
+      title: 'v1.6',
+      items: [
+        'Brand-new UI for a smoother experience',
+        'Improved overall performance',
+        'Bug fixes and stability enhancements',
+        'Resolved false positive issues with VirusTotal',
+        'Added "Add to Library" feature',
+        'Renamed from SteamClouds to SteamClouds Lite'
+      ]
+    },
+    {
+      title: 'v1.7',
+      items: [
+        'One new database has been added',
+        'Now App no longer locks during updates',
+        'Patched minor bugs for smoother performance',
+        'Enhanced Restart System for improved stability',
+        'Improved File generation system for greater efficiency',
+        'Fixed "Purchase" button issue for latest Steam Client'
+      ]
+    }
   ],
+
+  /* =====================================================
+     Steam Clouds Ultimate (index 1)
+  ===================================================== */
   1: [
-    { title:'v2.1', items:[
-      'Resolved missing entries in manifest database',
-      'Patched HTTPS client error',
-      'Enhanced logs with more detailed information'
-    ]}
+    {
+      title: 'v1.0',
+      items: [
+        'Initial public release'
+      ]
+    },
+    {
+      title: 'v1.1',
+      items: [
+        'Rebranded as Steam Clouds Ultimate',
+        'Introduced "Add to Library" toggle',
+        'Added "Always Unlock" toggle',
+        'Launched Library Manager',
+        'Enabled Drag & Drop and File Browser',
+        'Performance improvements'
+      ]
+    },
+    {
+      title: 'v1.2',
+      items: [
+        'Added Custom Steam Path support'
+      ]
+    },
+    {
+      title: 'v1.3',
+      items: [
+        'Fixed bug where Always Unlock could not be disabled'
+      ]
+    },
+    {
+      title: 'v1.4',
+      items: [
+        'New fresh UI',
+        'Added new database',
+        'Resolved false positive issues'
+      ]
+    },
+    {
+      title: 'v1.5',
+      items: [
+        'Added drop link feature',
+        'Added Release Info section',
+        'Added About button',
+        'Fixed multiple bugs',
+        'Fixed display issues'
+      ]
+    },
+    {
+      title: 'v1.6',
+      items: [
+        'Fixed 403 Forbidden error',
+        'Multiple bug fixes'
+      ]
+    },
+    {
+      title: 'v1.7',
+      items: [
+        'Massive bug fixes for smoother performance',
+        'UI Library updated (modern & responsive)',
+        'UI Discover improved for faster navigation',
+        'Added "Check Limits" button in Settings',
+        'Token status display in Settings',
+        'Auto database check removed (manual only)',
+        'Stronger Denuvo & launcher detection',
+        'Tools no longer locked during updates',
+        'Optimized Add Games process'
+      ]
+    },
+    {
+      title: 'v1.8',
+      items: [
+        'Fixed various minor bugs',
+        'Introduced new Home section',
+        'Added integrated Guide',
+        'Library now includes Update buttons',
+        'Performance optimizations'
+      ]
+    },
+    {
+      title: 'v1.9',
+      items: [
+        'Added Quick Fix feature'
+      ]
+    },
+    {
+      title: 'v2.0',
+      items: [
+        'Fixed Purchase button issue completely'
+      ]
+    },
+    {
+      title: 'v2.1',
+      items: [
+        'Resolved missing entries in manifest database',
+        'Patched HTTPS client error',
+        'Enhanced logs with more detailed information'
+      ]
+    }
   ],
+
+  /* =====================================================
+     SpotifyPlus (index 2)
+  ===================================================== */
   2: [
-    { title:'v1.6', items:[
-      'New Simple UI',
-      'Optimized the program',
-      'Resolved false positive VirusTotal issues'
-    ]}
+    {
+      title: 'v1.1',
+      items: [
+        'Initial public release'
+      ]
+    },
+    {
+      title: 'v1.2',
+      items: [
+        'Added Auto Check Update',
+        'Added Spotify Downloader',
+        'Added YouTube Downloader',
+        'Added TikTok Downloader',
+        'Resolving tools issues'
+      ]
+    },
+    {
+      title: 'v1.3',
+      items: [
+        'Resolving tools issues'
+      ]
+    },
+    {
+      title: 'v1.4',
+      items: [
+        'Removed Spotify, YouTube & TikTok Downloader',
+        'Improved UI and optimized program',
+        'Optimized Spotify Premium features',
+        'Added Multi-language support (ID, EN, DE, ES)'
+      ]
+    },
+    {
+      title: 'v1.5',
+      items: [
+        'Resolving tools issues'
+      ]
+    },
+    {
+      title: 'v1.6',
+      items: [
+        'New simple UI',
+        'Optimized the program',
+        'Resolved false positive VirusTotal issues'
+      ]
+    }
   ],
+
+  /* =====================================================
+     All In One Downloader (index 3)
+  ===================================================== */
   3: [
-    { title:'v1.0', items:[
-      'Initial public release'
-    ]}
+    {
+      title: 'v1.0',
+      items: [
+        'Initial public release'
+      ]
+    }
   ]
 };
 
@@ -294,3 +521,4 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
