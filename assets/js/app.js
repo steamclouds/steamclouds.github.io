@@ -425,6 +425,24 @@ async function renderTools(){
   }));
 }
 
+function prepareImages(root){
+  $$('img', root).forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('is-loaded');
+    } else {
+      img.addEventListener('load', () => {
+        img.classList.add('is-loaded');
+      }, { once: true });
+    }
+
+    img.onerror = () => {
+      img.src = 'https://via.placeholder.com/800x450?text=Image+Missing';
+      img.classList.add('is-loaded');
+    };
+  });
+}
+
+
 /* =====================================================
    CHANGELOG VIEW + PAGINATION (KODE LAMA)
 ===================================================== */
@@ -522,6 +540,7 @@ document.addEventListener('click',async e=>{
    BOOT
 ===================================================== */
 document.addEventListener('DOMContentLoaded',renderTools);
+
 
 
 
