@@ -240,7 +240,21 @@ const logsData = {
         'Patched HTTPS client error',
         'Enhanced logs with more detailed information'
       ]
-    }
+    },
+     {
+        title: 'v2.2',
+        items: [
+          'Brand new modern and responsive user interface',
+          'Refreshed Steamclouds logo and visual identity',
+          'Completely redesigned Home page',
+          'New Library layout with improved game list display',
+          'Fully redesigned Settings interface',
+          'Added built-in guides and instructions in Home and Settings',
+          'Improved launcher navigation and overall layout flow',
+          'Cleaner UI structure and more intuitive user experience',
+          'Various stability and performance improvements'
+        ]
+      }
   ],
 
   /* =====================================================
